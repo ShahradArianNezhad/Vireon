@@ -1,0 +1,226 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/main.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/platform/input/inputHandler.o",
+      "src/platform/input/inputHandler.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/platform/input/inputHandler.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/platform/input/inputHandler.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/platform/window/GLFWwindow.o",
+      "src/platform/window/GLFWwindow.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/platform/window/GLFWwindow.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/platform/window/GLFWwindow.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/core/file/fileIO.o",
+      "src/core/file/fileIO.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/core/file/fileIO.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/core/file/fileIO.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/shader/shader.o",
+      "src/engine/graphics/shader/shader.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/shader/shader.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/shader/shader.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/elementBuffer/elementBuffer.o",
+      "src/engine/graphics/elementBuffer/elementBuffer.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/elementBuffer/elementBuffer.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/elementBuffer/elementBuffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/vertexBuffer/vertexBuffer.o",
+      "src/engine/graphics/vertexBuffer/vertexBuffer.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/vertexBuffer/vertexBuffer.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/vertexBuffer/vertexBuffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/vertexArray/vertexArray.o",
+      "src/engine/graphics/vertexArray/vertexArray.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/vertexArray/vertexArray.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/vertexArray/vertexArray.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/renderable/renderable.o",
+      "src/engine/graphics/renderable/renderable.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/renderable/renderable.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/renderable/renderable.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "-o",
+      "build/engine/graphics/renderer/renderer.o",
+      "src/engine/graphics/renderer/renderer.cpp"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/engine/graphics/renderer/renderer.cpp",
+    "output": "/home/shahrad/Desktop/cpp/build/engine/graphics/renderer/renderer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "build/main.o",
+      "build/platform/input/inputHandler.o",
+      "build/platform/window/GLFWwindow.o",
+      "build/core/file/fileIO.o",
+      "build/engine/graphics/shader/shader.o",
+      "build/engine/graphics/elementBuffer/elementBuffer.o",
+      "build/engine/graphics/vertexBuffer/vertexBuffer.o",
+      "build/engine/graphics/vertexArray/vertexArray.o",
+      "build/engine/graphics/renderable/renderable.o",
+      "build/engine/graphics/renderer/renderer.o",
+      "-I./include",
+      "-I./src",
+      "-o",
+      "build/executable",
+      "src/glad/gl.c"
+    ],
+    "directory": "/home/shahrad/Desktop/cpp",
+    "file": "/home/shahrad/Desktop/cpp/src/glad/gl.c",
+    "output": "/home/shahrad/Desktop/cpp/build/executable"
+  }
+]
