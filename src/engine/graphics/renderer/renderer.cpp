@@ -3,7 +3,6 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
-#include <iostream>
 #include <stdexcept>
 
 void Renderer::clear() {
@@ -27,11 +26,11 @@ Renderer::Renderer() { initGLAD(); }
 
 void Renderer::draw(Batch &batch) {
   batch.use();
-  if (batch.layout.ebo) {
-    glDrawElements(GL_TRIANGLES, batch.getIndexCount(), GL_UNSIGNED_INT,
+  if (batch.isUsingEbo()) {
+    glDrawElements(GL_TRIANGLES, batch.getIndicesCount(), GL_UNSIGNED_INT,
                    (void *)0);
   } else {
-    glDrawArrays(GL_TRIANGLES, 0, batch.getIndexCount());
+    glDrawArrays(GL_TRIANGLES, 0, batch.getIndicesCount());
   }
 }
 
@@ -41,4 +40,17 @@ void Renderer::mainloop() {
     render();
     window.updateWindow();
   }
+}
+
+void Renderer::addObject(Object object) {
+  for (Batch &batch : batches) {
+    if (batch.layout.getLayoutArray() == object.layout.getLayoutArray()) {
+      batch.submit(object);
+      return;
+    }
+  }
+  Shader newshader("./shaders/simple.vert", "./shaders/simple.frag");
+  Batch newBatch(std::move(newshader), object.layout);
+  newBatch.submit(object);
+  batches.push_back(std::move(newBatch));
 }

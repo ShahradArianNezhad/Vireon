@@ -1,10 +1,6 @@
 #pragma once
 #include "engine/graphics/batch/batch.hpp"
-#include "engine/graphics/shader/shader.hpp"
-#include "engine/graphics/vertexArray/vertexArray.hpp"
-#include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
 #include "platform/window/GLFWwindow.hpp"
-#include <iostream>
 #include <vector>
 
 class Renderer {
@@ -24,6 +20,6 @@ public:
   Renderer &operator=(const Renderer &) = delete;
   Renderer(Renderer &&other) = delete;
 
-  void submit(Batch &&batch) { batches.push_back(std::move(batch)); };
+  void addObject(Object object);
   void mainloop();
 };

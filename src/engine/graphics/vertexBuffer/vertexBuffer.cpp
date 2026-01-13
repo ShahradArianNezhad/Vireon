@@ -9,7 +9,6 @@ VertexBuffer::VertexBuffer(const void *data, size_t size) {
 VertexBuffer::VertexBuffer() { glGenBuffers(1, &ID); }
 
 void VertexBuffer::changeData(const void *data, size_t size, GLenum mode) {
-  bind();
   glBufferData(GL_ARRAY_BUFFER, size, data, mode);
 }
 

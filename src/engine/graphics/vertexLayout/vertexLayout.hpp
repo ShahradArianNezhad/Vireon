@@ -1,22 +1,24 @@
 #pragma once
-#include "engine/graphics/elementBuffer/elementBuffer.hpp"
-#include "engine/graphics/vertexArray/vertexArray.hpp"
-#include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
-#include <optional>
+#include <vector>
 
 class VertexLayout {
+private:
+  std::vector<unsigned int> layoutVector;
 
 public:
-  std::optional<ElementBuffer> ebo;
-  std::vector<VertexAttrib> attributes;
-  int offset = 0;
+  VertexLayout(std::vector<unsigned int> inputLayout)
+      : layoutVector(inputLayout) {};
+  VertexLayout() {};
+  VertexLayout(VertexLayout &&other)
+      : layoutVector(std::move(other.layoutVector)) {}
 
-  VertexArray vao;
-  VertexLayout();
-  VertexLayout(const void *indicies, size_t size);
-  VertexLayout(const VertexLayout &) = delete;
-  VertexLayout &operator=(const VertexLayout &) = delete;
-  VertexLayout(VertexLayout &&other) noexcept;
-  void pushFloat(int x, unsigned int location);
-  void interpretVBO(VertexBuffer &vbo);
+  bool operator==(const VertexLayout &other) {
+    return this->layoutVector == other.layoutVector;
+  }
+  VertexLayout(const VertexLayout &other) : layoutVector(other.layoutVector) {}
+
+  void pushFloat(unsigned int count) { layoutVector.push_back(count); };
+  int getStride();
+  std::vector<unsigned int> &getLayoutArray() { return layoutVector; };
+  int getOffsetForLocation(unsigned int location);
 };

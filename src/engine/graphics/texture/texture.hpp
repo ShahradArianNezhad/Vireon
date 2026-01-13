@@ -4,6 +4,7 @@
 class Texture {
 private:
   unsigned int ID;
+  std::string texturePath;
 
 public:
   Texture(std::string TexturePath);

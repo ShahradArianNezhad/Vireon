@@ -1,42 +1,17 @@
-#include "vertexLayout.hpp"
-#include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
-#include <iostream>
+#include "engine/graphics/vertexLayout/vertexLayout.hpp"
 
-VertexLayout::VertexLayout() {};
-
-VertexLayout::VertexLayout(const void *indicies, size_t size)
-    : ebo(ElementBuffer()) {
-  vao.bind();
-  ebo->setData(indicies, size);
-  vao.unbind();
-}
-
-void VertexLayout::pushFloat(int count, unsigned int location) {
-  VertexAttrib attrib;
-  attrib.index = location;
-  attrib.size = count;
-  attrib.type = GL_FLOAT;
-  attrib.normalized = false;
-  attrib.stride = 0;
-  attrib.offset = reinterpret_cast<void *>(static_cast<uintptr_t>(offset));
-  attributes.push_back(attrib);
-  offset += count * sizeof(float);
-}
-
-void VertexLayout::interpretVBO(VertexBuffer &vbo) {
-  vao.bind();
-  if (ebo) {
-    ebo->bind();
+int VertexLayout::getOffsetForLocation(unsigned int location) {
+  int sum = 0;
+  for (int i = 0; i < location; i++) {
+    sum += layoutVector[i];
   }
-  vbo.bind();
-  for (auto &attrib : attributes) {
-    attrib.stride = offset;
-    vao.addBuffer(attrib);
-  }
-  vbo.unbind();
-  vao.unbind();
+  return sum * sizeof(float);
 }
 
-VertexLayout::VertexLayout(VertexLayout &&other) noexcept
-    : ebo(std::move(other.ebo)), attributes(std::move(other.attributes)),
-      offset(other.offset), vao(std::move(other.vao)) {}
+int VertexLayout::getStride() {
+  int sum = 0;
+  for (int i = 0; i < layoutVector.size(); i++) {
+    sum += layoutVector[i];
+  }
+  return sum * sizeof(float);
+}

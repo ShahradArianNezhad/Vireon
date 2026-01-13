@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/graphics/elementBuffer/elementBuffer.hpp"
 #include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
+#include "engine/graphics/vertexLayout/vertexLayout.hpp"
 #include "glad/gl.h"
 #include <vector>
 
@@ -16,5 +17,5 @@ public:
 
   void bind() const { glBindVertexArray(ID); }
   void unbind() const { glBindVertexArray(0); }
-  void addBuffer(VertexAttrib attrib);
+  void useLayout(VertexLayout layout);
 };

@@ -1,17 +1,15 @@
 #include "batch.hpp"
+#include "engine/graphics/vertexArray/vertexArray.hpp"
 #include <GL/gl.h>
-#include <iostream>
 
-Batch::Batch(Shader &&shader, VertexLayout &&mylayout)
-    : shader(std::move(shader)), layout(std::move(mylayout)) {
-  layout.interpretVBO(vbo);
+Batch::Batch(Shader &&shader, VertexLayout mylayout)
+    : shader(std::move(shader)), layout(mylayout) {
+  vao.bind();
+  vbo.bind();
+  vao.useLayout(layout);
+  vbo.unbind();
+  vao.unbind();
 }
-
-Batch::Batch(Batch &&other) noexcept
-    : shader(std::move(other.shader)), vbo(std::move(other.vbo)),
-      texture(std::move(other.texture)),
-      vertexData(std::move(other.vertexData)), changed(other.changed),
-      layout(std::move(other.layout)) {}
 
 void Batch::use() {
   if (changed) {
@@ -19,7 +17,7 @@ void Batch::use() {
     changed = false;
   }
   shader.use();
-  layout.vao.bind();
+  vao.bind();
   if (texture) {
     texture->bind();
   }
@@ -27,28 +25,34 @@ void Batch::use() {
 
 void Batch::addTexture(std::string imagePath) { texture.emplace(imagePath); }
 
-void Batch::addVertex(std::initializer_list<float> floats) {
-  if (floats.size() % (layout.offset / sizeof(float)) != 0) {
-    std::cout << "inputted float in addVertex is not the size of the declared "
-                 "layout size"
-              << std::endl;
-    return;
-  }
-  for (float f : floats) {
-    vertexData.push_back(f);
-  }
-  changed = true;
-}
-
 void Batch::updatedata() {
+  std::vector<float> vertexData;
+  for (Object obj : objects) {
+    for (float data : obj.data.getVertexData()) {
+      vertexData.push_back(data);
+    }
+  }
+  vbo.bind();
   vbo.changeData(vertexData.data(), vertexData.size() * sizeof(float),
                  GL_DYNAMIC_DRAW);
+  vbo.unbind();
 }
 
-int Batch::getIndexCount() {
-  if (layout.ebo) {
-    return layout.ebo->getindexCount();
+void Batch::submit(Object obj) {
+  objects.push_back(obj);
+  changed = true;
+};
+
+int Batch::getIndicesCount() {
+  if (isUsingEbo()) {
+    return ebo->getindexCount();
   } else {
-    return vertexData.size();
+    int count = 0;
+    for (auto &obj : objects) {
+      for (int i = 0; i < obj.data.getDataCount(); i++) {
+        count++;
+      }
+    }
+    return count;
   }
 }
