@@ -9,25 +9,27 @@
 
 void Engine::mainloop() {
   Scene scene;
-  auto triangle = makeTriangle();
-  scene.addEntity(triangle);
+  scene.addEntity(makeTriangle());
 
   while (!window.windowShouldClose()) {
     renderer.flush();
-    renderer.collectAndBatch(scene);
-    renderer.renderBatches();
+    renderer.renderScene(scene);
     window.updateWindow();
   }
 }
 
 Entity Engine::makeTriangle() {
   std::vector<Vertex> v = {
-      Vertex{{-1.0, -1.0, 0.0}, {1.0, 0.0, 0.0}}, //
-      Vertex{{0.0, 1.0, 0.0}, {0.0, 1.0, 0.0}},   //
-      Vertex{{1.0, -1.0, 0.0}, {0.0, 0.0, 1.0}}   //
+      Vertex{{1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}},  //
+      Vertex{{-1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}}, //
+      Vertex{{1.0, -1.0, 0.0}, {1.0, 0.0, 0.0}}, //
+      Vertex{{1.0, -1.0, 0.0}, {1.0, 0.0, 0.0}}, //
+      Vertex{{-1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}}, //
+      Vertex{{-1.0, -1.0, 0.0}, {0.0, 1.0, 0.0}} //
   };
-  std::vector<unsigned int> indices = {0, 1, 2};
+  std::vector<unsigned int> indices = {0, 1, 2, 3, 4, 5};
   Mesh mesh{v, indices, VertexLayout::PosColor};
+  // new one each time (BAD)
   auto id = meshManager.submit(mesh);
   Entity entity{id, true};
   return entity;

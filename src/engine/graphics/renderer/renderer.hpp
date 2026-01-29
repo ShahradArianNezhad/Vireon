@@ -14,6 +14,8 @@ private:
   MeshManager &meshManager;
   GpuBuffers gpu;
   ShaderManager shaderManager;
+  void collectAndBatch(Scene &scene);
+  void renderBatches();
 
 public:
   Renderer(MeshManager &manager);
@@ -22,7 +24,6 @@ public:
   Renderer(Renderer &&other) = delete;
   static void initGLAD();
 
-  void collectAndBatch(Scene &scene);
-  void renderBatches();
   void flush();
+  void renderScene(Scene &scene);
 };

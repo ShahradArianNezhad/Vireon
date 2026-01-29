@@ -22,12 +22,16 @@ void Renderer::collectAndBatch(Scene &scene) {
 }
 
 void Renderer::renderBatches() {
-  auto batches = batchManager.getBatches();
-  for (auto &[key, batch] : batches) {
+  for (auto &[key, batch] : batchManager.getBatches()) {
     auto mesh = meshManager.get(key.mesh);
     shaderManager.useShader(mesh.layout);
     gpu.useMesh(mesh);
     glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
   }
+}
+
+void Renderer::renderScene(Scene &scene) {
+  collectAndBatch(scene);
+  renderBatches();
   batchManager.cleanBatches();
 }
