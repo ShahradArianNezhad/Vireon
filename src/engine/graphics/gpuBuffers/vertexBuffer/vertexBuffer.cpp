@@ -1,4 +1,4 @@
-#include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
+#include "./vertexBuffer.hpp"
 #include "engine/graphics/vertex/vertex.hpp"
 #include "glad/gl.h"
 #include <vector>

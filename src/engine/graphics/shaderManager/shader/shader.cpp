@@ -1,13 +1,12 @@
-#include "engine/graphics/shader/shader.hpp"
+#include "./shader.hpp"
 #include "core/file/fileIO.hpp"
-#include "engine/meshManager/meshManager.hpp"
 #include "glad/gl.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 Shader::Shader(VertexLayout layout) {
-  if (layout == VertexLayout::Pos) {
+  if (layout == VertexLayout::PosColor) {
     makeAndCompileShaders(std::string("./shaders/simple") + "/" + "shader.vert",
                           std::string("./shaders/simple") + "/" +
                               "shader.frag");

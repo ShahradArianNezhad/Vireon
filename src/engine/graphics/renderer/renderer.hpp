@@ -1,11 +1,8 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
 #include "engine/graphics/batchManager/batchManager.hpp"
-#include "engine/graphics/elementBuffer/elementBuffer.hpp"
-#include "engine/graphics/shader/shader.hpp"
-#include "engine/graphics/vertexArray/vertexArray.hpp"
-#include "engine/graphics/vertexBuffer/vertexBuffer.hpp"
-#include "engine/graphics/vertexLayout/vertexLayout.hpp"
+#include "engine/graphics/gpuBuffers/gpuBuffers.hpp"
+#include "engine/graphics/shaderManager/shaderManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/scene/scene.hpp"
 #include <GLFW/glfw3.h>
@@ -15,10 +12,8 @@ class Renderer {
 private:
   BatchManager batchManager;
   MeshManager &meshManager;
-  VertexArray vao;
-  VertexBuffer vbo;
-  ElementBuffer ebo;
-  Shader shader{VertexLayout::Pos};
+  GpuBuffers gpu;
+  ShaderManager shaderManager;
 
 public:
   Renderer(MeshManager &manager);

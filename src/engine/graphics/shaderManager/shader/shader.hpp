@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/meshManager/meshManager.hpp"
+#include "engine/graphics/vertexLayout/vertexLayout.hpp"
 #include "glad/gl.h"
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/glm.hpp>
@@ -18,6 +18,7 @@ private:
                              const std::string &fragmentShaderPath);
 
 public:
+  Shader() {};
   Shader(VertexLayout layout);
   Shader(const std::string &);
   Shader(const Shader &) = delete;

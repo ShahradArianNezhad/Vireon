@@ -1,4 +1,4 @@
-#include "engine/graphics/vertexArray/vertexArray.hpp"
+#include "./vertexArray.hpp"
 #include "engine/graphics/vertexLayout/vertexLayout.hpp"
 #include <iostream>
 

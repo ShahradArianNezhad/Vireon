@@ -25,17 +25,9 @@ void Renderer::renderBatches() {
   auto batches = batchManager.getBatches();
   for (auto &[key, batch] : batches) {
     auto mesh = meshManager.get(key.mesh);
-    shader.use();
-    vao.bind();
-    vbo.bind();
-    vbo.upload(mesh.vertices, GL_STATIC_DRAW);
-    ebo.bind();
-    ebo.upload(mesh.indices);
-    vao.useLayout(mesh.layout);
-    glDrawElements(GL_TRIANGLES, ebo.getindexCount(), GL_UNSIGNED_INT, 0);
-    ebo.unbind();
-    vbo.unbind();
-    vao.unbind();
+    shaderManager.useShader(mesh.layout);
+    gpu.useMesh(mesh);
+    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
   }
   batchManager.cleanBatches();
 }

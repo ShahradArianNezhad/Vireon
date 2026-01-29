@@ -1,4 +1,4 @@
-#include "engine/graphics/elementBuffer/elementBuffer.hpp"
+#include "./elementBuffer.hpp"
 #include <iostream>
 
 ElementBuffer::ElementBuffer() { glGenBuffers(1, &ID); }
