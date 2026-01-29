@@ -1,5 +1,5 @@
+#pragma once
 #include "./batch/batch.hpp"
-#include "engine/meshManager/meshManager.hpp"
 #include "engine/scene/entity/entity.hpp"
 #include <unordered_map>
 

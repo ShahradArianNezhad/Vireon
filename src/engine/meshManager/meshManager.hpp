@@ -1,7 +1,6 @@
 #pragma once
 #include "./mesh/mesh.hpp"
 #include "core/idManager/idManager.hpp"
-#include <stdexcept>
 #include <unordered_map>
 
 using MeshID = unsigned int;

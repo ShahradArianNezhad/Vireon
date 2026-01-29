@@ -31,6 +31,7 @@ Entity Engine::makeTriangle() {
   Mesh mesh{v, indices, VertexLayout::PosColor};
   // new one each time (BAD)
   auto id = meshManager.submit(mesh);
-  Entity entity{id, true};
+  auto matId = materialManager.submit(Material{"./container.jpg"});
+  Entity entity{id, matId, true};
   return entity;
 }

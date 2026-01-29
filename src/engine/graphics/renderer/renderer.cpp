@@ -13,7 +13,10 @@ void Renderer::initGLAD() {
     throw std::runtime_error("ERROR: Failed to initialize glad");
   }
 }
-Renderer::Renderer(MeshManager &manager) : meshManager(manager) { initGLAD(); }
+Renderer::Renderer(MeshManager &manager, MaterialManager &matManager)
+    : meshManager(manager), materialManager(matManager) {
+  initGLAD();
+}
 
 void Renderer::collectAndBatch(Scene &scene) {
   for (auto &entity : scene.collectEntities()) {
@@ -24,8 +27,10 @@ void Renderer::collectAndBatch(Scene &scene) {
 void Renderer::renderBatches() {
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto mesh = meshManager.get(key.mesh);
+    auto &mat = materialManager.get(key.material);
     shaderManager.useShader(mesh.layout);
     gpu.useMesh(mesh);
+    mat.use();
     glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
   }
 }

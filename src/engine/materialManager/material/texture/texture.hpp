@@ -7,6 +7,7 @@ private:
 
 public:
   std::string texturePath;
+  Texture() {};
   Texture(std::string TexturePath);
   Texture(const Texture &) = delete;
   Texture &operator=(const Texture &) = delete;

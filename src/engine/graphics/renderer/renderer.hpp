@@ -1,4 +1,5 @@
 #pragma once
+#include "engine/materialManager/materialManager.hpp"
 #define GLFW_INCLUDE_NONE
 #include "engine/graphics/batchManager/batchManager.hpp"
 #include "engine/graphics/gpuBuffers/gpuBuffers.hpp"
@@ -12,13 +13,14 @@ class Renderer {
 private:
   BatchManager batchManager;
   MeshManager &meshManager;
+  MaterialManager &materialManager;
   GpuBuffers gpu;
   ShaderManager shaderManager;
   void collectAndBatch(Scene &scene);
   void renderBatches();
 
 public:
-  Renderer(MeshManager &manager);
+  Renderer(MeshManager &manager, MaterialManager &matManager);
   Renderer(const Renderer &) = delete;
   Renderer &operator=(const Renderer &) = delete;
   Renderer(Renderer &&other) = delete;

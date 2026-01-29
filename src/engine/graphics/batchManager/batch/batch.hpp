@@ -1,10 +1,13 @@
+#pragma once
+#include "engine/materialManager/materialManager.hpp"
 #include "engine/scene/entity/entity.hpp"
 #include <vector>
 
 struct BatchKey {
   MeshID mesh;
+  MaterialID material;
   bool operator==(const BatchKey &other) const {
-    if (other.mesh == mesh) {
+    if (other.mesh == mesh && other.material == material) {
       return true;
     }
     return false;
