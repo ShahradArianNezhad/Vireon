@@ -8,7 +8,7 @@
 
 class Engine {
 private:
-  EngineWindow window{800, 600};
+  EngineWindow window{Screen::width, Screen::height};
   MeshManager meshManager;
   MaterialManager materialManager;
   EntityManager entityManager;
@@ -16,6 +16,6 @@ private:
 public:
   Renderer renderer{meshManager, materialManager};
   Engine() {};
-  Entity &makeTriangle();
+  Entity &makeRect(MeshManager::Color color, float width, float height);
   void mainloop();
 };

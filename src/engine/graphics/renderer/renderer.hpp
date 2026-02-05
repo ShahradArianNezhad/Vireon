@@ -19,7 +19,9 @@ private:
   ShaderManager shaderManager;
   void collectAndBatch(Scene &scene);
   void renderBatches();
-  Camera *currentCamera = nullptr;
+
+  glm::mat4 getViewMatrix();
+  glm::mat4 getProjectionMatrix();
 
 public:
   Renderer(MeshManager &manager, MaterialManager &matManager);
@@ -30,5 +32,4 @@ public:
 
   void flush();
   void renderScene(Scene &scene);
-  void useCamera(Camera *cam);
 };

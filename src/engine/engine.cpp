@@ -6,12 +6,8 @@
 void Engine::mainloop() {
 
   Scene scene;
-  scene.addEntity(makeTriangle());
-  auto camera = entityManager.newCamera();
-  camera->cameraComp.eye = {0.0f, 0.0f, 5.0f};
-  camera->cameraComp.center = {0.0f, 0.0f, 0.0f};
-  camera->cameraComp.up = {0.0f, 1.0f, 0.0f};
-  renderer.useCamera(camera);
+  auto &e = makeRect(MeshManager::Color::White, 100, 100);
+  scene.addEntity(&e);
 
   while (!window.windowShouldClose()) {
     renderer.flush();
@@ -20,12 +16,12 @@ void Engine::mainloop() {
   }
 }
 
-Entity &Engine::makeTriangle() {
-  auto id = meshManager.makePrimitive(MeshManager::Primitive::Square,
-                                      MeshManager::Color::Blue);
+Entity &Engine::makeRect(MeshManager::Color color, float width, float height) {
+  auto id = meshManager.makePrimitive(MeshManager::Primitive::Square, color);
   Entity &e = entityManager.newEntity();
-  e.renderComp = RenderComponent(id, 2, true);
-  e.transformComp = TransformComponent{.position = {1.0f, 1.0f, 1.0f}};
+  e.renderComp = RenderComponent(id, 0, true);
+  e.transformComp = TransformComponent{.position = {400.0f, 100.0f, 0.0f},
+                                       .scale = {width, height, 1.0f}};
 
   return e;
 }

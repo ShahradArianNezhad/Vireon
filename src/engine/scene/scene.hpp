@@ -2,10 +2,9 @@
 #include <vector>
 class Scene {
 private:
-  std::vector<Entity> entities;
+  std::vector<Entity *> entities;
 
 public:
-  std::vector<Entity> &collectEntities() { return entities; }
-  void addEntity(Entity &entity) { entities.push_back(entity); };
-  void addEntity(Entity &&entity) { entities.push_back(entity); };
+  std::vector<Entity *> &collectEntities() { return entities; }
+  void addEntity(Entity *entity) { entities.push_back(entity); };
 };

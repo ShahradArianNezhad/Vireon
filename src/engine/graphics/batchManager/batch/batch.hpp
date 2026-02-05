@@ -24,15 +24,15 @@ template <> struct hash<BatchKey> {
 
 class Batch {
 private:
-  std::vector<Entity> entities;
+  std::vector<Entity *> entities;
   BatchKey key;
 
 public:
   Batch() {};
   Batch(BatchKey aKey) : key(aKey) {};
   BatchKey getKey() { return key; };
-  std::vector<Entity> getEntities() { return entities; };
-  void submit(Entity &entity) { entities.push_back(entity); }
+  std::vector<Entity *> getEntities() { return entities; };
+  void submit(Entity *entity) { entities.push_back(entity); }
   auto begin() { return entities.begin(); }
   auto end() { return entities.end(); }
 };

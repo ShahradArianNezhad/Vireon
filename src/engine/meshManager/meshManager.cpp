@@ -14,9 +14,9 @@ MeshID MeshManager::makePrimitive(Primitive shape, Color color) {
   switch (shape) {
   case Primitive::Triangle: {
     std::vector<Vertex> v = {
-        Vertex{{0.5f, -0.5f, 1.0f}, {red, green, blue}},  //
-        Vertex{{-0.5f, -0.5f, 1.0f}, {red, green, blue}}, //
-        Vertex{{0.0f, 0.5f, 1.0f}, {red, green, blue}},   //
+        Vertex{{0.5f, -0.5f, 0.0f}, {red, green, blue}},  //
+        Vertex{{-0.5f, -0.5f, 0.0f}, {red, green, blue}}, //
+        Vertex{{0.0f, 0.5f, 0.0f}, {red, green, blue}},   //
     };
     std::vector<unsigned int> i = {0, 1, 2};
     Mesh mesh{v, i, VertexLayout::PosColor};
@@ -25,10 +25,10 @@ MeshID MeshManager::makePrimitive(Primitive shape, Color color) {
 
   case Primitive::Square: {
     std::vector<Vertex> v = {
-        Vertex{{0.5f, -0.5f, 1.0f}, {red, green, blue}},  // bottom-right
-        Vertex{{-0.5f, -0.5f, 1.0f}, {red, green, blue}}, // bottom-left
-        Vertex{{0.5f, 0.5f, 1.0f}, {red, green, blue}},   // top-right
-        Vertex{{-0.5f, 0.5f, 1.0f}, {red, green, blue}},  // top-left
+        Vertex{{0.5f, -0.5f, 0.0f}, {red, green, blue}},  // bottom-right
+        Vertex{{-0.5f, -0.5f, 0.0f}, {red, green, blue}}, // bottom-left
+        Vertex{{0.5f, 0.5f, 0.0f}, {red, green, blue}},   // top-right
+        Vertex{{-0.5f, 0.5f, 0.0f}, {red, green, blue}},  // top-left
     };
     std::vector<unsigned int> i = {
         0, 1, 2, //
