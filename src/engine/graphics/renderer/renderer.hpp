@@ -17,9 +17,11 @@ private:
   MaterialManager &materialManager;
   GpuBuffers gpu;
   ShaderManager shaderManager;
-  void collectAndBatch(Scene &scene);
-  void renderBatches();
+  Scene *currentScene=nullptr;
+  glm::mat4 projectionMatrix;
 
+  void collectAndBatch(Scene *scene);
+  void renderBatches();
   glm::mat4 getViewMatrix();
   glm::mat4 getProjectionMatrix();
 
@@ -30,6 +32,8 @@ public:
   Renderer(Renderer &&other) = delete;
   static void initGLAD();
 
+  void useScene(Scene *scene) { currentScene = scene; };
+  void addEntity(Entity* e){currentScene->addEntity(e);}
   void flush();
-  void renderScene(Scene &scene);
+  void renderCurrentScene();
 };

@@ -6,6 +6,7 @@
 #include "engine/materialManager/materialManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 
+class Game;
 class Engine {
 private:
   EngineWindow window{Screen::width, Screen::height};
@@ -14,8 +15,8 @@ private:
   EntityManager entityManager;
 
 public:
-  Renderer renderer{meshManager, materialManager};
   Engine() {};
-  Entity &makeRect(MeshManager::Color color, float width, float height);
-  void mainloop();
+  Renderer renderer{meshManager, materialManager};
+  Entity *makeRect(float x, float y, float width, float height, Color color);
+  void run(Game& game);
 };

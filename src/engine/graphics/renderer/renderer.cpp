@@ -20,10 +20,11 @@ void Renderer::initGLAD() {
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager)
     : meshManager(manager), materialManager(matManager) {
   initGLAD();
+  projectionMatrix = getProjectionMatrix();
 }
 
-void Renderer::collectAndBatch(Scene &scene) {
-  for (auto &entity : scene.collectEntities()) {
+void Renderer::collectAndBatch(Scene *scene) {
+  for (auto &entity : scene->collectEntities()) {
     if (entity->renderComp)
       batchManager.submit(entity);
   }
@@ -32,11 +33,10 @@ void Renderer::collectAndBatch(Scene &scene) {
 glm::mat4 Renderer::getProjectionMatrix() {
   float w = static_cast<float>(Screen::width);
   float h = static_cast<float>(Screen::height);
-  return glm::ortho(0.0f, w, h, 0.0f, -1.0f, 1.0f);
+  return glm::ortho(0.0f, w, h, 0.0f, -100.0f, 100.0f);
 }
 
 void Renderer::renderBatches() {
-  auto projection = getProjectionMatrix();
 
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto &mesh = meshManager.get(key.mesh);
@@ -53,15 +53,18 @@ void Renderer::renderBatches() {
         transform = glm::scale(transform, e->transformComp->scale);
       }
       shader.setunifotmMat4("model", transform);
-      shader.setunifotmMat4("projection", projection);
+      shader.setunifotmMat4("projection", projectionMatrix);
       glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
     }
   }
 }
 
-void Renderer::renderScene(Scene &scene) {
-
-  collectAndBatch(scene);
+void Renderer::renderCurrentScene() {
+  if (!currentScene) {
+    std::cout << "warning: no scene used" << std::endl;
+    return;
+  }
+  collectAndBatch(currentScene);
   renderBatches();
   batchManager.cleanBatches();
 }

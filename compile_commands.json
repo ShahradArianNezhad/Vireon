@@ -17,7 +17,7 @@
       "-o",
       "build/main.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/main.o"
   },
   {
@@ -38,7 +38,7 @@
       "-o",
       "build/platform/input/inputHandler.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/platform/input/inputHandler.o"
   },
   {
@@ -59,7 +59,7 @@
       "-o",
       "build/platform/window/GLFWwindow.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/platform/window/GLFWwindow.o"
   },
   {
@@ -80,7 +80,7 @@
       "-o",
       "build/core/idManager/idManager.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/core/idManager/idManager.o"
   },
   {
@@ -101,7 +101,7 @@
       "-o",
       "build/core/file/fileIO.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/core/file/fileIO.o"
   },
   {
@@ -122,7 +122,7 @@
       "-o",
       "build/engine/entityManager/entityManager.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/entityManager/entityManager.o"
   },
   {
@@ -143,7 +143,7 @@
       "-o",
       "build/engine/meshManager/meshManager.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/meshManager/meshManager.o"
   },
   {
@@ -164,7 +164,7 @@
       "-o",
       "build/engine/materialManager/material/texture/texture.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/materialManager/material/texture/texture.o"
   },
   {
@@ -185,7 +185,7 @@
       "-o",
       "build/engine/engine.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/engine.o"
   },
   {
@@ -206,7 +206,7 @@
       "-o",
       "build/engine/graphics/gpuBuffers/gpuBuffers.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/gpuBuffers/gpuBuffers.o"
   },
   {
@@ -227,7 +227,7 @@
       "-o",
       "build/engine/graphics/gpuBuffers/elementBuffer/elementBuffer.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/gpuBuffers/elementBuffer/elementBuffer.o"
   },
   {
@@ -248,7 +248,7 @@
       "-o",
       "build/engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.o"
   },
   {
@@ -269,7 +269,7 @@
       "-o",
       "build/engine/graphics/gpuBuffers/vertexArray/vertexArray.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/gpuBuffers/vertexArray/vertexArray.o"
   },
   {
@@ -290,7 +290,7 @@
       "-o",
       "build/engine/graphics/vertex/vertex.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/vertex/vertex.o"
   },
   {
@@ -311,7 +311,7 @@
       "-o",
       "build/engine/graphics/batchManager/batchManager.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/batchManager/batchManager.o"
   },
   {
@@ -332,7 +332,7 @@
       "-o",
       "build/engine/graphics/renderer/renderer.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/renderer/renderer.o"
   },
   {
@@ -353,7 +353,7 @@
       "-o",
       "build/engine/graphics/shaderManager/shader/shader.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/shaderManager/shader/shader.o"
   },
   {
@@ -374,7 +374,7 @@
       "-o",
       "build/engine/graphics/shaderManager/shaderManager.o"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/engine/graphics/shaderManager/shaderManager.o"
   },
   {
@@ -406,7 +406,7 @@
       "-I./include",
       "-I./src"
     ],
-    "directory": "/home/shahrad/Programming/engine",
+    "directory": "/home/shahrad/Programming/realEngine",
     "output": "build/executable"
   }
 ]

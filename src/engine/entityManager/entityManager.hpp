@@ -5,6 +5,5 @@ private:
   std::vector<Entity *> entities;
 
 public:
-  Entity &newEntity();
-  Camera *newCamera();
+  Entity *newEntity();
 };

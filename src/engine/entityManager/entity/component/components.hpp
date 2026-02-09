@@ -5,7 +5,7 @@
 struct RenderComponent {
   MeshID mesh;
   MaterialID material;
-  bool visible;
+  bool visible=true;
 };
 
 struct TransformComponent {
