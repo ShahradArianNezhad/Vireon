@@ -1,4 +1,5 @@
 #pragma once
+#include "engine/graphics/renderer/renderer.hpp"
 #define GLFW_INCLUDE_NONE
 #include "platform/input/inputHandler.hpp"
 #include <GLFW/glfw3.h>
@@ -25,8 +26,6 @@ public:
 private:
   GLFWwindow *window;
 
-  const uint32_t WIDTH = 800;
-  const uint32_t HEIGHT = 600;
 
   void initGLFW();
   void createWindow();
@@ -37,5 +36,6 @@ private:
     glViewport(0, 0, width, height);
     Screen::width = width;
     Screen::height = height;
+    Renderer::recalculateProjectionMatrix();
   }
 };

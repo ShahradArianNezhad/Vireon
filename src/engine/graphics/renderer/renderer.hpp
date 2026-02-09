@@ -6,7 +6,8 @@
 #include "engine/graphics/gpuBuffers/gpuBuffers.hpp"
 #include "engine/graphics/shaderManager/shaderManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
-#include "engine/scene/scene.hpp"
+#include "engine/sceneManager/scene/scene.hpp"
+#include "engine/sceneManager/sceneManager.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
@@ -15,25 +16,28 @@ private:
   BatchManager batchManager;
   MeshManager &meshManager;
   MaterialManager &materialManager;
+  SceneManager& sceneManager;
   GpuBuffers gpu;
   ShaderManager shaderManager;
   Scene *currentScene=nullptr;
-  glm::mat4 projectionMatrix;
+  static glm::mat4 projectionMatrix;
 
   void collectAndBatch(Scene *scene);
   void renderBatches();
   glm::mat4 getViewMatrix();
-  glm::mat4 getProjectionMatrix();
+  static glm::mat4 getProjectionMatrix();
 
 public:
-  Renderer(MeshManager &manager, MaterialManager &matManager);
+  Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sceneManager);
   Renderer(const Renderer &) = delete;
   Renderer &operator=(const Renderer &) = delete;
   Renderer(Renderer &&other) = delete;
   static void initGLAD();
+  static void recalculateProjectionMatrix(){Renderer::projectionMatrix=getProjectionMatrix();};
 
-  void useScene(Scene *scene) { currentScene = scene; };
+  void useScene(SceneId scene) { currentScene = sceneManager.get(scene); };
   void addEntity(Entity* e){currentScene->addEntity(e);}
   void flush();
   void renderCurrentScene();
+
 };

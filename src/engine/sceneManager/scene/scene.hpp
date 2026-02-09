@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/entityManager/entity/entity.hpp"
 #include <vector>
 class Scene {

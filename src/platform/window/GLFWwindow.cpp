@@ -13,11 +13,11 @@ void EngineWindow::initGLFW() {
 }
 
 void EngineWindow::createWindow() {
-  window = glfwCreateWindow(WIDTH, HEIGHT, "my engine", nullptr, nullptr);
+  window = glfwCreateWindow(Screen::width, Screen::height, "my engine", nullptr, nullptr);
   checkWindowInit();
   glfwMakeContextCurrent(window);
   Renderer::initGLAD();
-  glViewport(0, 0, WIDTH, HEIGHT);
+  glViewport(0, 0,Screen::width, Screen::height);
   glfwSetFramebufferSizeCallback(window, sizeChange_callback);
 }
 
@@ -27,7 +27,9 @@ void EngineWindow::checkWindowInit() {
   }
 }
 
-EngineWindow::EngineWindow(uint32_t w, uint32_t h) : WIDTH(w), HEIGHT(h) {
+EngineWindow::EngineWindow(uint32_t w, uint32_t h){
+  Screen::width=w;
+  Screen::height=h;
   initGLFW();
   createWindow();
 };

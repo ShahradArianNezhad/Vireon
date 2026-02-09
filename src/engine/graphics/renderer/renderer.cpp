@@ -1,11 +1,15 @@
 #include "renderer.hpp"
 #include "engine/engine.hpp"
 #include "engine/graphics/vertexLayout/vertexLayout.hpp"
+#include "engine/sceneManager/sceneManager.hpp"
 #include "glad/gl.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
 #include <stdexcept>
+
+
+glm::mat4 Renderer::projectionMatrix = glm::mat4(1.0f);
 
 void Renderer::flush() {
   glClearColor(0, 0, 0, 1);
@@ -17,10 +21,10 @@ void Renderer::initGLAD() {
     throw std::runtime_error("ERROR: Failed to initialize glad");
   }
 }
-Renderer::Renderer(MeshManager &manager, MaterialManager &matManager)
-    : meshManager(manager), materialManager(matManager) {
+Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager)
+    : meshManager(manager), materialManager(matManager),sceneManager(sManager) {
   initGLAD();
-  projectionMatrix = getProjectionMatrix();
+  Renderer::projectionMatrix = getProjectionMatrix();
 }
 
 void Renderer::collectAndBatch(Scene *scene) {
@@ -53,7 +57,7 @@ void Renderer::renderBatches() {
         transform = glm::scale(transform, e->transformComp->scale);
       }
       shader.setunifotmMat4("model", transform);
-      shader.setunifotmMat4("projection", projectionMatrix);
+      shader.setunifotmMat4("projection", Renderer::projectionMatrix);
       glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
     }
   }
