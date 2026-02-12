@@ -12,13 +12,29 @@ Engine::Engine(){
 }
 
 
+Entity *Engine::makeSprite(float x,float y,float width,float height){
+  auto meshId = meshManager.makePrimitive(MeshManager::Primitive::SquareSprite);
+  auto matId = materialManager.newMat();
+  auto& matHandle = materialManager.get(matId);
+  matHandle.setTexture("./container.jpg");
+  Entity &e = entityManager.newEntity();
+  e.renderComp = RenderComponent(meshId, matId);
+  e.transformComp = TransformComponent{
+      .position = {x, y, 0.0f},
+      .scale = {width, height, 1.0f},
+      .rotation=0
+  };
+
+  renderer.addEntity(&e);
+  return &e;
+
+}
 
 Entity *Engine::makeRect(float x, float y, float width, float height) {
   auto meshId = meshManager.makePrimitive(MeshManager::Primitive::Square);
   auto matId = materialManager.newMat();
   auto& matHandle = materialManager.get(matId);
-  matHandle.color=Color::Red;
-
+  matHandle.color=Color::White;
   Entity &e = entityManager.newEntity();
   e.renderComp = RenderComponent(meshId, matId);
   e.transformComp = TransformComponent{

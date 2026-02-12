@@ -7,9 +7,11 @@
 
 Shader::Shader(VertexLayout layout) {
   if (layout == VertexLayout::Pos) {
-    makeAndCompileShaders(std::string("./shaders/simple") + "/" + "shader.vert",
-                          std::string("./shaders/simple") + "/" +
-                              "shader.frag");
+    makeAndCompileShaders("./shaders/simple");
+    makeAndLinkProgram();
+    cleanShaders();
+  } else if (layout == VertexLayout::PosUV){
+    makeAndCompileShaders("./shaders/textured");
     makeAndLinkProgram();
     cleanShaders();
   } else {
@@ -18,14 +20,14 @@ Shader::Shader(VertexLayout layout) {
 }
 
 Shader::Shader(const std::string &shaderFolderPath) {
-  makeAndCompileShaders(shaderFolderPath + "/" + "shader.vert",
-                        shaderFolderPath + "/" + "shader.frag");
+  makeAndCompileShaders(shaderFolderPath);
   makeAndLinkProgram();
   cleanShaders();
 }
 
-void Shader::makeAndCompileShaders(const std::string &vertexShaderPath,
-                                   const std::string &fragmentShaderPath) {
+void Shader::makeAndCompileShaders(const std::string &folderPath) {
+  std::string vertexShaderPath = folderPath + "/" + "shader.vert";
+  std::string fragmentShaderPath = folderPath + "/" + "shader.frag";
   vShader = glCreateShader(GL_VERTEX_SHADER);
   fShader = glCreateShader(GL_FRAGMENT_SHADER);
   compileShader(vertexShaderPath, vShader);

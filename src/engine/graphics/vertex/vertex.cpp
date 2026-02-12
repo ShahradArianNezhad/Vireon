@@ -25,7 +25,7 @@ void Vertex::addColor(std::vector<float> &aVertex) {
 
 void Vertex::addTextureCoords(std::vector<float> &aVertex) {
   if (textureCoords) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       aVertex.push_back((*textureCoords)[i]);
     }
   }

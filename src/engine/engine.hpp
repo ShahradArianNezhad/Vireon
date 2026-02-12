@@ -24,5 +24,6 @@ public:
   Engine() ;
   SceneId newScene(){return sceneManager.newScene();}
   Entity *makeRect(float x, float y, float width, float height);
+  Entity *makeSprite(float x,float y,float width,float height);
   void run(Game& game);
 };

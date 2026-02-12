@@ -14,8 +14,7 @@ private:
   void compileShader(const std::string &path, unsigned int dest);
   void makeAndLinkProgram();
   void cleanShaders();
-  void makeAndCompileShaders(const std::string &vertexShaderPath,
-                             const std::string &fragmentShaderPath);
+  void makeAndCompileShaders(const std::string &folderPath);
 
 public:
   Shader() {};

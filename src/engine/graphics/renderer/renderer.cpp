@@ -45,8 +45,8 @@ void Renderer::renderBatches() {
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto &mesh = meshManager.get(key.mesh);
     auto &mat = materialManager.get(key.material);
-    shaderManager.useShader(mesh.layout);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
+    shader.use();
     gpu.useMesh(mesh);
     if(mat.texture)mat.use();
     if(mat.color)shader.setunifotmVec4("iColor", mat.colorToVec4());
@@ -63,6 +63,11 @@ void Renderer::renderBatches() {
       glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
     }
   }
+  GLenum err;
+  while ((err = glGetError()) != GL_NO_ERROR) {
+    std::cout << "OpenGL error: " << err << std::endl;
+  }
+
 }
 
 void Renderer::renderCurrentScene() {

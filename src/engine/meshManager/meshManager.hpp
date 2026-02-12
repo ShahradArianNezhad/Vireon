@@ -22,7 +22,7 @@ private:
   std::unordered_map<MeshSignature,MeshID> meshCache;
 
 public:
-  enum class Primitive { Triangle = 0, Square };
+  enum class Primitive { Triangle = 0, Square,SquareSprite };
 
   MeshManager();
   Mesh &get(MeshID id) { return meshes[id]; };
