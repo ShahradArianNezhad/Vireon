@@ -1,5 +1,6 @@
 #include "./engine.hpp"
 #include "engine/meshManager/meshManager.hpp"
+#include <algorithm>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include "../game/game.hpp"
@@ -12,17 +13,22 @@ Engine::Engine(){
 
 
 
-Entity *Engine::makeRect(float x, float y, float width, float height, Color color) {
-  auto id = meshManager.makePrimitive(MeshManager::Primitive::Square, color);
-  Entity *e = entityManager.newEntity();
-  e->renderComp = RenderComponent(id, 0);
-  e->transformComp = TransformComponent{
+Entity *Engine::makeRect(float x, float y, float width, float height) {
+  auto meshId = meshManager.makePrimitive(MeshManager::Primitive::Square);
+  auto matId = materialManager.newMat();
+  auto& matHandle = materialManager.get(matId);
+  matHandle.color=Color::Red;
+
+  Entity &e = entityManager.newEntity();
+  e.renderComp = RenderComponent(meshId, matId);
+  e.transformComp = TransformComponent{
       .position = {x, y, 0.0f},
-      .scale = {width, height, 1.0f}
+      .scale = {width, height, 1.0f},
+      .rotation=0
   };
 
-  renderer.addEntity(e);
-  return e;
+  renderer.addEntity(&e);
+  return &e;
 }
 
 

@@ -6,7 +6,7 @@
 #include <iostream>
 
 Shader::Shader(VertexLayout layout) {
-  if (layout == VertexLayout::PosColor) {
+  if (layout == VertexLayout::Pos) {
     makeAndCompileShaders(std::string("./shaders/simple") + "/" + "shader.vert",
                           std::string("./shaders/simple") + "/" +
                               "shader.frag");
@@ -81,4 +81,9 @@ Shader::Shader(Shader &&other) noexcept {
 void Shader::setunifotmMat4(std::string name, glm::mat4 &mat4) {
   GLint modelLoc = glGetUniformLocation(programID, name.c_str());
   glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mat4));
+}
+
+void Shader::setunifotmVec4(std::string name, glm::vec4 vec4) {
+  GLint modelLoc = glGetUniformLocation(programID, name.c_str());
+  glUniform4fv(modelLoc, 1, glm::value_ptr(vec4));
 }

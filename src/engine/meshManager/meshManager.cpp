@@ -4,22 +4,16 @@
 
 MeshManager::MeshManager() {};
 
-MeshID MeshManager::makePrimitive(Primitive shape, Color color) {
-  float red = ((static_cast<unsigned int>(color) & 0xFF0000) >> 16);
-  float green = ((static_cast<unsigned int>(color) & 0x00FF00) >> 8);
-  float blue = (static_cast<unsigned int>(color) & 0x0000FF);
-  red /= 255;
-  green /= 255;
-  blue /= 255;
+MeshID MeshManager::makePrimitive(Primitive shape) {
   std::vector<Vertex> v;
   std::vector<unsigned int> i;
 
   switch (shape) {
     case Primitive::Triangle: 
       v = {
-        Vertex{{0.5f, -0.5f, 0.0f}, {red, green, blue}},  //
-        Vertex{{-0.5f, -0.5f, 0.0f}, {red, green, blue}}, //
-        Vertex{{0.0f, 0.5f, 0.0f}, {red, green, blue}},   //
+        Vertex{{0.5f, -0.5f, 0.0f}, },  //
+        Vertex{{-0.5f, -0.5f, 0.0f}, }, //
+        Vertex{{0.0f, 0.5f, 0.0f}, },   //
       };
       i = {0, 1, 2};
       break;
@@ -27,10 +21,10 @@ MeshID MeshManager::makePrimitive(Primitive shape, Color color) {
 
     case Primitive::Square: 
       v = {
-        Vertex{{0.5f, -0.5f, 0.0f}, {red, green, blue}},  // bottom-right
-        Vertex{{-0.5f, -0.5f, 0.0f}, {red, green, blue}}, // bottom-left
-        Vertex{{0.5f, 0.5f, 0.0f}, {red, green, blue}},   // top-right
-        Vertex{{-0.5f, 0.5f, 0.0f}, {red, green, blue}},  // top-left
+        Vertex{{0.5f, -0.5f, 0.0f}, },  // bottom-right
+        Vertex{{-0.5f, -0.5f, 0.0f}, }, // bottom-left
+        Vertex{{0.5f, 0.5f, 0.0f}, },   // top-right
+        Vertex{{-0.5f, 0.5f, 0.0f}, },  // top-left
       };
       i = {
         0, 1, 2, //
@@ -45,7 +39,7 @@ MeshID MeshManager::makePrimitive(Primitive shape, Color color) {
   if(meshCache.contains(hash)){
     return meshCache[hash];
   }
-  Mesh mesh{v, i, VertexLayout::PosColor};
+  Mesh mesh{v, i, VertexLayout::Pos};
   auto id= submit(mesh);
   meshCache[hash]=id;
   return id;

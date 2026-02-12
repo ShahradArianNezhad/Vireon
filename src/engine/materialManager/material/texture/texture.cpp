@@ -13,8 +13,7 @@ Texture::Texture(std::string TexturePath) {
                   GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   int width, height, nrChannels;
-  unsigned char *data =
-      stbi_load(TexturePath.c_str(), &width, &height, &nrChannels, 0);
+  unsigned char *data = stbi_load(TexturePath.c_str(), &width, &height, &nrChannels, 0);
   glGenTextures(1, &ID);
   bind();
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,

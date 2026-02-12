@@ -2,18 +2,17 @@
 #include "./mesh/mesh.hpp"
 #include "core/idManager/idManager.hpp"
 #include <cstdint>
-#include <functional>
 #include <unordered_map>
 
 using MeshID = unsigned int;
 using MeshSignature = uint64_t;
 
-enum class Color {
-  White = 0xFFFFFF,
-  Black = 0x000000,
-  Red = 0xFF0000,
-  Blue = 0x0000FF,
-  Green = 0x00FF00
+enum Color {
+  White = 0xFFFFFFFF,
+  Black = 0x000000FF,
+  Red = 0xFF0000FF,
+  Blue = 0x0000FFFF,
+  Green = 0x00FF00FF
 };
 
 class MeshManager {
@@ -27,7 +26,7 @@ public:
 
   MeshManager();
   Mesh &get(MeshID id) { return meshes[id]; };
-  MeshID makePrimitive(Primitive, Color);
+  MeshID makePrimitive(Primitive);
   MeshID submit(Mesh mesh) {
     auto id = idManager.get();
     meshes.emplace(id, mesh);

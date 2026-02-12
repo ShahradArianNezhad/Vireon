@@ -1,9 +1,8 @@
 #include "entityManager.hpp"
 #include "./entity/entity.hpp"
 
-Entity *EntityManager::newEntity() {
-  auto* e = new Entity;
-  entities.push_back(e);
-  return e;
+Entity& EntityManager::newEntity() {
+  entities.push_back(Entity{});
+  return entities.back();
 }
 

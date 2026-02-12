@@ -2,8 +2,8 @@
 #include <vector>
 class EntityManager {
 private:
-  std::vector<Entity *> entities;
+  std::vector<Entity> entities;
 
 public:
-  Entity *newEntity();
+  Entity& newEntity();
 };

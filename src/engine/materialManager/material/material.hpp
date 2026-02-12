@@ -1,11 +1,15 @@
 #include "./texture/texture.hpp"
+#include "engine/meshManager/meshManager.hpp"
+#include <optional>
 
 class Material {
-private:
-  Texture texture;
-
 public:
+  std::optional<Texture> texture;
+  std::optional<Color> color;
+
   Material() {};
   Material(std::string texPath) : texture(texPath) {}
-  void use() { texture.bind(); }
+  Material(Color iColor) : color(iColor) {}
+  glm::vec4 colorToVec4();
+  void use() { if(texture)texture->bind(); }
 };

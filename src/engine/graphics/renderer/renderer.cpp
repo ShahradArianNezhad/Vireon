@@ -48,13 +48,15 @@ void Renderer::renderBatches() {
     shaderManager.useShader(mesh.layout);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
     gpu.useMesh(mesh);
-    mat.use();
+    if(mat.texture)mat.use();
+    if(mat.color)shader.setunifotmVec4("iColor", mat.colorToVec4());
 
     for (auto &e : batch) {
       auto transform = glm::mat4(1.0f);
       if (e->transformComp) {
         transform = glm::translate(transform, e->transformComp->position);
         transform = glm::scale(transform, e->transformComp->scale);
+        transform = glm::rotate(transform, e->transformComp->rotation,{0.0f,0.0f,1.0f});
       }
       shader.setunifotmMat4("model", transform);
       shader.setunifotmMat4("projection", Renderer::projectionMatrix);

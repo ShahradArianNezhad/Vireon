@@ -13,9 +13,9 @@ private:
 public:
   MaterialManager() {};
   Material &get(MaterialID id) { return materials[id]; };
-  MaterialID submit(Material material) {
+  MaterialID newMat() {
     auto id = idManager.get();
-    materials.insert({id, std::move(material)});
+    materials.emplace(id,Material{});
     return id;
   }
 };
