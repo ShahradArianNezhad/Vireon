@@ -12,11 +12,11 @@ Engine::Engine(){
 }
 
 
-Entity *Engine::makeSprite(float x,float y,float width,float height){
+Entity *Engine::makeSprite(float x,float y,float width,float height,std::string spritePath){
   auto meshId = meshManager.makePrimitive(MeshManager::Primitive::SquareSprite);
   auto matId = materialManager.newMat();
   auto& matHandle = materialManager.get(matId);
-  matHandle.setTexture("./container.jpg");
+  matHandle.setTexture(spritePath);
   Entity &e = entityManager.newEntity();
   e.renderComp = RenderComponent(meshId, matId);
   e.transformComp = TransformComponent{
@@ -24,7 +24,6 @@ Entity *Engine::makeSprite(float x,float y,float width,float height){
       .scale = {width, height, 1.0f},
       .rotation=0
   };
-
   renderer.addEntity(&e);
   return &e;
 

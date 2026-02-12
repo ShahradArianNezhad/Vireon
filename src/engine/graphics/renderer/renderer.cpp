@@ -25,6 +25,8 @@ Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManage
     : meshManager(manager), materialManager(matManager),sceneManager(sManager) {
   initGLAD();
   Renderer::projectionMatrix = getProjectionMatrix();
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::collectAndBatch(Scene *scene) {
@@ -60,6 +62,7 @@ void Renderer::renderBatches() {
       }
       shader.setunifotmMat4("model", transform);
       shader.setunifotmMat4("projection", Renderer::projectionMatrix);
+      shader.setunifotmVec4("iTint", e->tintToVec4());
       glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
     }
   }
