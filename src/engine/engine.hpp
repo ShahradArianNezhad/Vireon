@@ -28,11 +28,12 @@ public:
   Renderer renderer{meshManager, materialManager,sceneManager};
 
 
-  Engine() ;
+  Engine();
   SceneId newScene(){return sceneManager.newScene();}
   Entity *makeRect(float x, float y, float width, float height);
   Entity *makeCircle(float x, float y, float r);
   Entity *makeSprite(float x,float y,float width,float height,std::string spritePath);
+  SceneId getCurrentScene(){return renderer.getCurrentScene();};
   void setTargetFPS(uint32_t t){targetFPS=t;};
-  void run(Game& game);
+  void run(Game* game);
 };

@@ -12,6 +12,7 @@ Engine::Engine(){
 }
 
 
+
 Entity *Engine::makeSprite(float x,float y,float width,float height,std::string spritePath){
   auto meshId = meshManager.makePrimitive(MeshManager::Primitive::SquareSprite);
   auto matId = materialManager.newMat();
@@ -74,14 +75,19 @@ void Engine::syncFramerate(double dt){
 }
 
 
-void Engine::run(Game& game){
-  game.init();
+void Engine::run(Game* game){
+  game->init();
   while (!window.windowShouldClose()) {
     renderer.flush();
     renderer.renderCurrentScene();
     window.updateWindow();
     auto dt = clock.getDeltaTime();
-    game.update(dt);
+    game->update(dt);
     syncFramerate(dt);
   }
 }
+
+
+
+
+

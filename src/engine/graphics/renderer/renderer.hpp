@@ -19,7 +19,7 @@ private:
   SceneManager& sceneManager;
   GpuBuffers gpu;
   ShaderManager shaderManager;
-  Scene *currentScene=nullptr;
+  SceneId currentScene=0;
   static glm::mat4 projectionMatrix;
 
   void getGlErrors();
@@ -38,8 +38,9 @@ public:
   static void initGLAD();
   static void recalculateProjectionMatrix(){Renderer::projectionMatrix=getProjectionMatrix();};
 
-  void useScene(SceneId scene) { currentScene = sceneManager.get(scene); };
-  void addEntity(Entity* e){currentScene->addEntity(e);}
+  void useScene(SceneId scene) { currentScene = scene; };
+  void addEntity(Entity* e){sceneManager.get(currentScene)->addEntity(e);}
+  SceneId getCurrentScene(){return currentScene;}
   void flush();
   void renderCurrentScene();
 

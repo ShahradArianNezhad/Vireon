@@ -54,6 +54,7 @@ VertexBuffer Renderer::makeColorInstanceVBO(Batch& batch){
     return instanceVBO;
 };
 
+
 void Renderer::renderBatches() {
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto &mesh = meshManager.get(key.mesh);
@@ -75,11 +76,11 @@ void Renderer::renderBatches() {
 }
 
 void Renderer::renderCurrentScene() {
-  if (!currentScene) {
-    std::cout << "warning: no scene used" << std::endl;
+  if (!sceneManager.get(currentScene)) {
+    std::cout << "ERROR: using invalid sceneId" << std::endl;
     return;
   }
-  collectAndBatch(currentScene);
+  collectAndBatch(sceneManager.get(currentScene));
   renderBatches();
   batchManager.cleanBatches();
 }

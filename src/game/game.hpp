@@ -3,8 +3,11 @@
 class Game{
 
 public:
-  Engine* engine;
+  Engine engine{};
   virtual void init()=0;
   virtual void update(double dt)=0;
-  void useEngine(Engine* engine){this->engine=engine;}
+
+  void run(){
+    engine.run(this);
+  }
 };
