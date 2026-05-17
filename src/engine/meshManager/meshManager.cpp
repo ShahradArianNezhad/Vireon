@@ -1,6 +1,5 @@
 #include "meshManager.hpp"
 #include "engine/graphics/vertexLayout/vertexLayout.hpp"
-#include "core/hasher64/hasher64.hpp"
 
 #define CIRCLE_V_COUNT 100
 
@@ -45,7 +44,7 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
         v.push_back(Vertex({ std::cos(theta), std::sin(theta), 0.0f }));
       }
 
-      for(int j=2;j<v.size();j++){
+      for(size_t j=2;j<v.size();j++){
         i.push_back(0);
         i.push_back(j-1);
         i.push_back(j);

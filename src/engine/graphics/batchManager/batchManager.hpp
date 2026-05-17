@@ -9,7 +9,7 @@ private:
 
 public:
   BatchManager() {};
-  void submit(Entity *entity);
+  BatchKey submit(Entity *entity);
   std::unordered_map<BatchKey, Batch> &getBatches() { return batches; }
   void cleanBatches() { batches.clear(); }
 };

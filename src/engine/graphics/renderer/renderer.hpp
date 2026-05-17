@@ -27,6 +27,8 @@ private:
   void renderBatches();
   glm::mat4 getViewMatrix();
   static glm::mat4 getProjectionMatrix();
+  VertexBuffer makeColorInstanceVBO(Batch& batch);
+  VertexBuffer makeModelInstanceVBO(Batch& batch);
 
 public:
   Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sceneManager);

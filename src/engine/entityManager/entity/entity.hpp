@@ -2,7 +2,6 @@
 #include "./component/components.hpp"
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
-#include <iostream>
 #include <optional>
 
 struct Entity {
@@ -13,9 +12,9 @@ struct Entity {
   glm::mat4 getModelMatrix(){
     glm::mat4 transform{1.0f};
     if (transformComp) {
-      transform = glm::translate(transform, transformComp->position);
-      transform = glm::scale(transform, transformComp->scale);
-      transform = glm::rotate(transform, transformComp->rotation,{0.0f,0.0f,1.0f});
+      transform = glm::translate(transform, (transformComp)->position);
+      transform = glm::scale(transform, (transformComp)->scale);
+      transform = glm::rotate(transform, (transformComp)->rotation,{0.0f,0.0f,1.0f});
     }
     return transform;
   }
@@ -30,36 +29,36 @@ struct Entity {
 
   glm::vec2 pos(){
     if(transformComp){
-      return {transformComp->position.x,transformComp->position.y};
+      return {(transformComp)->position.x,(transformComp)->position.y};
     }
     return {0,0};
   }
 
   glm::vec2 size(){
     if(transformComp){
-      return {transformComp->scale.x,transformComp->scale.y};
+      return {(transformComp)->scale.x,(transformComp)->scale.y};
     }
     return {0,0};
   }
 
   void moveBy(float dx,float dy){
     if(transformComp){
-      transformComp->position.x+=dx;
-      transformComp->position.y+=dy;
+      (transformComp)->position.x+=dx;
+      (transformComp)->position.y+=dy;
     }
   }
 
   void moveTo(float x,float y){
     if(transformComp){
-      transformComp->position.x+=x;
-      transformComp->position.y+=y;
+      (transformComp)->position.x+=x;
+      (transformComp)->position.y+=y;
     }
   }
 
   void scale(float amount){
     if(transformComp){
-      transformComp->scale.x*=amount;
-      transformComp->scale.y*=amount;
+      (transformComp)->scale.x*=amount;
+      (transformComp)->scale.y*=amount;
     }
   }
 

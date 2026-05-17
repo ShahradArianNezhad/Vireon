@@ -20,7 +20,20 @@ void VertexBuffer::upload(std::vector<Vertex> &data, GLenum mode) {
                mode);
 }
 
+void VertexBuffer::upload(std::vector<glm::mat4> &data,GLenum mode){
+  bind();
+  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(glm::mat4), data.data(), mode);
+}
+
+void VertexBuffer::upload(std::vector<glm::vec4> &data,GLenum mode){
+  bind();
+  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(glm::mat4), data.data(), mode);
+}
+
 VertexBuffer::VertexBuffer(VertexBuffer &&other) noexcept {
   ID = other.ID;
   other.ID = 0;
 }
+
+
+

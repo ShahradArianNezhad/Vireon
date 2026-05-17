@@ -10,5 +10,7 @@ private:
 
 public:
   void useMesh(Mesh &mesh);
+  void useInstanceMat4(VertexBuffer& instanceVBO, unsigned int location);
+  void useInstanceVec4(VertexBuffer& instanceVBO, unsigned int location);
   void reset();
 };

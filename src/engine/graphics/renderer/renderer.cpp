@@ -1,5 +1,6 @@
 #include "renderer.hpp"
 #include "engine/engine.hpp"
+#include "engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.hpp"
 #include "engine/graphics/vertexLayout/vertexLayout.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
 #include "glad/gl.h"
@@ -42,23 +43,32 @@ glm::mat4 Renderer::getProjectionMatrix() {
   return glm::ortho(0.0f, w, h, 0.0f, -100.0f, 100.0f);
 }
 
+VertexBuffer Renderer::makeModelInstanceVBO(Batch& batch){
+    VertexBuffer instanceVBO;
+    instanceVBO.upload(batch.getModelInstanceData(),GL_STATIC_DRAW);
+    return instanceVBO;
+};
+VertexBuffer Renderer::makeColorInstanceVBO(Batch& batch){
+    VertexBuffer instanceVBO;
+    instanceVBO.upload(batch.getColorInstanceData(),GL_STATIC_DRAW);
+    return instanceVBO;
+};
+
 void Renderer::renderBatches() {
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto &mesh = meshManager.get(key.mesh);
     auto &mat = materialManager.get(key.material);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
     shader.use();
+    VertexBuffer modelInstanceVBO = makeModelInstanceVBO(batch);
+    gpu.useInstanceMat4(modelInstanceVBO,2);
+    VertexBuffer colorInstanceVBO = makeColorInstanceVBO(batch);
+    gpu.useInstanceVec4(colorInstanceVBO,1);
     gpu.useMesh(mesh);
     mat.use();
-    if(mat.color)shader.setunifotmVec4("iColor", mat.colorToVec4());
+    shader.setunifotmMat4("projection", Renderer::projectionMatrix);
 
-    for (auto &e : batch) {
-      auto model =e->getModelMatrix();
-      shader.setunifotmMat4("model", model);
-      shader.setunifotmMat4("projection", Renderer::projectionMatrix);
-      shader.setunifotmVec4("iTint", e->tintToVec4());
-      glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
-    }
+    glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, batch.size());
   }
   getGlErrors();
 

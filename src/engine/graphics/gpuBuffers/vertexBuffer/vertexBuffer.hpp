@@ -23,4 +23,6 @@ public:
   void unbind() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
   void upload(std::vector<Vertex> &data, GLenum mode);
   void upload(std::vector<float> &data, GLenum mode);
+  void upload(std::vector<glm::mat4> &data,GLenum mode);
+  void upload(std::vector<glm::vec4> &data,GLenum mode);
 };
