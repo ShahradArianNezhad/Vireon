@@ -6,6 +6,10 @@
 MeshManager::MeshManager() {};
 
 MeshID MeshManager::makePrimitive(Primitive shape) {
+  Hasher64 hasher;
+  hasher.combine(&shape, 4);
+  auto sig = hasher.digest();
+  if(meshCache.contains(sig)){return meshCache[sig];}
   std::vector<Vertex> v;
   std::vector<unsigned int> i;
   VertexLayout layout;
@@ -67,15 +71,9 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
       layout = VertexLayout::PosUV;
       break;
   }
-  Hasher64 hasher;
-  hasher.combine(v.data(),v.size()*sizeof(Vertex));
-  hasher.combine(i.data(),i.size()*sizeof(unsigned int));
-  auto hash = hasher.digest();
-  if(meshCache.contains(hash)){
-    return meshCache[hash];
-  }
   Mesh mesh{v, i, layout};
   auto id= submit(mesh);
-  meshCache[hash]=id;
+  meshCache[sig]=id;
+  LOG_DEBUG("makePrimitive called: shape={}",shape);
   return id;
 };

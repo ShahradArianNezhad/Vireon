@@ -12,7 +12,8 @@ private:
   ComponentAllocator<TransformComponent>,
   ComponentAllocator<RenderComponent>,
   ComponentAllocator<CircleColliderComponent>,
-  ComponentAllocator<RectColliderComponent>
+  ComponentAllocator<RectColliderComponent>,
+  ComponentAllocator<CameraComponent2D>
     > allocators;
 
 public:
@@ -26,6 +27,7 @@ public:
     void setComponent(EntityId id,typename EnumToType<T>::type comp){
       auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
       allocator.setComponent(id,comp);
+      LOG_DEBUG("set component:{} on entity: {}",comp,id);
     }
 
 
@@ -33,6 +35,7 @@ public:
     void deleteComponent(EntityId id){
       auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
       allocator.deleteComponent(id);
+      LOG_DEBUG("delete component:{} on entity: {}",T,id);
     }
 
 

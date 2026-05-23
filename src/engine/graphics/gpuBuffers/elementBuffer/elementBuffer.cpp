@@ -1,4 +1,5 @@
 #include "./elementBuffer.hpp"
+#include "utils/logger/logger.hpp"
 #include <iostream>
 
 ElementBuffer::ElementBuffer() { glGenBuffers(1, &ID); }
@@ -20,8 +21,7 @@ int ElementBuffer::getindexCount() {
   if (indexCount != -1) {
     return indexCount;
   } else {
-    std::cout << "WARNING= getindexCount called with no indexCount value"
-              << std::endl;
+    LOG_WARN("getindexCount called with no indexCount value");
     return indexCount;
   }
 }

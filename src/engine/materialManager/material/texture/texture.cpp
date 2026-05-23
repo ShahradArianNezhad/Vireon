@@ -1,3 +1,4 @@
+#include "utils/logger/logger.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "texture.hpp"
 #include "glad/gl.h"
@@ -20,6 +21,13 @@ Texture::Texture(std::string TexturePath) {
                GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
   stbi_image_free(data);
+  LOG_DEBUG("loaded texture:{}",texturePath);
 }
-void Texture::bind() { glBindTexture(GL_TEXTURE_2D, ID); }
-void Texture::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+void Texture::bind() {
+  glBindTexture(GL_TEXTURE_2D, ID);
+  LOG_DEBUG("bound texture:{}",texturePath);
+}
+void Texture::unbind() {
+  glBindTexture(GL_TEXTURE_2D, 0); 
+  LOG_DEBUG("unbound texture:{}",texturePath);
+}

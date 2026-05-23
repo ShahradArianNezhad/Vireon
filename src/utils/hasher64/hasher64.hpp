@@ -11,5 +11,8 @@ struct Hasher64{
       value*= 109951162821ull;
     }
   }
+
+
+  void clear(){value=14695981039346656037ull;}
   uint64_t digest() const {return value;}
 };

@@ -1,14 +1,19 @@
+#pragma once
 #include <array>
 #include <atomic>
+#include <chrono>
+#include <cstring>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <utility>
+#define ENGINE_DEBUG
 
 constexpr int MaxStoredLogs = 200;
 
 enum LogLevel{
-  Trace,
   Debug,
   Info,
   Warn,
@@ -17,23 +22,70 @@ enum LogLevel{
 };
 
 
+constexpr std::string_view to_string(LogLevel c) {
+  switch (c) {
+    case LogLevel::Debug:   return "debug";
+    case LogLevel::Info: return "info";
+    case LogLevel::Warn:  return "warn";
+    case LogLevel::Error:  return "error";
+    case LogLevel::Fatal:  return "fatal";
+  }
+  return "Unknown";
+}
+
+template <>
+struct std::formatter<LogLevel> : std::formatter<std::string_view> {
+  auto format(LogLevel c, format_context& ctx) const {
+    return std::formatter<std::string_view>::format(
+        to_string(c),
+        ctx
+        );
+  }
+};
+
+
+
+#ifdef ENGINE_DEBUG
+#define LOG_DEBUG(...)\
+  Logger::log(LogLevel::Debug,__FILE__,__VA_ARGS__)
+#else
+#define LOG_DEBUG(...) 
+#endif
+
+#define LOG_INFO(...)\
+  Logger::log(LogLevel::Info,__FILE__,__VA_ARGS__)
+
+#define LOG_WARN(...)\
+  Logger::log(LogLevel::Warn,__FILE__,__VA_ARGS__)
+
+#define LOG_ERROR(...)\
+  Logger::log(LogLevel::Error,__FILE__,__VA_ARGS__)
+
+#define LOG_FATAL(...)\
+  Logger::log(LogLevel::Fatal,__FILE__,__VA_ARGS__)
+
+
 
 struct Log{
   std::chrono::system_clock::time_point timestamp;
   LogLevel level;
-  char file[30];
-  char message[512];
+  std::string file;
+  std::string message;
 };
 
 class Logger{
   private:
   static std::array<Log, MaxStoredLogs> logBuffer;
+  static inline LogLevel logLevel = LogLevel::Info;
   static inline std::atomic<bool> running = false;
   static inline std::ofstream file;
+  static inline std::string logFilePath;
   static inline int readIndex = 0;
   static inline int writeIndex = 0;
-  static inline std::thread worker_thread;
+  static inline size_t bufferedLogs=0;
   static inline std::mutex bufferLock;
+  static inline std::thread logger_thread;
+  static void workerFunction();
 
   static void writeLogs();
   static inline void flush(){
@@ -42,13 +94,44 @@ class Logger{
   }
 
   static void bufferLog(Log log);
-  static void workerFunction();
 
   public:
+
+
   static void startLogger(const std::string& logFile=""){
     running=true;
-    if(logFile!="")file.open(logFile);
+    logger_thread = std::thread(workerFunction);
+    if(logFile!=""){
+      file.open(logFile);
+      logFilePath=logFile;
+    }
+    if(logFilePath!="")LOG_INFO("logging with log file:{}",logFilePath);
+    else LOG_INFO("logging with no log file");
   }
-  static void logMessage(LogLevel level,const char* msg);
+  static void stopLogger(){
+    writeLogs();
+    flush();
+    LOG_INFO("logger stopping...");
+    running=false;
+    logger_thread.join();
+  }
+  static inline void setLogLevel(LogLevel level){
+    logLevel=level;
+    LOG_INFO("logLevel set:{}",level);
+  }
+  static inline LogLevel getLogLevel(){return logLevel;}
 
+  template<typename... Args>
+  static inline void log(LogLevel level,std::string filePath,std::format_string<Args...> fmt,Args&&... args){
+    if(level<logLevel) return;
+    if(level==LogLevel::Fatal){
+      LOG_FATAL("fatal error occured, stopping logger..");
+      writeLogs();
+      flush();
+      stopLogger();
+    }
+    bufferLog(Log{std::chrono::system_clock::now(),level,filePath,std::format(fmt,std::forward<Args>(args)...)});
+  }
 };
+
+

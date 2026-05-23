@@ -1,6 +1,7 @@
 #include "./vertexBuffer.hpp"
 #include "engine/graphics/vertex/vertex.hpp"
 #include "glad/gl.h"
+#include "utils/logger/logger.hpp"
 #include <vector>
 
 VertexBuffer::VertexBuffer(std::vector<float> &data) {
@@ -15,6 +16,7 @@ void VertexBuffer::upload(std::vector<Vertex> &data, GLenum mode) {
   auto merged = Vertex::mergeVertices(data);
   glBufferData(GL_ARRAY_BUFFER, merged.size() * sizeof(float), merged.data(),
                mode);
+  //LOG_DEBUG("uploading to VBO: {}",data);
 }
 
 VertexBuffer::VertexBuffer(VertexBuffer &&other) noexcept {

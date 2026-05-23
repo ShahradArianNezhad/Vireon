@@ -21,6 +21,7 @@ EntityId EntityManager::newEntity(RenderComponent renderComp,TransformComponent 
   EntityId id = newEntity();
   componentManager.setComponent<ComponentType::RENDER>(id,renderComp);
   componentManager.setComponent<ComponentType::TRANSFORM>(id,transformComp);
+  LOG_DEBUG("newEntity called RenderComp:{},TransformComp:{}",renderComp,transformComp);
   return id;
 }
 
@@ -28,7 +29,7 @@ EntityId EntityManager::newEntity(RenderComponent renderComp,TransformComponent 
 
 vec3 EntityManager::getPos(EntityId id){
   if(componentManager.hasComponent<ComponentType::TRANSFORM>(id)) return componentManager.getComponent<ComponentType::TRANSFORM>(id).position;
-  std::cout << "warning: trying to get pos on entity with no transform" << std::endl;
+  LOG_WARN("trying to get pos on entity with no transform");
   return {0,0,0};
 }
 
@@ -38,7 +39,7 @@ void EntityManager::setPos(EntityId id,vec3 pos){
     trans.position=pos;
     componentManager.setComponent<ComponentType::TRANSFORM>(id,trans);
   }
-  else std::cout << "warning: trying to set pos on entity with no transform" << std::endl;
+  else  LOG_WARN("trying to set pos on entity with no transform");
 }
 
 
@@ -57,12 +58,9 @@ mat4 EntityManager::makeModelMatrix(EntityId id){
 
 EntityId EntityManager::makeCamera(){
   EntityId id = newEntity();
-  auto transformComp = TransformComponent{
-    .position = {0, 0, 0.0f},
-      .scale = {0, 0, 1.0f},
-      .rotation=0
-  };
-  componentManager.setComponent<ComponentType::TRANSFORM>(id,transformComp);
+  auto cameraComp = CameraComponent2D{};
+  componentManager.setComponent<ComponentType::CAMERA2D>(id,cameraComp);
+  LOG_DEBUG("make camera 2d called:id:{} cameracomp:{}",id,cameraComp);
   return id;
 }
 
@@ -71,6 +69,7 @@ void EntityManager::deleteEntity(EntityId id){
   componentManager.deleteComponent<ComponentType::RENDER>(id);
   idManager.release(id);
   eventManager.emit(EntityDestroyedEvent{.id=id});
+  LOG_DEBUG("entity delete called on: {}",id);
 }
 
 
@@ -92,6 +91,7 @@ void EntityManager::setColor(EntityId id,unsigned int r,unsigned int g,unsigned 
   auto comp = componentManager.getComponent<ComponentType::RENDER>(id);
   comp.color=color;
   componentManager.setComponent<ComponentType::RENDER>(id, comp);
+  LOG_DEBUG("set Color 0X{} on entity:{}",color,id);
 }
 
 
@@ -113,8 +113,8 @@ bool EntityManager::handleCircleCollision(EntityId e1,EntityId e2){
   auto t2 = componentManager.getComponent<ComponentType::TRANSFORM>(e2);
   auto c1 = componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
   auto c2 = componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e2);
-  auto p1 = vec2(t1.position.x,t1.position.y) + c1.offest;
-  auto p2 = vec2(t2.position.x,t2.position.y) + c2.offest;
+  auto p1 = vec2(t1.position.x,t1.position.y) + c1.offset;
+  auto p2 = vec2(t2.position.x,t2.position.y) + c2.offset;
   auto d =sqrt(((p1.x-p2.x)*(p1.x-p2.x)) + ((p1.y-p2.y)*(p1.y-p2.y)));
   if(d<=c1.radius+c2.radius)return true;
   return false;

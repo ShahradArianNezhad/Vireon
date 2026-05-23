@@ -1,7 +1,6 @@
 #pragma once
 #include "engine/graphics/renderer/renderer.hpp"
 #define GLFW_INCLUDE_NONE
-#include "platform/input/inputHandler.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
@@ -11,21 +10,24 @@ inline uint32_t height = 600;
 } // namespace Screen
 
 class EngineWindow {
-public:
-  InputHandler inputHandler{window};
+private:
+  GLFWwindow *window=nullptr;
+  std::string window_name;
 
-  EngineWindow(uint32_t w, uint32_t h);
+public:
+
+  EngineWindow(uint32_t w, uint32_t h,std::string windowName);
   EngineWindow(const EngineWindow &) = delete;
   EngineWindow &operator=(const EngineWindow &) = delete;
   EngineWindow(EngineWindow &&) = delete;
   ~EngineWindow();
+  GLFWwindow* getWindowPtr(){return window;}
   bool windowShouldClose();
   void updateWindow();
   void setViewport();
 
-private:
-  GLFWwindow *window;
 
+private:
 
   void initGLFW();
   void createWindow();
@@ -37,5 +39,6 @@ private:
     Screen::width = width;
     Screen::height = height;
     Renderer::recalculateProjectionMatrix();
+    LOG_INFO("window size changed: {}x{}",width,height);
   }
 };

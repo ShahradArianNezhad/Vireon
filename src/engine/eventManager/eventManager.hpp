@@ -13,7 +13,7 @@ class EventManager{
 
 public:
   using Handler = std::function<void(const EntityDestroyedEvent&)>;
-
+  
    subscriptionId subscribe(Handler handler){
     auto id = idManager.get();
     if(id>=listeners.size()){
@@ -21,12 +21,17 @@ public:
     }else{
       listeners[id]=handler;
     }
+    LOG_DEBUG("subscribed to entityDestroyedEvent emitter: {}",id);
     return id;
   }
 
-  void unsubscribe(subscriptionId id){listeners[id]=nullptr;}
+  void unsubscribe(subscriptionId id){
+    LOG_DEBUG("unsubscribe from entityDestroyedEvent emitter: {}",id);
+    listeners[id]=nullptr;
+  }
 
   void emit(const EntityDestroyedEvent& event){
+    LOG_DEBUG("emit entityDestroyedEvent");
     for(auto& listener:listeners){
       if(listener!=nullptr){
         listener(event);

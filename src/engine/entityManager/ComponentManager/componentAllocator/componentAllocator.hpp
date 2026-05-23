@@ -1,6 +1,5 @@
 #include "engine/entityManager/component/components.hpp"
 #include <cstddef>
-#include <iostream>
 
 
 template <typename T>
@@ -15,7 +14,7 @@ private:
 public:
   T getComponent(EntityId id){
     if(entityToIndex.contains(id))return components[entityToIndex[id]];
-    std::cout << "wargning : getComponent called on entity which doesnt have that component" << std::endl;
+    LOG_WARN("getComponent called on entity which doesnt have that component");
     return T{};
   }
 
@@ -48,7 +47,7 @@ public:
 
   void deleteComponent(EntityId id){
     if(!entityToIndex.contains(id)){
-      std::cout << "warning: trying to delete unexisting component" << std::endl;
+      LOG_WARN("trying to delete non existing component on entity:{}",id);
       return;
     }
     size_t index = entityToIndex[id];

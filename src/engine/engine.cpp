@@ -6,17 +6,25 @@
 #include <glm/ext/vector_float3.hpp>
 #include <thread>
 #include "../game/game.hpp"
+#include "utils/logger/logger.hpp"
 
 
 Engine::Engine(){
+  Logger::startLogger("logs.txt");
+  Logger::setLogLevel(LogLevel::Debug);
+  LOG_INFO("Engine initializing");
   SceneId defaultScene = newScene();
   renderer.useScene(defaultScene);
+}
+
+Engine::~Engine(){
+  Logger::stopLogger();
 }
 
 
 
 EntityId Engine::makeSprite(float x,float y,float width,float height,std::string spritePath){
-  auto meshId = meshManager.makePrimitive(MeshManager::Primitive::SquareSprite);
+  auto meshId = meshManager.makePrimitive(Primitive::SquareSprite);
   auto matId = materialManager.newMat(spritePath);
   auto transformComp = TransformComponent{
       .position = {x, y, 0.0f},
@@ -25,12 +33,13 @@ EntityId Engine::makeSprite(float x,float y,float width,float height,std::string
   };
   auto id = entityManager.newEntity(RenderComponent{meshId,matId},transformComp);
   renderer.addEntity(id);
+  LOG_DEBUG("Sprite entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 
 }
 
 EntityId Engine::makeRect(float x, float y, float width, float height) {
-  auto meshId = meshManager.makePrimitive(MeshManager::Primitive::Square);
+  auto meshId = meshManager.makePrimitive(Primitive::Square);
   auto matId = materialManager.newMat();
   auto transformComp = TransformComponent{
       .position = {x, y, 0.0f},
@@ -39,11 +48,12 @@ EntityId Engine::makeRect(float x, float y, float width, float height) {
 
   auto id = entityManager.newEntity(RenderComponent{meshId,matId},transformComp);
   renderer.addEntity(id);
+  LOG_DEBUG("rect entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 }
 
 EntityId Engine::makeCircle(float x, float y, float r) {
-  auto meshId = meshManager.makePrimitive(MeshManager::Primitive::Circle);
+  auto meshId = meshManager.makePrimitive(Primitive::Circle);
   auto matId = materialManager.newMat();
   auto transformComp = TransformComponent{
       .position = {x, y, 0.0f},
@@ -52,6 +62,7 @@ EntityId Engine::makeCircle(float x, float y, float r) {
 
   auto id = entityManager.newEntity(RenderComponent{meshId,matId},transformComp);
   renderer.addEntity(id);
+  LOG_DEBUG("circle entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 }
 
@@ -59,6 +70,7 @@ void Engine::useCamera(EntityId camera,SceneId sceneid){
   auto scene = sceneManager.get(sceneid);
   if(scene!=nullptr) scene->setActiveCamera(camera);
   else std::cout << "error : cannot set camera on non existing scene" << std::endl;
+  LOG_DEBUG("use camera id:{}",camera);
 }
 
 

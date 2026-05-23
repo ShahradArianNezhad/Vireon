@@ -6,6 +6,7 @@
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
 #include "engine/eventManager/eventManager.hpp"
+#include "platform/input/inputHandler.hpp"
 #include "utils/clock/clock.hpp"
 #include <cstdint>
 #include <glm/ext/vector_float3.hpp>
@@ -14,7 +15,7 @@
 class Game;
 class Engine {
 private:
-  EngineWindow window{Screen::width, Screen::height};
+  EngineWindow window{Screen::width, Screen::height,"myGame"};
   MeshManager meshManager;
   MaterialManager materialManager;
   EventManager eventManager;
@@ -27,12 +28,14 @@ private:
 public:
 
   EntityManager entityManager{eventManager};
+  InputHandler inputHandler{window.getWindowPtr()};
   Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
   void useCamera(EntityId camera,SceneId sceneid);
   void sleep(int ms);
 
 
   Engine();
+  ~Engine();
   SceneId newScene(){return sceneManager.newScene();}
   EntityId makeRect(float x, float y, float width, float height);
   EntityId makeCircle(float x, float y, float r);

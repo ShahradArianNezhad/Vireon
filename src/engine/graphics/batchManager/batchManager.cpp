@@ -11,5 +11,6 @@ BatchKey BatchManager::submit(EntityId entity) {
   batches[key].submit(entity);
   batches[key].addTransform(entityManager.makeModelMatrix(entity));
   batches[key].addColor(entityManager.colorToVec4(entity));
+  LOG_DEBUG("submitting entity:{} into batch with: mesh:{} material:{}",entity,key.mesh,key.material);
   return key;
 }

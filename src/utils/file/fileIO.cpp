@@ -1,3 +1,4 @@
+#include "utils/logger/logger.hpp"
 #include <utils/file/fileIO.hpp>
 #include <fstream>
 #include <iostream>
@@ -5,6 +6,7 @@
 #include <stdexcept>
 
 std::string FileIO::readText(const std::string &filePath) {
+  LOG_INFO("reading file:{}",filePath);
 
   std::ifstream file(filePath);
   if (!file.is_open()) {

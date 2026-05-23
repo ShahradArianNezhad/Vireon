@@ -2,8 +2,8 @@
   {
     "file": "src/main.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -23,8 +23,8 @@
   {
     "file": "src/platform/input/inputHandler.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -44,8 +44,8 @@
   {
     "file": "src/platform/window/GLFWwindow.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -63,10 +63,10 @@
     "output": "build/platform/window/GLFWwindow.o"
   },
   {
-    "file": "src/core/idManager/idManager.cpp",
+    "file": "src/engine/sceneManager/sceneManager.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -76,39 +76,18 @@
       "-I./include",
       "-I./src",
       "-c",
-      "src/core/idManager/idManager.cpp",
+      "src/engine/sceneManager/sceneManager.cpp",
       "-o",
-      "build/core/idManager/idManager.o"
+      "build/engine/sceneManager/sceneManager.o"
     ],
     "directory": "/home/shahrad/Programming/realEngine",
-    "output": "build/core/idManager/idManager.o"
-  },
-  {
-    "file": "src/core/file/fileIO.cpp",
-    "arguments": [
-      "g++",
-      "-std=c++20",
-      "-Wall",
-      "-Wextra",
-      "-I./include",
-      "-I./src",
-      "-ggdb",
-      "-ggdb",
-      "-I./include",
-      "-I./src",
-      "-c",
-      "src/core/file/fileIO.cpp",
-      "-o",
-      "build/core/file/fileIO.o"
-    ],
-    "directory": "/home/shahrad/Programming/realEngine",
-    "output": "build/core/file/fileIO.o"
+    "output": "build/engine/sceneManager/sceneManager.o"
   },
   {
     "file": "src/engine/entityManager/entityManager.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -128,8 +107,8 @@
   {
     "file": "src/engine/meshManager/meshManager.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -149,8 +128,8 @@
   {
     "file": "src/engine/materialManager/material/texture/texture.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -170,8 +149,8 @@
   {
     "file": "src/engine/engine.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -191,8 +170,8 @@
   {
     "file": "src/engine/graphics/gpuBuffers/gpuBuffers.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -212,8 +191,8 @@
   {
     "file": "src/engine/graphics/gpuBuffers/elementBuffer/elementBuffer.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -233,8 +212,8 @@
   {
     "file": "src/engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -254,8 +233,8 @@
   {
     "file": "src/engine/graphics/gpuBuffers/vertexArray/vertexArray.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -275,8 +254,8 @@
   {
     "file": "src/engine/graphics/vertex/vertex.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -296,8 +275,8 @@
   {
     "file": "src/engine/graphics/batchManager/batchManager.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -317,8 +296,8 @@
   {
     "file": "src/engine/graphics/renderer/renderer.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -338,8 +317,8 @@
   {
     "file": "src/engine/graphics/shaderManager/shader/shader.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -359,8 +338,8 @@
   {
     "file": "src/engine/graphics/shaderManager/shaderManager.cpp",
     "arguments": [
-      "g++",
-      "-std=c++20",
+      "/usr/bin/g++",
+      "-std=c++23",
       "-Wall",
       "-Wextra",
       "-I./include",
@@ -378,28 +357,73 @@
     "output": "build/engine/graphics/shaderManager/shaderManager.o"
   },
   {
+    "file": "src/utils/logger/logger.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "src/utils/logger/logger.cpp",
+      "-o",
+      "build/utils/logger/logger.o"
+    ],
+    "directory": "/home/shahrad/Programming/realEngine",
+    "output": "build/utils/logger/logger.o"
+  },
+  {
+    "file": "src/utils/idManager/idManager.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "src/utils/idManager/idManager.cpp",
+      "-o",
+      "build/utils/idManager/idManager.o"
+    ],
+    "directory": "/home/shahrad/Programming/realEngine",
+    "output": "build/utils/idManager/idManager.o"
+  },
+  {
+    "file": "src/utils/file/fileIO.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-I./include",
+      "-I./src",
+      "-ggdb",
+      "-ggdb",
+      "-I./include",
+      "-I./src",
+      "-c",
+      "src/utils/file/fileIO.cpp",
+      "-o",
+      "build/utils/file/fileIO.o"
+    ],
+    "directory": "/home/shahrad/Programming/realEngine",
+    "output": "build/utils/file/fileIO.o"
+  },
+  {
     "file": "src/glad/gl.c",
     "arguments": [
-      "g++",
-      "build/main.o",
-      "build/platform/input/inputHandler.o",
-      "build/platform/window/GLFWwindow.o",
+      "/usr/bin/g++",
       "src/glad/gl.c",
-      "build/core/idManager/idManager.o",
-      "build/core/file/fileIO.o",
-      "build/engine/entityManager/entityManager.o",
-      "build/engine/meshManager/meshManager.o",
-      "build/engine/materialManager/material/texture/texture.o",
-      "build/engine/engine.o",
-      "build/engine/graphics/gpuBuffers/gpuBuffers.o",
-      "build/engine/graphics/gpuBuffers/elementBuffer/elementBuffer.o",
-      "build/engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.o",
-      "build/engine/graphics/gpuBuffers/vertexArray/vertexArray.o",
-      "build/engine/graphics/vertex/vertex.o",
-      "build/engine/graphics/batchManager/batchManager.o",
-      "build/engine/graphics/renderer/renderer.o",
-      "build/engine/graphics/shaderManager/shader/shader.o",
-      "build/engine/graphics/shaderManager/shaderManager.o",
       "-o",
       "build/executable",
       "-ggdb",

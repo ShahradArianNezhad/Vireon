@@ -18,6 +18,7 @@ public:
     static VertexBuffer makeInstanceVBO(std::vector<T>& data){
       VertexBuffer instanceVBO;
       instanceVBO.upload(data,GL_STATIC_DRAW);
+      //LOG_DEBUG("made instance VBO with data:{}",data);
       return instanceVBO;
     }
 

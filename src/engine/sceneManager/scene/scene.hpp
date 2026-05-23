@@ -1,11 +1,14 @@
 #pragma once
 #include "engine/eventManager/eventManager.hpp"
+#include "utils/logger/logger.hpp"
 #include <cstdint>
 #include <vector>
 
+using SceneId = uint32_t;
 
 class Scene {
 private:
+  SceneId id;
   std::vector<EntityId> entities;
   std::vector<uint32_t> empty_slots;
   EntityId camera=UINT32_MAX;
@@ -13,16 +16,20 @@ private:
   subscriptionId subId;
 
 public:
-  Scene(EventManager& eManager):eventManager(eManager){
+  Scene(SceneId id,EventManager& eManager):id(id),eventManager(eManager){
     subId = eventManager.subscribe(
         [this](const EntityDestroyedEvent& e) {
         entityDestroyedEventHandler(e);
         });
   };
-  ~Scene(){eventManager.unsubscribe(subId);}
+  ~Scene(){
+    LOG_DEBUG("scene destructed id:{}",id);
+    eventManager.unsubscribe(subId);
+  }
   std::vector<EntityId> &collectEntities() {return entities;}
 
   void addEntity(EntityId entity) {
+    LOG_DEBUG("entity:{} added to scene:{}",entity,id);
     if(empty_slots.empty())entities.push_back(entity);
     else {
       entities[empty_slots.back()]=entity;
@@ -31,6 +38,7 @@ public:
 
   };
   void entityDestroyedEventHandler(const EntityDestroyedEvent& event){
+    LOG_DEBUG("entity:{} removed from scene:{}",event.id,id);
     for(size_t i=0;i<entities.size();i++){
       if(entities[i]==event.id){
         entities[i]=UINT32_MAX;
@@ -40,7 +48,10 @@ public:
     }
   }
 
-  void setActiveCamera(EntityId cam){camera=cam;}
+  void setActiveCamera(EntityId cam){
+    LOG_DEBUG("camera:{} set active in scene:{}",cam,id);
+    camera=cam;
+  }
   EntityId getActiveCamera(){
     return camera;
   }

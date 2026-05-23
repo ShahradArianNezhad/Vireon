@@ -8,6 +8,7 @@ void GpuBuffers::useMesh(Mesh &mesh) {
   ebo.bind();
   ebo.upload(mesh.indices);
   vao.useLayout(mesh.layout);
+  //LOG_DEBUG("using mesh {} in gpu buffers",mesh);
 }
 
 void GpuBuffers::reset() {

@@ -1,19 +1,19 @@
 #include "GLFWwindow.hpp"
 #include "engine/graphics/renderer/renderer.hpp"
 #include <GLFW/glfw3.h>
-#include <stdexcept>
 
 void EngineWindow::initGLFW() {
   if (!glfwInit()) {
-    throw std::runtime_error("failed to initialize GLFW");
+    LOG_FATAL("Failed to initialize GLFW");
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  LOG_INFO("initializing GLFW");
 }
 
 void EngineWindow::createWindow() {
-  window = glfwCreateWindow(Screen::width, Screen::height, "my engine", nullptr, nullptr);
+  window = glfwCreateWindow(Screen::width, Screen::height, window_name.c_str(), nullptr, nullptr);
   checkWindowInit();
   glfwMakeContextCurrent(window);
   glfwSwapInterval(0);
@@ -24,11 +24,13 @@ void EngineWindow::createWindow() {
 
 void EngineWindow::checkWindowInit() {
   if (window == NULL) {
-    throw std::runtime_error{"Failed to initialize GLFW window"};
+    LOG_FATAL("Failed to initialize window");
   }
+  LOG_INFO("window initialized");
 }
 
-EngineWindow::EngineWindow(uint32_t w, uint32_t h){
+EngineWindow::EngineWindow(uint32_t w, uint32_t h,std::string name){
+  window_name=name;
   Screen::width=w;
   Screen::height=h;
   initGLFW();

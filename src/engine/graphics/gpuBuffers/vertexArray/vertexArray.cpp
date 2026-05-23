@@ -27,7 +27,7 @@ void VertexArray::useLayout(VertexLayout layout) {
                           (void *)(3 * sizeof(float)));
 
   }else{
-    throw std::runtime_error{"VertexArray/useLayout: unsuppoerted layout"};
+    LOG_FATAL("using unsupported vertexlayout");
   }
 }
 

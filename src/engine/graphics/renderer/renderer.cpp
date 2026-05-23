@@ -15,22 +15,23 @@ mat4 Renderer::projectionMatrix = mat4(1.0f);
 
 void Renderer::flush() {
   glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::initGLAD() {
   if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
-    throw std::runtime_error("ERROR: Failed to initialize glad");
+    LOG_FATAL("Failed to initialize glad");
   }
+  LOG_INFO("initializing GLAD");
 }
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager,EntityManager& eManager)
     : meshManager(manager), materialManager(matManager),sceneManager(sManager),entityManager(eManager) {
-  initGLAD();
+  LOG_INFO("initializing Renderer");
   Renderer::projectionMatrix = getProjectionMatrix();
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  //glEnable(GL_DEPTH_TEST);
-  //glDepthFunc(GL_LEQUAL);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);
 }
 
 void Renderer::collectAndBatch(Scene *scene) {
@@ -50,6 +51,10 @@ mat4 Renderer::getProjectionMatrix() {
 
 void Renderer::renderBatches() {
 
+#ifdef ENGINE_DEBUG
+  size_t renderCalls=0;
+#endif
+
   auto view = getViewMatrix();
   for (auto &[key, batch] : batchManager.getBatches()) {
     auto &mesh = meshManager.get(key.mesh);
@@ -65,18 +70,21 @@ void Renderer::renderBatches() {
     gpu.useMesh(mesh);
     mat.use();
     glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, batch.size());
+    LOG_DEBUG("rendering batch with meshId:{} and matId:{}",key.mesh,key.material);
+#ifdef ENGINE_DEBUG
+    renderCalls+=1;
+#endif
   }
   getGlErrors();
+#ifdef ENGINE_DEBUG
+  LOG_DEBUG("render calls this frame:{}",renderCalls);
+#endif
 
 }
 
 void Renderer::renderCurrentScene() {
-  if (!sceneManager.get(currentScene)) {
-    std::cout << "ERROR: rendering invalid scene" << std::endl;
-    return;
-  }
   if(sceneManager.get(currentScene)->getActiveCamera()==UINT32_MAX){
-    std::cout << "warning: not using a camera" << std::endl;
+    LOG_WARN("not using a camera");
     return;
   }
   collectAndBatch(sceneManager.get(currentScene));
@@ -87,14 +95,15 @@ void Renderer::renderCurrentScene() {
 mat4 Renderer::getViewMatrix(){
   mat4 view = mat4(1.0f);
   auto camera = sceneManager.get(currentScene)->getActiveCamera();
-  view = glm::translate(view, entityManager.getPos(camera));
+  vec2 pos = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera).position;
+  view = glm::translate(view, vec3(pos.x,pos.y,1.0f));
   return view;
 }
 
 void Renderer::getGlErrors(){
   GLenum err;
   while ((err = glGetError()) != GL_NO_ERROR) {
-    std::cout << "OpenGL error: " << err << std::endl;
+    LOG_ERROR("openGL error: {}",err);
   }
 }
 

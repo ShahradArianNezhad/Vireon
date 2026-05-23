@@ -1,6 +1,7 @@
 #include "./shader.hpp"
 #include "utils/file/fileIO.hpp"
 #include "glad/gl.h"
+#include "utils/logger/logger.hpp"
 #include "utils/types.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,7 +17,7 @@ Shader::Shader(VertexLayout layout) {
     makeAndLinkProgram();
     cleanShaders();
   } else {
-    std::cout << "no shader found" << std::endl;
+    LOG_ERROR("no shader found for specified vertexlayout");
   }
 }
 
@@ -62,7 +63,7 @@ void Shader::checkCompileErrors(unsigned int shaderID) {
   glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-    std::cout << "ERROR: SHADER COMPILATION FAILED= " << infoLog << std::endl;
+    LOG_ERROR("shader compilation failed: {}",infoLog);
   }
 }
 
@@ -72,7 +73,7 @@ void Shader::checkProgramErrors() {
   glGetProgramiv(programID, GL_LINK_STATUS, &success);
   if (!success) {
     glGetProgramInfoLog(programID, 512, NULL, infoLog);
-    std::cout << "ERROR: PROGRAM LINKING FAILED= " << infoLog << std::endl;
+    LOG_ERROR("Shader program linking failed:{}",infoLog);
   }
 }
 
