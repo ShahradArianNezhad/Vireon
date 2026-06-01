@@ -1,7 +1,7 @@
 #pragma once
 #include <format>
 #include <string_view>
-enum class VertexLayout { Pos, PosColor, PosUV };
+enum class VertexLayout { Pos, PosColor, PosUV, PosUVText };
 
 
 constexpr std::string_view to_string(VertexLayout c) {
@@ -9,6 +9,7 @@ constexpr std::string_view to_string(VertexLayout c) {
       case VertexLayout::Pos:   return "Pos";
       case VertexLayout::PosColor: return "PosColor";
       case VertexLayout::PosUV:  return "PosUV";
+      case VertexLayout::PosUVText:  return "PosUVText";
     }
 
     return "Unknown";

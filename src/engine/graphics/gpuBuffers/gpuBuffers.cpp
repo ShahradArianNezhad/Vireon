@@ -37,3 +37,19 @@ void GpuBuffers::useInstanceVec4(VertexBuffer& instanceVBO, unsigned int locatio
 }
 
 
+void GpuBuffers::useInstanceVec3(VertexBuffer& instanceVBO, unsigned int location){
+  vao.bind();
+  instanceVBO.bind();
+  glEnableVertexAttribArray(location);
+  glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glVertexAttribDivisor(location, 1);
+}
+
+
+void GpuBuffers::useInstanceFloat(VertexBuffer& instanceVBO, unsigned int location){
+  vao.bind();
+  instanceVBO.bind();
+  glEnableVertexAttribArray(location);
+  glVertexAttribPointer(location, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+  glVertexAttribDivisor(location, 1);
+}

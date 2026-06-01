@@ -2,6 +2,7 @@
 #include <array>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <cstring>
 #include <format>
 #include <fstream>
@@ -9,7 +10,7 @@
 #include <mutex>
 #include <thread>
 #include <utility>
-#define ENGINE_DEBUG
+//#define ENGINE_DEBUG
 
 constexpr int MaxStoredLogs = 200;
 
@@ -24,11 +25,11 @@ enum LogLevel{
 
 constexpr std::string_view to_string(LogLevel c) {
   switch (c) {
-    case LogLevel::Debug:   return "debug";
-    case LogLevel::Info: return "info";
-    case LogLevel::Warn:  return "warn";
-    case LogLevel::Error:  return "error";
-    case LogLevel::Fatal:  return "fatal";
+    case LogLevel::Debug:   return "DEBUG";
+    case LogLevel::Info: return "INFO";
+    case LogLevel::Warn:  return "WARN";
+    case LogLevel::Error:  return "ERROR";
+    case LogLevel::Fatal:  return "FATAL";
   }
   return "Unknown";
 }
@@ -97,6 +98,12 @@ class Logger{
 
   public:
 
+  ~Logger(){
+    writeLogs();
+    flush();
+    stopLogger();
+  }
+
 
   static void startLogger(const std::string& logFile=""){
     running=true;
@@ -109,9 +116,10 @@ class Logger{
     else LOG_INFO("logging with no log file");
   }
   static void stopLogger(){
+    if(!running)return;
+    LOG_INFO("logger stopping...");
     writeLogs();
     flush();
-    LOG_INFO("logger stopping...");
     running=false;
     logger_thread.join();
   }
@@ -124,13 +132,12 @@ class Logger{
   template<typename... Args>
   static inline void log(LogLevel level,std::string filePath,std::format_string<Args...> fmt,Args&&... args){
     if(level<logLevel) return;
+    bufferLog(Log{std::chrono::system_clock::now(),level,filePath,std::format(fmt,std::forward<Args>(args)...)});
     if(level==LogLevel::Fatal){
-      LOG_FATAL("fatal error occured, stopping logger..");
       writeLogs();
       flush();
       stopLogger();
     }
-    bufferLog(Log{std::chrono::system_clock::now(),level,filePath,std::format(fmt,std::forward<Args>(args)...)});
   }
 };
 

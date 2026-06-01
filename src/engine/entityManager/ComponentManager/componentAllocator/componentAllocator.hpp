@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/entityManager/component/components.hpp"
 #include <cstddef>
 

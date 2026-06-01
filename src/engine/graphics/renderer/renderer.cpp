@@ -8,10 +8,8 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
-#include <stdexcept>
 
 
-mat4 Renderer::projectionMatrix = mat4(1.0f);
 
 void Renderer::flush() {
   glClearColor(0, 0, 0, 1);
@@ -27,25 +25,57 @@ void Renderer::initGLAD() {
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager,EntityManager& eManager)
     : meshManager(manager), materialManager(matManager),sceneManager(sManager),entityManager(eManager) {
   LOG_INFO("initializing Renderer");
-  Renderer::projectionMatrix = getProjectionMatrix();
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_DEPTH_TEST);
+  //glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
+  glDepthMask(GL_FALSE);
+  screenW=Screen::width;
+  screenH=Screen::height;
+  initRenderBuffer();
+  initLightBuffer();
+}
+
+
+void Renderer::initLightBuffer(){
+  lightBuffer.bind();
+  lightTexture.setTex(Screen::width, Screen::height, NULL);
+  lightBuffer.attachTexture(lightTexture);
+  lightBuffer.checkComplete();
+}
+
+
+void Renderer::initRenderBuffer(){
+  sceneBuffer.bind();
+  sceneTexture.setTex(Screen::width, Screen::height, NULL);
+  sceneBuffer.attachTexture(sceneTexture);
+  sceneRenderBuffer.bind();
+  sceneRenderBuffer.setRenderBufferSize(Screen::width, Screen::height);
+  sceneRenderBuffer.useOnFrameBuffer();
+  sceneBuffer.checkComplete();
 }
 
 void Renderer::collectAndBatch(Scene *scene) {
   for (auto entityId : scene->collectEntities()) {
     if(entityId==UINT32_MAX)continue;
-    if (entityManager.componentManager.hasComponent<ComponentType::RENDER>(entityId))
+    if (isInScreen(entityId) && entityManager.componentManager.hasComponent<ComponentType::RENDER>(entityId))
       batchManager.submit(entityId);
   }
 }
 
 mat4 Renderer::getProjectionMatrix() {
-  float w = static_cast<float>(Screen::width);
-  float h = static_cast<float>(Screen::height);
-  return glm::ortho(0.0f, w, h, 0.0f, -100.0f, 100.0f);
+  auto cam = sceneManager.get(currentScene)->getActiveCamera();
+  auto camComp = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(cam);
+  float halfW = static_cast<float>(screenW)*0.5f/camComp.zoom;
+  float halfH = static_cast<float>(screenH)*0.5f/camComp.zoom;
+  return glm::ortho(
+    camComp.position.x - halfW,
+    camComp.position.x + halfW,
+    camComp.position.y + halfH,
+    camComp.position.y - halfH,
+    -100.0f,
+    100.0f
+);
 }
 
 
@@ -55,8 +85,10 @@ void Renderer::renderBatches() {
   size_t renderCalls=0;
 #endif
 
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   auto view = getViewMatrix();
-  for (auto &[key, batch] : batchManager.getBatches()) {
+  auto proj = getProjectionMatrix();
+  for (auto &[key, batch] : batchManager.getBatches2()) {
     auto &mesh = meshManager.get(key.mesh);
     auto &mat = materialManager.get(key.material);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
@@ -65,7 +97,9 @@ void Renderer::renderBatches() {
     gpu.useInstanceMat4(modelInstanceVBO,3);
     VertexBuffer colorInstanceVBO = gpu.makeInstanceVBO(batch.getColorInstanceData());
     gpu.useInstanceVec4(colorInstanceVBO,2);
-    shader.setunifotmMat4("projection", Renderer::projectionMatrix);
+    VertexBuffer uvInstanceVBO = gpu.makeInstanceVBO(batch.getUvInstanceData());
+    if(batch.getUvInstanceData().size()>0)gpu.useInstanceVec4(uvInstanceVBO,7);
+    shader.setunifotmMat4("projection",proj);
     shader.setunifotmMat4("view", view);
     gpu.useMesh(mesh);
     mat.use();
@@ -82,21 +116,101 @@ void Renderer::renderBatches() {
 
 }
 
-void Renderer::renderCurrentScene() {
-  if(sceneManager.get(currentScene)->getActiveCamera()==UINT32_MAX){
-    LOG_WARN("not using a camera");
-    return;
-  }
+void Renderer::renderSceneToBuffer(){
+  sceneBuffer.bind();
+  flush();
   collectAndBatch(sceneManager.get(currentScene));
   renderBatches();
   batchManager.cleanBatches();
 }
 
+void Renderer::renderBufferToScreen(){
+  FrameBuffer::bindScreen();
+  flush();
+  shaderManager.usePP();
+  auto& shader=shaderManager.getPP();
+  auto &mesh = meshManager.get(meshManager.makeQuad());
+  lightTexture.activate(GL_TEXTURE1);
+  glUniform1i(glGetUniformLocation(shader.getID(),"LightTexture"),1);
+  sceneTexture.activate(GL_TEXTURE0);
+  glUniform1i(glGetUniformLocation(shader.getID(),"SceneTexture"),0);
+  shader.setuniformFloat("ambient", ambient);
+
+  gpu.useMesh(mesh);
+  glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, 1);
+}
+
+void Renderer::windowResizeCallback(){
+    screenW=Screen::width;
+    screenH=Screen::height;
+    glViewport(0,0,screenW,screenH);
+    sceneTexture.setTex(screenW, screenH, nullptr);
+    lightTexture.setTex(screenW, screenH, nullptr);
+    sceneRenderBuffer.bind();
+    sceneRenderBuffer.setRenderBufferSize(screenW, screenH);
+}
+
+
+void Renderer::renderLights(){
+  auto view = getViewMatrix();
+  auto proj = getProjectionMatrix();
+  size_t count=0;
+  std::vector<mat4> model;
+  std::vector<vec3> color;
+  std::vector<float> radius;
+  std::vector<float> intensity;
+  for(auto id: sceneManager.get(currentScene)->collectEntities()){
+    if(entityManager.componentManager.hasComponent<ComponentType::LIGHT>(id)){
+      auto lightComp = entityManager.componentManager.getComponent<ComponentType::LIGHT>(id);
+      color.push_back(lightComp.color);
+      radius.push_back(lightComp.radius);
+      intensity.push_back(lightComp.intensity);
+      model.push_back(entityManager.makeModelMatrix(id));
+      count+=1;
+    }
+  }
+  lightBuffer.bind();
+  flush();
+  shaderManager.useLight();
+  auto& shader = shaderManager.getLight();
+  shader.setunifotmMat4("projection",proj);
+  shader.setunifotmMat4("view", view);
+  auto mesh = meshManager.get(meshManager.makeQuad());
+  gpu.useMesh(mesh);
+  lightTexture.bind();
+  VertexBuffer colorInstanceVBO = gpu.makeInstanceVBO(color);
+  gpu.useInstanceVec3(colorInstanceVBO,2);
+  VertexBuffer radiusInstanceVBO = gpu.makeInstanceVBO(radius);
+  gpu.useInstanceFloat(radiusInstanceVBO,3);
+  VertexBuffer intensityInstanceVBO = gpu.makeInstanceVBO(intensity);
+  gpu.useInstanceFloat(intensityInstanceVBO,4);
+  VertexBuffer modelInstanceVBO = gpu.makeInstanceVBO(model);
+  gpu.useInstanceMat4(modelInstanceVBO,5);
+  glBlendFunc(GL_ONE, GL_ONE);
+  glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, count);
+};
+
+void Renderer::renderCurrentScene() {
+  if(sceneManager.get(currentScene)->getActiveCamera()==UINT32_MAX){
+    LOG_WARN("not using a camera");
+    return;
+  }
+  renderSceneToBuffer();
+  renderLights();
+  renderBufferToScreen();
+  if(screenH!=Screen::height || screenW!=Screen::width)windowResizeCallback();
+}
+
 mat4 Renderer::getViewMatrix(){
   mat4 view = mat4(1.0f);
   auto camera = sceneManager.get(currentScene)->getActiveCamera();
-  vec2 pos = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera).position;
-  view = glm::translate(view, vec3(pos.x,pos.y,1.0f));
+  auto camComp = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera);
+  view = glm::rotate(
+      view,
+      glm::radians(-camComp.rotation),
+      glm::vec3(0.0f, 0.0f, 1.0f)
+      );
+  view = glm::translate(view, vec3(-camComp.position.x,-camComp.position.y,0.0f));
   return view;
 }
 
@@ -108,3 +222,18 @@ void Renderer::getGlErrors(){
 }
 
 
+bool Renderer::isInScreen(EntityId id){
+  auto camera = sceneManager.get(currentScene)->getActiveCamera();
+  auto camPos = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera);
+  auto camRight =camPos.position.x + ((screenW)/2.0);
+  auto camLeft = camPos.position.x - ((screenW)/2.0) ;
+  auto camTop = camPos.position.y - ((screenH)/2.0) ;
+  auto camBot = camPos.position.y + ((screenH)/2.0);
+  auto entityPos = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(id);
+  auto entityRight = entityPos.position.x + (entityPos.scale.x/2.0);
+  auto entityLeft = entityPos.position.x - (entityPos.scale.x/2.0);
+  auto entityTop = entityPos.position.y - (entityPos.scale.y/2.0);
+  auto entityBot = entityPos.position.y + (entityPos.scale.y/2.0);
+  return !(camRight < entityLeft || camLeft > entityRight ||
+      camBot < entityTop || camTop > entityBot);
+}

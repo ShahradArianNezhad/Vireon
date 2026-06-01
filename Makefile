@@ -1,6 +1,6 @@
 CXX := g++
-CXXFLAGS := -std=c++23 -Wall -Wextra -I./include -I./src -ggdb
-LDFLAGS := -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -ggdb -I./include -I./src
+CXXFLAGS := -std=c++23 -Wall -Wextra -I./include -I./src -I/usr/include/freetype2 -ggdb
+LDFLAGS := -lglfw -lGL -lX11 -lpthread -lfreetype -lXrandr -lXi -ldl -ggdb -I./include -I./src
 
 SRC_DIR := src
 BUILD_DIR := build

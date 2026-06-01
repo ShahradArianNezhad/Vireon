@@ -1,4 +1,7 @@
+#pragma once
 #include "./texture/texture.hpp"
+#include "utils/logger/logger.hpp"
+#include "utils/types.hpp"
 #include <format>
 #include <optional>
 
@@ -8,8 +11,18 @@ public:
 
   Material() {};
   Material(std::string texPath) : texture(texPath) {}
+  Material(unsigned int tex):texture(tex){};
   void setTexture(std::string imgPath){texture.emplace(Texture{imgPath});}
   void use() { if(texture)texture->bind(); }
+
+  vec2 getTextureDimensions(){
+    if(!texture){
+      LOG_ERROR("getTextureDims called on Material with no Texture");
+      return {0,0};
+    }
+
+    return {texture->width,texture->height};
+  }
 };
 
 

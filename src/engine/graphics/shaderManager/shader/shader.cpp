@@ -16,6 +16,10 @@ Shader::Shader(VertexLayout layout) {
     makeAndCompileShaders("./shaders/textured");
     makeAndLinkProgram();
     cleanShaders();
+  } else if (layout == VertexLayout::PosUVText){
+    makeAndCompileShaders("./shaders/text");
+    makeAndLinkProgram();
+    cleanShaders();
   } else {
     LOG_ERROR("no shader found for specified vertexlayout");
   }
@@ -90,4 +94,8 @@ void Shader::setunifotmMat4(std::string name, mat4 &mat4) {
 void Shader::setunifotmVec4(std::string name, vec4 vec4) {
   GLint modelLoc = glGetUniformLocation(programID, name.c_str());
   glUniform4fv(modelLoc, 1, glm::value_ptr(vec4));
+}
+void Shader::setuniformFloat(std::string name,float f){
+  GLint modelLoc = glGetUniformLocation(programID, name.c_str());
+  glUniform1f(modelLoc, f);
 }

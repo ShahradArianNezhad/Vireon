@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/entityManager/entityManager.hpp"
 #include "engine/materialManager/materialManager.hpp"
+#include "platform/window/GLFWwindow.hpp"
 #define GLFW_INCLUDE_NONE
 #include "engine/graphics/batchManager/batchManager.hpp"
 #include "engine/graphics/gpuBuffers/gpuBuffers.hpp"
@@ -8,11 +9,18 @@
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/sceneManager/scene/scene.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
+#include "engine/graphics/gpuBuffers/frameBuffer/frameBuffer.hpp"
+#include "engine/graphics/gpuBuffers/renderBuffer/renderBuffer.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
 class Renderer {
-private:
+  private:
+  FrameBuffer lightBuffer;
+  Texture lightTexture;
+  FrameBuffer sceneBuffer;
+  Texture sceneTexture;
+  RenderBuffer sceneRenderBuffer;
   MeshManager &meshManager;
   MaterialManager &materialManager;
   SceneManager& sceneManager;
@@ -21,14 +29,21 @@ private:
   GpuBuffers gpu;
   ShaderManager shaderManager;
   SceneId currentScene=0;
-  static mat4 projectionMatrix;
 
+  size_t screenW,screenH;
   void getGlErrors();
   void collectAndBatch(Scene *scene);
   void renderBatches();
   mat4 getViewMatrix();
-  static mat4 getProjectionMatrix();
   mat4 makeModelMatrix(EntityId id);
+  mat4 getProjectionMatrix();
+  bool isInScreen(EntityId id);
+  void renderSceneToBuffer();
+  void renderBufferToScreen();
+  void windowResizeCallback();
+  void initRenderBuffer();
+  void initLightBuffer();
+  void renderLights();
  
 
 public:
@@ -36,13 +51,14 @@ public:
   Renderer(const Renderer &) = delete;
   Renderer &operator=(const Renderer &) = delete;
   Renderer(Renderer &&other) = delete;
+  ~Renderer(){};
   static void initGLAD();
-  static void recalculateProjectionMatrix(){Renderer::projectionMatrix=getProjectionMatrix();};
 
   void useScene(SceneId scene) { currentScene = scene; };
   void addEntity(EntityId e){sceneManager.get(currentScene)->addEntity(e);}
   SceneId getCurrentScene(){return currentScene;}
   void flush();
+  float ambient=0.9;
   void renderCurrentScene();
 
 };

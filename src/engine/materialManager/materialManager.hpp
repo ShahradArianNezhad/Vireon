@@ -1,5 +1,6 @@
 #pragma once
 #include "./material/material.hpp"
+#include "engine/glyphManager/glyphMap/glyphMap.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "utils/logger/logger.hpp"
@@ -38,9 +39,22 @@ public:
     auto sig = hasher.digest();
     if(materialCache.contains(sig)) return materialCache[sig];
     auto id = idManager.get();
-    materials.emplace(id,Material{texPath});
-    LOG_DEBUG("Material created: {{id:{},{}}}",materials[id],id);
+    materials.try_emplace(id,texPath);
+    LOG_DEBUG("Material created: {{id:{},{}}}",id,materials[id]);
     materialCache[sig]=id;
+    return id;
+  }
+
+
+  MaterialID newMat(GLuint texId){
+    //Hasher64 hasher;
+    //hasher.combine(&texId,4);
+    //auto sig = hasher.digest();
+    //if(materialCache.contains(sig)) return materialCache[sig];
+    auto id = idManager.get();
+    materials.try_emplace(id,texId);
+    LOG_DEBUG("Material created: {{id:{},{}}}",id,materials[id]);
+    //materialCache[sig]=id;
     return id;
   }
 };

@@ -37,12 +37,25 @@ struct CameraComponent2D{
   float zoom=1.0f;
 };
 
+struct UvRectComponent{
+  vec2 uvMin={0,0};
+  vec2 uvMax={1,1};
+};
+
+struct LightComponent{
+  float radius;
+  float intensity;
+  vec3 color;
+};
+
 enum ComponentType{
   RENDER,
   TRANSFORM,
   CIRCLECOLLIDER,
   RECTCOLLIDER,
   CAMERA2D,
+  UVRECT,
+  LIGHT
 };
 
 
@@ -53,6 +66,8 @@ constexpr std::string_view to_string(ComponentType c) {
     case ComponentType::CIRCLECOLLIDER:  return "Circle collider component";
     case ComponentType::RECTCOLLIDER:  return "Rect collider component";
     case ComponentType::CAMERA2D: return "2d camera component";
+    case ComponentType::UVRECT: return "UV rect component";
+    case ComponentType::LIGHT: return "Light component";
   }
   return "Unknown";
 }
@@ -72,7 +87,7 @@ struct std::formatter<ComponentType> : std::formatter<std::string_view> {
 template<ComponentType I>
 struct EnumToType {
   using type = std::tuple_element_t<static_cast<size_t>(I), 
-        std::tuple<RenderComponent,TransformComponent,CircleColliderComponent,RectColliderComponent,CameraComponent2D>>;
+        std::tuple<RenderComponent,TransformComponent,CircleColliderComponent,RectColliderComponent,CameraComponent2D,UvRectComponent,LightComponent>>;
 };
 
 
@@ -193,6 +208,51 @@ struct std::formatter<CameraComponent2D> {
             cc.position.x,cc.position.y,
             cc.rotation,
             cc.zoom
+        );
+    }
+};
+
+
+template <>
+struct std::formatter<UvRectComponent> {
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    auto format(const UvRectComponent& cc, std::format_context& ctx) const
+    {
+        return std::format_to(
+            ctx.out(),
+            "uv rect component {{ "
+            "uvMin: {{{},{}}}, "
+            "uvMax: {{ {},{} }}"
+            "}}",
+            cc.uvMin.x,cc.uvMin.y,
+            cc.uvMax.x,cc.uvMax.y
+        );
+    }
+};
+
+template <>
+struct std::formatter<LightComponent> {
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    auto format(const LightComponent& cc, std::format_context& ctx) const
+    {
+        return std::format_to(
+            ctx.out(),
+            "light component {{ "
+            "radius: {{{}}}, "
+            "intensity: {{ {} }}"
+            "color: {{ {},{},{} }}"
+            "}}",
+            cc.radius,
+            cc.intensity,
+            cc.color[0],cc.color[1],cc.color[2]
         );
     }
 };

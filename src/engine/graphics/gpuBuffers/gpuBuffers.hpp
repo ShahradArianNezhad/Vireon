@@ -1,3 +1,4 @@
+#pragma once
 #include "./elementBuffer/elementBuffer.hpp"
 #include "./vertexArray/vertexArray.hpp"
 #include "./vertexBuffer/vertexBuffer.hpp"
@@ -12,6 +13,8 @@ public:
   void useMesh(Mesh &mesh);
   void useInstanceMat4(VertexBuffer& instanceVBO, unsigned int location);
   void useInstanceVec4(VertexBuffer& instanceVBO, unsigned int location);
+  void useInstanceVec3(VertexBuffer& instanceVBO, unsigned int location);
+  void useInstanceFloat(VertexBuffer& instanceVBO, unsigned int location);
   void reset();
 
   template <typename T>

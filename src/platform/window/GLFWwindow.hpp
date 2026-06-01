@@ -1,8 +1,10 @@
 #pragma once
-#include "engine/graphics/renderer/renderer.hpp"
+#include "utils/logger/logger.hpp"
+#include <string>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
+
 
 namespace Screen {
 inline uint32_t width = 800;
@@ -25,6 +27,11 @@ public:
   bool windowShouldClose();
   void updateWindow();
   void setViewport();
+  void setWindowName(std::string name);
+  void setFullscreen(size_t monitor);
+  void setWindowed();
+  void setWindowSize(int w,int h);
+  void setWindowIcon(std::string iconPath);
 
 
 private:
@@ -35,10 +42,9 @@ private:
   void checkWindowInit();
 
   static void sizeChange_callback(GLFWwindow *, int width, int height) {
-    glViewport(0, 0, width, height);
+    //glViewport(0, 0, width, height);
     Screen::width = width;
     Screen::height = height;
-    Renderer::recalculateProjectionMatrix();
     LOG_INFO("window size changed: {}x{}",width,height);
   }
 };

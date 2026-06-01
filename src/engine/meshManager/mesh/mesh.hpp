@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/graphics/vertex/vertex.hpp"
 #include "engine/graphics/vertexLayout/vertexLayout.hpp"
 #include <vector>

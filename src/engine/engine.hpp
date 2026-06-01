@@ -2,12 +2,15 @@
 #include "../platform/window/GLFWwindow.hpp"
 #include "./graphics/renderer/renderer.hpp"
 #include "engine/entityManager/entityManager.hpp"
+#include "engine/glyphManager/glyphManager.hpp"
 #include "engine/materialManager/materialManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
 #include "engine/eventManager/eventManager.hpp"
+#include "engine/scheduleManager/scheduleManager.hpp"
 #include "platform/input/inputHandler.hpp"
 #include "utils/clock/clock.hpp"
+#include "utils/logger/logger.hpp"
 #include <cstdint>
 #include <glm/ext/vector_float3.hpp>
 
@@ -15,18 +18,19 @@
 class Game;
 class Engine {
 private:
-  EngineWindow window{Screen::width, Screen::height,"myGame"};
   MeshManager meshManager;
   MaterialManager materialManager;
   EventManager eventManager;
   SceneManager sceneManager{eventManager};
+  GlyphManager glyphManager;
   Clock clock;
   uint32_t targetFPS=60;
 
   void syncFPS();
 
 public:
-
+  EngineWindow window{Screen::width, Screen::height,"myGame"};
+  ScheduleManager scheduleManager;
   EntityManager entityManager{eventManager};
   InputHandler inputHandler{window.getWindowPtr()};
   Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
@@ -37,10 +41,15 @@ public:
   Engine();
   ~Engine();
   SceneId newScene(){return sceneManager.newScene();}
-  EntityId makeRect(float x, float y, float width, float height);
-  EntityId makeCircle(float x, float y, float r);
-  EntityId makeSprite(float x,float y,float width,float height,std::string spritePath);
+  EntityId makeRect(vec3 pos,vec2 scale);
+  EntityId makeCircle(vec2 pos, float r);
+  EntityId makeSprite(vec3 pos,std::string spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
+  EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity);
+  void setAmbient(float a){renderer.ambient=a;}
   SceneId getCurrentScene(){return renderer.getCurrentScene();};
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
+
+  EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64);
+  std::vector<EntityId> makeText(std::string text,vec3 pos,std::string font,int size);
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "./mesh/mesh.hpp"
+#include "engine/glyphManager/glyphMap/glyphMap.hpp"
 #include "utils/idManager/idManager.hpp"
 #include <cstdint>
 #include "utils/hasher64/hasher64.hpp"
@@ -57,6 +58,7 @@ public:
     return meshes[id]; 
   };
   MeshID makePrimitive(Primitive);
+  MeshID makeQuad();
 
   MeshID submit(Mesh mesh) {
     //LOG_DEBUG("mesh submitted, vertices:{},indices:{},layout:{}",mesh.vertices,mesh.indices,mesh.layout);

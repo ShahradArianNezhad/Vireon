@@ -59,10 +59,10 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
 
     case Primitive::SquareSprite: 
       v = {
-        Vertex{{0.5f, -0.5f, 0.0f},{1.0f,0.0f} },  // bottom-right
-        Vertex{{-0.5f, -0.5f, 0.0f},{0.0f,0.0f} }, // bottom-left
-        Vertex{{0.5f, 0.5f, 0.0f},{1.0f,1.0f} },   // top-right
-        Vertex{{-0.5f, 0.5f, 0.0f},{0.0f,1.0f} },  // top-left
+        Vertex{{1, -1, 0.0f},{1.0,0.0f} },  // bottom-right
+        Vertex{{-1, -1, 0.0f},{0.0f,0.0f} }, // bottom-left
+        Vertex{{1, 1, 0.0f},{1.0,1.0f} },   // top-right
+        Vertex{{-1, 1, 0.0f},{0.0f,1.0f} },  // top-left
       };
       i = {
         0, 1, 2, //
@@ -77,3 +77,28 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
   LOG_DEBUG("makePrimitive called: shape={}",shape);
   return id;
 };
+
+
+
+MeshID MeshManager::makeQuad(){
+  Hasher64 hasher;
+  hasher.combine("quad", 4);
+  auto sig = hasher.digest();
+  if(meshCache.contains(sig)){return meshCache[sig];}
+
+  std::vector<Vertex> v = {
+    Vertex{ {-1,1,0},     {0.0f, 1.0f} }, // tl
+    Vertex{ {-1,-1,0},       {0.0f, 0.0f} }, // bl
+    Vertex{ {1,-1,0},     {1.0f, 0.0f} }, // br
+    Vertex{ {1,1,0},   {1.0f, 1.0f} }}; // tr
+    VertexLayout layout = VertexLayout::PosUVText;
+    std::vector<unsigned int>i = {
+      0, 1, 2, 
+      0, 2, 3  
+    };
+    Mesh mesh{v, i, layout};
+
+    auto id= submit(mesh);
+    meshCache[sig]=id;
+    return id;
+}

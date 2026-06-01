@@ -8,8 +8,9 @@
 struct BatchKey {
   MeshID mesh;
   MaterialID material;
+  int zIndex;
   bool operator==(const BatchKey &other) const {
-    if (other.mesh == mesh && other.material == material) {
+    if (other.mesh == mesh && other.material == material && other.zIndex==zIndex) {
       return true;
     }
     return false;
@@ -17,18 +18,23 @@ struct BatchKey {
 };
 
 namespace std {
-template <> struct hash<BatchKey> {
-  size_t operator()(const BatchKey &k) const noexcept {
-    return std::hash<int>{}(k.mesh);
-  }
-};
-} // namespace std
+  template <>
+  struct hash<BatchKey> {
+    size_t operator()(const BatchKey& key) const {
+      size_t h1 = hash<MeshID>()(key.mesh);
+      size_t h2 = hash<MaterialID>()(key.material);
+      size_t h3 = hash<int>()(key.zIndex);
+      return ((h1 ^ (h2 << 1)) ^ (h3 << 2));
+    }
+  };
+}
 
 class Batch {
 private:
   std::vector<EntityId> entities;
   std::vector<mat4> transformInstances;
   std::vector<vec4> colorInstances;
+  std::vector<vec4> uvInstances;
   BatchKey key;
 
 public:
@@ -39,8 +45,10 @@ public:
   void submit(EntityId entity) { entities.push_back(entity); }
   void addTransform(mat4 transform){transformInstances.push_back(transform);};
   void addColor(vec4 color){colorInstances.push_back(color);};
+  void addUv(vec4 uv){uvInstances.push_back(uv);};
   std::vector<mat4>& getModelInstanceData(){return transformInstances;};
   std::vector<vec4>& getColorInstanceData(){return colorInstances;};
+  std::vector<vec4>& getUvInstanceData(){return uvInstances;};
   auto begin() { return entities.begin(); }
   auto end() { return entities.end(); }
   size_t size(){return entities.size();}

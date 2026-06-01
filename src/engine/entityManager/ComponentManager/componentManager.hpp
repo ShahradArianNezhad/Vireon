@@ -13,7 +13,9 @@ private:
   ComponentAllocator<RenderComponent>,
   ComponentAllocator<CircleColliderComponent>,
   ComponentAllocator<RectColliderComponent>,
-  ComponentAllocator<CameraComponent2D>
+  ComponentAllocator<CameraComponent2D>,
+  ComponentAllocator<UvRectComponent>,
+  ComponentAllocator<LightComponent>
     > allocators;
 
 public:

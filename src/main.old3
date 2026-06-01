@@ -1,0 +1,66 @@
+#include "./engine/engine.hpp"
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <utility>
+#include "./game/game.hpp"
+#include "engine/entityManager/component/components.hpp"
+
+class myGame : public Game{
+public:
+  int counter=0;
+  bool face=0;
+  EntityId camera=engine.entityManager.makeCamera();
+  EntityId c2 =engine.makeSprite(100, 100,"./assets/Characters(100x100)/Soldier/Soldier/Soldier.png",{0,1.0/7},{1.0/9,2.0/7});
+
+  void init() override {
+    auto transform = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(c2);
+    transform.scale.x*=6;
+    transform.scale.y*=6;
+    engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(c2, transform);
+    auto cam = engine.entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera);
+    engine.entityManager.componentManager.setComponent<ComponentType::CAMERA2D>(camera,cam);
+    engine.useCamera(camera, engine.getCurrentScene());
+    engine.setTargetFPS(60);
+
+    engine.scheduleManager.do_every(0.1,[this](){
+        auto uv = engine.entityManager.componentManager.getComponent<ComponentType::UVRECT>(c2);
+        uv.uvMax.x+=1.0/9; uv.uvMin.x+=1.0/9;
+        if(uv.uvMax.x>=8.0/9 ||uv.uvMin.x>=8.0/9){ uv.uvMax.x-=7.0/9; uv.uvMin.x-=7.0/9; }
+        engine.entityManager.componentManager.setComponent<ComponentType::UVRECT>(c2, uv);
+        });
+  }
+
+
+  void update(double) override {
+    auto transform = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(c2);
+    if(engine.inputHandler.checkKeyPress(Key::D)){
+      if(face==1){
+      auto uv = engine.entityManager.componentManager.getComponent<ComponentType::UVRECT>(c2);
+      std::swap(uv.uvMin.x,uv.uvMax.x);
+      engine.entityManager.componentManager.setComponent<ComponentType::UVRECT>(c2, uv);
+      face=0;
+      }
+      transform.position.x+=10;
+    }
+    if(engine.inputHandler.checkKeyPress(Key::A)){transform.position.x-=10;
+      if(face==0){
+      auto uv = engine.entityManager.componentManager.getComponent<ComponentType::UVRECT>(c2);
+      std::swap(uv.uvMin.x,uv.uvMax.x);
+      engine.entityManager.componentManager.setComponent<ComponentType::UVRECT>(c2, uv);
+      face=1;
+      }
+    }
+    if(engine.inputHandler.checkKeyPress(Key::W)) transform.position.y-=10;
+    if(engine.inputHandler.checkKeyPress(Key::S)) transform.position.y+=10;
+
+
+
+    engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(c2, transform);
+  };
+};
+
+int main() {
+  myGame game;
+  game.run();
+  return 0;
+}
