@@ -10,6 +10,7 @@
 #include "engine/scheduleManager/scheduleManager.hpp"
 #include "platform/input/inputHandler.hpp"
 #include "utils/clock/clock.hpp"
+#include "utils/spatialMap/spatialMap.hpp"
 #include "utils/logger/logger.hpp"
 #include <cstdint>
 #include <glm/ext/vector_float3.hpp>
@@ -23,8 +24,14 @@ private:
   EventManager eventManager;
   SceneManager sceneManager{eventManager};
   GlyphManager glyphManager;
+  SpatialMap spatialMap;
   Clock clock;
   uint32_t targetFPS=60;
+  void buildSpatialMap();
+  bool circleIsColliding(EntityId e1,EntityId e2);
+  bool rectIsColliding(EntityId e1,EntityId e2);
+  bool rectCircleIsColliding(EntityId e1,EntityId e2);
+  bool isNear(EntityId e1,EntityId e2);
 
   void syncFPS();
 
@@ -47,6 +54,7 @@ public:
   EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity);
   void setAmbient(float a){renderer.ambient=a;}
   SceneId getCurrentScene(){return renderer.getCurrentScene();};
+  bool isColliding(EntityId e1,EntityId e2);
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 

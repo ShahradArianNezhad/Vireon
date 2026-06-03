@@ -3,6 +3,7 @@
 #include "engine/glyphManager/glyphManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include <chrono>
+#include <cmath>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <thread>
@@ -92,6 +93,7 @@ void Engine::run(Game* game) {
     game->init();
     clock.reset();
     while (!window.windowShouldClose()) {
+        buildSpatialMap();
         double dt = clock.getDeltaTime();
         clock.setTimestamp();
         syncFPS();
@@ -99,6 +101,7 @@ void Engine::run(Game* game) {
         game->update(dt);
         renderer.renderCurrentScene();
         window.updateWindow();
+        spatialMap.clear();
     }
 }
 
@@ -139,6 +142,76 @@ std::vector<EntityId> Engine::makeText(std::string text,vec3 pos,std::string fon
 }
 
 
+void Engine::buildSpatialMap(){
+  auto& entities = sceneManager.get(getCurrentScene())->collectEntities();
+  for(auto e:entities){
+    auto trans = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e);
+    spatialMap.insert(e, trans.position,  trans.scale);
+  }
+}
+
+
+bool Engine::isColliding(EntityId e1,EntityId e2){
+  if(!entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1)&&
+      !entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)){
+    LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e1);
+    return false;
+  }
+  if(!entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)&&
+      !entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e2)){
+    LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e2);
+    return false;
+  }
+
+  if(entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)&&
+      entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)) return rectCircleIsColliding(e1,e2);
+
+  if(entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1)&&
+      entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e2)) return rectCircleIsColliding(e2,e1);
+
+  if(entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1)&&
+      entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)) return circleIsColliding(e1,e2);
+
+  if(entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)&&
+      entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e2)) return rectIsColliding(e1,e2);
+  return false;
+}
+
+bool Engine::isNear(EntityId e1,EntityId e2){
+  auto trans = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
+  auto nearEntites = spatialMap.getNearEntities(trans.position, trans.scale);
+  for (auto e:nearEntites)if(e==e2)return true;
+  return false;
+}
+
+bool Engine::circleIsColliding(EntityId e1,EntityId e2){
+  if(!isNear(e1, e2))return false;
+  auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
+  auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
+  float dx = t1.position.x - t2.position.x;
+  float dy = t1.position.y - t2.position.y;
+  float dist = sqrt(dx*dx + dy*dy);
+  if(dist<= t1.scale.x+t2.scale.x)return true;
+  return false;
+}
+
+bool Engine::rectIsColliding(EntityId e1,EntityId e2){
+  if(!isNear(e1, e2))return false;
+  auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
+  auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
+  return t1.position.x < t2.position.x + t2.scale.x && t1.position.x + t1.scale.x > t2.position.x &&
+    t1.position.y < t2.position.y + t2.scale.y && t1.position.y + t1.scale.y > t2.position.y;
+}
+bool Engine::rectCircleIsColliding(EntityId e1,EntityId e2){
+  if(!isNear(e1, e2))return false;
+  auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
+  auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
+  float closestX = std::max(t1.position.x - t1.scale.x * 0.5f,std::min(t2.position.x,t1.position.x + t1.scale.x * 0.5f));
+  float closestY = std::max(t1.position.y - t1.scale.y * 0.5f,std::min(t2.position.y,t1.position.y + t1.scale.y * 0.5f));
+  float dx = t2.position.x-closestX;
+  float dy = t2.position.y-closestY;
+  return dx * dx + dy * dy <= t2.scale.x*t2.scale.x;
+}
 
 
 EntityId Engine::makeLight(vec2 pos,vec3 color, float radius,float intensity) {

@@ -94,28 +94,3 @@ void EntityManager::setColor(EntityId id,unsigned int r,unsigned int g,unsigned 
   LOG_DEBUG("set Color 0X{} on entity:{}",color,id);
 }
 
-
-
-
-bool EntityManager::isColliding(EntityId e1,EntityId e2){
-  if(!(componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1) && componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)) ||
-      (componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2) && componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e2))){
-    std::cout << "warning : collision checking on an entity thats missing a collider component"<< std::endl;
-    return false;
-  }
-  if(componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1) && componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)) return handleCircleCollision(e1,e2);
-}
-
-
-
-bool EntityManager::handleCircleCollision(EntityId e1,EntityId e2){
-  auto t1 = componentManager.getComponent<ComponentType::TRANSFORM>(e1);
-  auto t2 = componentManager.getComponent<ComponentType::TRANSFORM>(e2);
-  auto c1 = componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
-  auto c2 = componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e2);
-  auto p1 = vec2(t1.position.x,t1.position.y) + c1.offset;
-  auto p2 = vec2(t2.position.x,t2.position.y) + c2.offset;
-  auto d =sqrt(((p1.x-p2.x)*(p1.x-p2.x)) + ((p1.y-p2.y)*(p1.y-p2.y)));
-  if(d<=c1.radius+c2.radius)return true;
-  return false;
-}

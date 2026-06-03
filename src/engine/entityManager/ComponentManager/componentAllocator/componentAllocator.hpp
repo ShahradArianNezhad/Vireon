@@ -7,7 +7,6 @@ template <typename T>
 class ComponentAllocator{
 
 private:
-  std::queue<size_t> unused;
   std::vector<T> components;
   std::unordered_map<EntityId, size_t> entityToIndex;
   std::vector<size_t> indexToEntity;
@@ -15,7 +14,7 @@ private:
 public:
   T getComponent(EntityId id){
     if(entityToIndex.contains(id))return components[entityToIndex[id]];
-    LOG_WARN("getComponent called on entity which doesnt have that component");
+    LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
     return T{};
   }
 
@@ -25,36 +24,32 @@ public:
       components[entityToIndex[id]] = comp;
       return;
     }
-    size_t index;
-    if(unused.empty())index = components.size();
-    else{
-      index = unused.front();
-      unused.pop();
-    }
-    if(index>=components.size()){
       components.push_back(comp);
-    }else{
-      components[index]=comp;
-    }
-    entityToIndex[id]=index;
-    if(index>=indexToEntity.size()){
+      entityToIndex[id]=components.size()-1;
       indexToEntity.push_back(id);
-    }else{
-      components[index]=comp;
-    }
   }
 
   bool hasComponent(EntityId id){return entityToIndex.contains(id);};
 
   void deleteComponent(EntityId id){
     if(!entityToIndex.contains(id)){
-      LOG_WARN("trying to delete non existing component on entity:{}",id);
+      LOG_WARN("trying to delete non existing component:{} on entity:{}",typeid(T).name(),id);
       return;
     }
+
     size_t index = entityToIndex[id];
-    entityToIndex.erase(id);
-    indexToEntity[index]=UINT32_MAX;
-    unused.push(index);
+    if(index==components.size()-1){
+      components.pop_back();
+      entityToIndex.erase(id);
+      indexToEntity.pop_back();
+    }else{
+      components[index] = components[components.size()-1];
+      components.pop_back();
+      indexToEntity[index]=indexToEntity[components.size()-1];
+      auto backId = indexToEntity[components.size()-1];
+      indexToEntity.pop_back();
+      entityToIndex[backId]=index;
+    }
   }
   
 };

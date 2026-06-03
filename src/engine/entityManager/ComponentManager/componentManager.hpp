@@ -41,10 +41,10 @@ public:
     }
 
 
-  template<ComponentType T>
+  template<ComponentType... Ts>
     bool hasComponent(EntityId id){
-      auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
-      return allocator.hasComponent(id);
+      return (... && std::get<ComponentAllocator<typename EnumToType<Ts>::type>>(allocators)
+          .hasComponent(id));
     };
   
 };

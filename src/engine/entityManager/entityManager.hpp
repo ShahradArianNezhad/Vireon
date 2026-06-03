@@ -25,8 +25,6 @@ public:
 
   EntityId makeCamera();
 
-  bool isColliding(EntityId e1,EntityId e2);
-  bool handleCircleCollision(EntityId e1,EntityId e2);
 
 
   vec4 colorToVec4(EntityId id);
