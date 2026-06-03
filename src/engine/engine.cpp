@@ -57,11 +57,11 @@ EntityId Engine::makeRect(vec3 pos,vec2 scale) {
   return id;
 }
 
-EntityId Engine::makeCircle(vec2 pos, float r) {
+EntityId Engine::makeCircle(vec3 pos, float r) {
   auto meshId = meshManager.makePrimitive(Primitive::Circle);
   auto matId = materialManager.newMat();
   auto transformComp = TransformComponent{
-      .position = {pos.x, pos.y, 0.0f},
+      .position = {pos.x, pos.y, pos.y},
       .scale = {r, r, 1.0f},
   };
 
@@ -188,10 +188,12 @@ bool Engine::circleIsColliding(EntityId e1,EntityId e2){
   if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
-  float dx = t1.position.x - t2.position.x;
-  float dy = t1.position.y - t2.position.y;
+  auto r1 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
+  auto r2 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e2);
+  float dx = (t1.position.x+r1.offset.x) - (t2.position.x+r2.offset.x);
+  float dy = (t1.position.y+r1.offset.y) - (t2.position.y+r2.offset.y);
   float dist = sqrt(dx*dx + dy*dy);
-  if(dist<= t1.scale.x+t2.scale.x)return true;
+  if(dist<= r1.radius+r2.radius)return true;
   return false;
 }
 
@@ -199,9 +201,20 @@ bool Engine::rectIsColliding(EntityId e1,EntityId e2){
   if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
-  return t1.position.x < t2.position.x + t2.scale.x && t1.position.x + t1.scale.x > t2.position.x &&
-    t1.position.y < t2.position.y + t2.scale.y && t1.position.y + t1.scale.y > t2.position.y;
+  auto r1 = entityManager.componentManager.getComponent<ComponentType::RECTCOLLIDER>(e1);
+  auto r2 = entityManager.componentManager.getComponent<ComponentType::RECTCOLLIDER>(e2);
+  float left1   = t1.position.x + r1.offset.x - r1.scale.x/2;
+  float right1  = t1.position.x + r1.offset.x + r1.scale.x/2;
+  float top1    = t1.position.y + r1.offset.y - r1.scale.y/2;  
+  float bottom1 = t1.position.y + r1.offset.y + r1.scale.y/2;
+  float left2   = t2.position.x + r2.offset.x - r2.scale.x/2;
+  float right2  = t2.position.x + r2.offset.x + r2.scale.x/2;
+  float top2    = t2.position.y + r2.offset.y - r2.scale.y/2;
+  float bottom2 = t2.position.y + r2.offset.y + r2.scale.y/2;
+
+  return left1 < right2 && right1 > left2 && top1 < bottom2 && bottom1 > top2;
 }
+
 bool Engine::rectCircleIsColliding(EntityId e1,EntityId e2){
   if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
