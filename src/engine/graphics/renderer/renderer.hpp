@@ -43,8 +43,13 @@ class Renderer {
   void windowResizeCallback();
   void initRenderBuffer();
   void initLightBuffer();
+  void drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std::vector<float>& radius,std::vector<float>& intensity,size_t count);
   void renderLights();
- 
+  void enableBlending();
+  void setDepthParams();
+  void enableAdditiveBlending();
+  void enableAlphaBlending();
+
 
 public:
   Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sceneManager,EntityManager& entityManager);

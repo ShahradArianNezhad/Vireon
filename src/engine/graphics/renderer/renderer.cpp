@@ -25,16 +25,23 @@ void Renderer::initGLAD() {
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager,EntityManager& eManager)
     : meshManager(manager), materialManager(matManager),sceneManager(sManager),entityManager(eManager) {
   LOG_INFO("initializing Renderer");
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  //glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LEQUAL);
-  glDepthMask(GL_FALSE);
+  enableBlending();
+  setDepthParams();
   screenW=Screen::width;
   screenH=Screen::height;
   initRenderBuffer();
   initLightBuffer();
 }
+
+void Renderer::enableBlending(){
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+void Renderer::setDepthParams(){
+  glDepthFunc(GL_LEQUAL);
+  glDepthMask(GL_FALSE);
+}
+
 
 
 void Renderer::initLightBuffer(){
@@ -84,8 +91,7 @@ void Renderer::renderBatches() {
 #ifdef ENGINE_DEBUG
   size_t renderCalls=0;
 #endif
-
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  enableAlphaBlending();
   auto view = getViewMatrix();
   auto proj = getProjectionMatrix();
   for (auto &[key, batch] : batchManager.getBatches2()) {
@@ -113,6 +119,10 @@ void Renderer::renderBatches() {
 #ifdef ENGINE_DEBUG
   LOG_DEBUG("render calls this frame:{}",renderCalls);
 #endif
+}
+
+void Renderer::enableAlphaBlending(){
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 }
 
@@ -152,8 +162,6 @@ void Renderer::windowResizeCallback(){
 
 
 void Renderer::renderLights(){
-  auto view = getViewMatrix();
-  auto proj = getProjectionMatrix();
   size_t count=0;
   std::vector<mat4> model;
   std::vector<vec3> color;
@@ -169,6 +177,13 @@ void Renderer::renderLights(){
       count+=1;
     }
   }
+  renderLights();
+};
+
+
+void Renderer::drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std::vector<float>& radius,std::vector<float>& intensity,size_t count){
+  auto view = getViewMatrix();
+  auto proj = getProjectionMatrix();
   lightBuffer.bind();
   flush();
   shaderManager.useLight();
@@ -186,9 +201,14 @@ void Renderer::renderLights(){
   gpu.useInstanceFloat(intensityInstanceVBO,4);
   VertexBuffer modelInstanceVBO = gpu.makeInstanceVBO(model);
   gpu.useInstanceMat4(modelInstanceVBO,5);
-  glBlendFunc(GL_ONE, GL_ONE);
+  enableAdditiveBlending();
   glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, count);
-};
+}
+
+void Renderer::enableAdditiveBlending(){
+  glBlendFunc(GL_ONE, GL_ONE);
+}
+
 
 void Renderer::renderCurrentScene() {
   if(sceneManager.get(currentScene)->getActiveCamera()==UINT32_MAX){
