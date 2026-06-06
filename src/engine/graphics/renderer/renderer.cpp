@@ -177,7 +177,7 @@ void Renderer::renderLights(){
       count+=1;
     }
   }
-  renderLights();
+  drawLights(model,color,radius,intensity,count);
 };
 
 
@@ -250,10 +250,10 @@ bool Renderer::isInScreen(EntityId id){
   auto camTop = camPos.position.y - ((screenH)/2.0) ;
   auto camBot = camPos.position.y + ((screenH)/2.0);
   auto entityPos = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(id);
-  auto entityRight = entityPos.position.x + (entityPos.scale.x/2.0);
-  auto entityLeft = entityPos.position.x - (entityPos.scale.x/2.0);
-  auto entityTop = entityPos.position.y - (entityPos.scale.y/2.0);
-  auto entityBot = entityPos.position.y + (entityPos.scale.y/2.0);
+  auto entityRight = entityPos.position.x + (entityPos.scale.x/1.0);
+  auto entityLeft = entityPos.position.x - (entityPos.scale.x/1.0);
+  auto entityTop = entityPos.position.y - (entityPos.scale.y/1.0);
+  auto entityBot = entityPos.position.y + (entityPos.scale.y/1.0);
   return !(camRight < entityLeft || camLeft > entityRight ||
       camBot < entityTop || camTop > entityBot);
 }

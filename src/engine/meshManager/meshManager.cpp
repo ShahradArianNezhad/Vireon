@@ -28,10 +28,10 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
 
     case Primitive::Square: 
       v = {
-        Vertex{{0.5f, -0.5f, 0.0f}, },  // bottom-right
-        Vertex{{-0.5f, -0.5f, 0.0f}, }, // bottom-left
-        Vertex{{0.5f, 0.5f, 0.0f}, },   // top-right
-        Vertex{{-0.5f, 0.5f, 0.0f}, },  // top-left
+        Vertex{{1.0f, -1.0f, 0.0f}, },  // bottom-right
+        Vertex{{-1.0f, -1.0f, 0.0f}, }, // bottom-left
+        Vertex{{1.0f, 1.0f, 0.0f}, },   // top-right
+        Vertex{{-1.0f, 1.0f, 0.0f}, },  // top-left
       };
       i = {
         0, 1, 2, //
