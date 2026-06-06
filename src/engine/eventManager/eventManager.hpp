@@ -30,7 +30,7 @@ public:
 
   template<typename T>
     static inline void unsubscribe(subscriptionId id){
-      LOG_DEBUG("unsubscribe from event: {}",typeid(T).name());
+      LOG_DEBUG("unsubscribe from event: {}, with subscriptionId={}",typeid(T).name(),id);
       ids<T>.release(id);
       handlerPool<T>.remove(id);
     }

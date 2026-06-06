@@ -3,6 +3,13 @@
 #include <glm/glm.hpp>
 #include "./game/game.hpp"
 #include "engine/entityManager/component/components.hpp"
+#include "engine/eventManager/eventManager.hpp"
+
+
+struct MoveEvent{
+  float dx;
+  float dy;
+};
 
 class myGame : public Game{
 public:
@@ -26,19 +33,24 @@ public:
     engine.setTargetFPS(60);
     engine.entityManager.deleteEntity(c4);
 
+    EventManager::subscribe<MoveEvent>([this](const MoveEvent& e){
+    auto transform = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(c2);
+    transform.position.x+=e.dx;
+    transform.position.y+=e.dy;
+    engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(c2, transform);
+        });
+
   }
 
 
   void update(double) override {
-    auto transform = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(c2);
-    if(engine.inputHandler.checkKeyPress(Key::D))transform.position.x+=10;
-    if(engine.inputHandler.checkKeyPress(Key::A))transform.position.x-=10;
-    if(engine.inputHandler.checkKeyPress(Key::W)) transform.position.y-=10;
-    if(engine.inputHandler.checkKeyPress(Key::S)) transform.position.y+=10;
+    if(engine.inputHandler.checkKeyPress(Key::D))EventManager::emit(MoveEvent{10,0});
+    if(engine.inputHandler.checkKeyPress(Key::A))EventManager::emit(MoveEvent{-10,0});
+    if(engine.inputHandler.checkKeyPress(Key::W))EventManager::emit(MoveEvent{0,-10});
+    if(engine.inputHandler.checkKeyPress(Key::S))EventManager::emit(MoveEvent{0,10});
 
 
 
-    engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(c2, transform);
   };
 };
 
