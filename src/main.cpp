@@ -38,7 +38,6 @@ public:
 
 
     engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(c2, transform);
-    if(engine.isColliding(c2,c3)) LOG_WARN("COLLIDE");
   };
 };
 

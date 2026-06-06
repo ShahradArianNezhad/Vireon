@@ -12,8 +12,8 @@ public:
   double getMouseWheelOffset(){return wheelOffset;}
 
 private:
-  static double wheelOffset;
-  static void wheelCallback(GLFWwindow*, double, double yoffset){wheelOffset=yoffset;};
+  static inline double wheelOffset=0.0;
+  static inline void wheelCallback(GLFWwindow*, double, double yoffset){wheelOffset=yoffset;};
   GLFWwindow *window;
 };
 

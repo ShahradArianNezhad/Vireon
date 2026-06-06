@@ -18,7 +18,10 @@ bool InputHandler::checkKeyPress(Key key) {
 
 bool InputHandler::checkMousePress(Mouse button){
   int state = glfwGetMouseButton(window, (int)button);
-  if (state == GLFW_PRESS)return true;
+  if (state == GLFW_PRESS){
+    LOG_DEBUG("mouse key pressed : {}",(int)button);
+    return true;
+  }
   return false;
 }
 
