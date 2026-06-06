@@ -13,11 +13,10 @@ using EntityId = uint32_t;
 class EntityManager {
 private:
   IDManager idManager;
-  EventManager& eventManager;
   std::vector<EntityId> entities;
 
 public:
-  EntityManager(EventManager& eManager):eventManager(eManager){};
+  EntityManager(){};
   ComponentManager componentManager{};
   EntityId newEntity();
   EntityId newEntity(struct RenderComponent,struct TransformComponent);

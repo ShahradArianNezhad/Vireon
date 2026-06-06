@@ -11,11 +11,10 @@ using SceneId=unsigned int;
 class SceneManager{
 private:
   std::unordered_map<SceneId, Scene> scenes;
-  EventManager& eventManager;
   IDManager idManager;
 
 public:
-  SceneManager(EventManager& eManager):eventManager(eManager){};
+  SceneManager(){};
   Scene* get(SceneId id);
   SceneId newScene();
 };

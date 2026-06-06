@@ -1,10 +1,8 @@
 #include "entityManager.hpp"
 #include "engine/entityManager/component/components.hpp"
 #include "engine/eventManager/eventManager.hpp"
-#include <cmath>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/vector_float3.hpp>
-#include <iostream>
 
 EntityId EntityManager::newEntity() {
   auto id = idManager.get();
@@ -68,7 +66,7 @@ void EntityManager::deleteEntity(EntityId id){
   componentManager.deleteComponent<ComponentType::TRANSFORM>(id);
   componentManager.deleteComponent<ComponentType::RENDER>(id);
   idManager.release(id);
-  eventManager.emit(EntityDestroyedEvent{.id=id});
+  EventManager::emit(EntityDestroyedEvent{.id=id});
   LOG_DEBUG("entity delete called on: {}",id);
 }
 

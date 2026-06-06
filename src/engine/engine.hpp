@@ -6,12 +6,10 @@
 #include "engine/materialManager/materialManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
-#include "engine/eventManager/eventManager.hpp"
 #include "engine/scheduleManager/scheduleManager.hpp"
 #include "platform/input/inputHandler.hpp"
 #include "utils/clock/clock.hpp"
 #include "utils/spatialMap/spatialMap.hpp"
-#include "utils/logger/logger.hpp"
 #include <cstdint>
 #include <glm/ext/vector_float3.hpp>
 
@@ -21,8 +19,7 @@ class Engine {
 private:
   MeshManager meshManager;
   MaterialManager materialManager;
-  EventManager eventManager;
-  SceneManager sceneManager{eventManager};
+  SceneManager sceneManager;
   GlyphManager glyphManager;
   SpatialMap spatialMap;
   Clock clock;
@@ -38,7 +35,7 @@ private:
 public:
   EngineWindow window{Screen::width, Screen::height,"myGame"};
   ScheduleManager scheduleManager;
-  EntityManager entityManager{eventManager};
+  EntityManager entityManager;
   InputHandler inputHandler{window.getWindowPtr()};
   Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
   void useCamera(EntityId camera,SceneId sceneid);

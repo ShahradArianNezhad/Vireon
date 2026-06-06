@@ -5,7 +5,7 @@
 
 SceneId SceneManager::newScene(){
   auto id = idManager.get();
-  scenes.try_emplace(id,id,eventManager);
+  scenes.try_emplace(id,id);
   LOG_DEBUG("Scene created id:{}",id);
   return id;
 }

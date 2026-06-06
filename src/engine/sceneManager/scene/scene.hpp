@@ -11,19 +11,18 @@ private:
   SceneId id;
   std::vector<EntityId> entities;
   EntityId camera=UINT32_MAX;
-  EventManager& eventManager;
   subscriptionId subId;
 
 public:
-  Scene(SceneId id,EventManager& eManager):id(id),eventManager(eManager){
-    subId = eventManager.subscribe<EntityDestroyedEvent>(
+  Scene(SceneId id):id(id){
+    subId = EventManager::subscribe<EntityDestroyedEvent>(
         [this](const EntityDestroyedEvent& e) {
         entityDestroyedEventHandler(e);
         });
   };
   ~Scene(){
     LOG_DEBUG("scene destructed id:{}",id);
-    eventManager.unsubscribe<EntityDestroyedEvent>(subId);
+    EventManager::unsubscribe<EntityDestroyedEvent>(subId);
   }
   std::vector<EntityId> &collectEntities() {return entities;}
 
