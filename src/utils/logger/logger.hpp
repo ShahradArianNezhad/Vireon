@@ -2,6 +2,7 @@
 #include <array>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <cstring>
 #include <format>
 #include <fstream>
@@ -84,7 +85,9 @@ class Logger{
   static inline int writeIndex = 0;
   static inline size_t bufferedLogs=0;
   static inline std::mutex bufferLock;
+  static inline std::mutex workerMutex;
   static inline std::thread logger_thread;
+  static inline std::condition_variable cv;
   static void workerFunction();
 
   static void writeLogs();
@@ -117,9 +120,8 @@ class Logger{
   static void stopLogger(){
     if(!running)return;
     LOG_INFO("logger stopping...");
-    writeLogs();
-    flush();
     running=false;
+    cv.notify_one();
     logger_thread.join();
   }
   static inline void setLogLevel(LogLevel level){

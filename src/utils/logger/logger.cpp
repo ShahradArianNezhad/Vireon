@@ -1,5 +1,6 @@
 #include "./logger.hpp"
 #include <format>
+#include <mutex>
 #include <thread>
 #include <filesystem>
 #include <string>
@@ -65,7 +66,9 @@ void Logger::bufferLog(Log log){
 
 void Logger::workerFunction(){
   while(running){
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::unique_lock<std::mutex> lock{workerMutex};
+    cv.wait_for(lock,std::chrono::seconds(1));
     writeLogs();
     flush();
   }
