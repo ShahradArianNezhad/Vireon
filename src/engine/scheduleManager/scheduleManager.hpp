@@ -5,17 +5,17 @@
 
 
 class ScheduleManager{
-  IDManager idManager;
-  ObjectPool<Task> taskPool;
-  std::vector<uint32_t> pendingRemoves;
-  std::vector<Task> pendingAdds;
-  void flushRemoves();
-  void flushAdds();
+  static inline IDManager idManager;
+  static inline ObjectPool<Task> taskPool;
+  static inline std::vector<uint32_t> pendingRemoves;
+  static inline std::vector<Task> pendingAdds;
+  static void flushRemoves();
+  static void flushAdds();
 
   public:
 
-  TaskId do_after(float secs,std::function<void()> callback); 
-  TaskId do_every(float secs,std::function<void()> callback); 
-  void cancel_task(TaskId id);
-  void update(float dt);
+  static TaskId do_after(float secs,std::function<void()> callback); 
+  static TaskId do_every(float secs,std::function<void()> callback); 
+  static void cancel_task(TaskId id);
+  static void update(float dt);
 };

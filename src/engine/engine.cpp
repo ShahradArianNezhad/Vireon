@@ -10,6 +10,7 @@
 #include "../game/game.hpp"
 #include "platform/window/GLFWwindow.hpp"
 #include "utils/logger/logger.hpp"
+#include "audioManager/audioManager.hpp"
 
 
 Engine::Engine(){
@@ -18,6 +19,8 @@ Engine::Engine(){
   LOG_INFO("Engine initializing");
   SceneId defaultScene = newScene();
   renderer.useScene(defaultScene);
+  AudioManager::init();
+  auto x =AudioManager::playSound("./test.mp3");
 }
 
 Engine::~Engine(){
@@ -97,7 +100,7 @@ void Engine::run(Game* game) {
         double dt = clock.getDeltaTime();
         clock.setTimestamp();
         syncFPS();
-        scheduleManager.update(dt);
+        ScheduleManager::update(dt);
         game->update(dt);
         renderer.renderCurrentScene();
         window.updateWindow();

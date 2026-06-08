@@ -28,7 +28,7 @@ void ScheduleManager::cancel_task(TaskId id){
 
   void ScheduleManager::flushRemoves(){
     for(auto id:pendingRemoves){
-      LOG_WARN("REMOVING :{}",id);
+      LOG_DEBUG("REMOVING : {}",id);
       taskPool.remove(id);
     }
     pendingRemoves.clear();

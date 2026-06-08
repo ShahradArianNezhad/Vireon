@@ -17,7 +17,7 @@ public:
   bool face=0;
   EntityId camera=engine.entityManager.makeCamera();
   EntityId c2 =engine.makeRect({0,0,0},{150,150});
-  EntityId c4 =engine.makeCircle({0,0,0},150);
+  EntityId c4 =engine.makeCircle({200,0,0},100);
   EntityId c3 =engine.makeRect({-300,0,0},{100,100});
 
   void init() override {
@@ -31,7 +31,6 @@ public:
     engine.entityManager.componentManager.setComponent<ComponentType::CAMERA2D>(camera,cam);
     engine.useCamera(camera, engine.getCurrentScene());
     engine.setTargetFPS(60);
-    engine.entityManager.deleteEntity(c4);
 
     EventManager::subscribe<MoveEvent>([this](const MoveEvent& e){
     auto transform = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(c2);

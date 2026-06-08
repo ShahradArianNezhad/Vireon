@@ -34,7 +34,6 @@ private:
 
 public:
   EngineWindow window{Screen::width, Screen::height,"myGame"};
-  ScheduleManager scheduleManager;
   EntityManager entityManager;
   InputHandler inputHandler{window.getWindowPtr()};
   Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
