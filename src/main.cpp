@@ -20,6 +20,7 @@ public:
   EntityId c1 = engine.makeSprite({0,0,0},"./assets/Characters(100x100)/Orc/Orc/Orc-Attack01.png",{0,0},{1.0/6,1});
 
   void init() override {
+    for(int i=0;i<100'000;i++)engine.makeRect({0,0,0}, {10,10});
     engine.useCamera(camera, engine.getCurrentScene());
   }
 

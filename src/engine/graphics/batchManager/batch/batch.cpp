@@ -12,7 +12,7 @@ void Batch::remove(EntityId id){
     }
   }
   if(index==UINT32_MAX){
-    LOG_ERROR("trying to remove non exisiting entity from batch");
+    LOG_ERROR("trying to remove non exisiting entity in batch");
     return;
   }
   if(index==entities.size()){
@@ -45,7 +45,6 @@ void Batch::replaceModel(EntityId id,mat4 transform){
     }
   }
   if(index==UINT32_MAX){
-    LOG_ERROR("trying to remove non exisiting entity from batch");
     return;
   }
   transformInstances[index]=transform;
@@ -60,7 +59,6 @@ void Batch::replaceColor(EntityId id,vec4 color){
     }
   }
   if(index==UINT32_MAX){
-    LOG_ERROR("trying to remove non exisiting entity from batch");
     return;
   }
   colorInstances[index]=color;
@@ -75,7 +73,6 @@ void Batch::replaceUv(EntityId id,vec4 uv){
     }
   }
   if(index==UINT32_MAX){
-    LOG_ERROR("trying to remove non exisiting entity from batch");
     return;
   }
   uvInstances[index]=uv;

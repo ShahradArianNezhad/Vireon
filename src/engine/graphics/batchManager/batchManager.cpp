@@ -74,6 +74,7 @@ void BatchManager::remove(EntityId entity){
     return;
   }
   batches[key].remove(entity);
+  if(batches[key].size()==0)batches.erase(key);
 }
 
 
