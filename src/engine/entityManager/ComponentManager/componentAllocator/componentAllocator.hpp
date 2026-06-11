@@ -4,7 +4,7 @@
 
 
 template <typename T>
-class ComponentAllocator{
+class ComponentAllocator2{
 
 private:
   std::vector<T> components;
@@ -55,6 +55,46 @@ public:
       entityToIndex[indexToEntity[index]] = index;
       entityToIndex.erase(id);
     }
+  }
+  
+};
+
+
+
+template <typename T>
+class ComponentAllocator{
+
+private:
+  std::vector<T> components;
+  std::unordered_map<EntityId,bool> EntityHasComponent;
+
+public:
+
+  T getComponent(EntityId id){
+    if(EntityHasComponent[id])return components[id];
+    LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
+    return T{};
+  }
+
+
+  void setComponent(EntityId id,T comp){
+    if(EntityHasComponent[id]){
+      components[id] = comp;
+    }else{
+      if(components.size()<=id)components.reserve(id+100);
+      components[id] = comp;
+      EntityHasComponent[id]=true;
+    }
+  }
+
+  bool hasComponent(EntityId id){return EntityHasComponent[id];};
+
+  void deleteComponent(EntityId id){
+    if(!EntityHasComponent[id]){
+      LOG_WARN("trying to delete non existing component:{} on entity:{}",typeid(T).name(),id);
+      return;
+    }
+    EntityHasComponent[id]=false;
   }
   
 };

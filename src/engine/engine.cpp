@@ -21,6 +21,8 @@ Engine::Engine(){
   SceneId defaultScene = newScene();
   renderer.useScene(defaultScene);
   AudioManager::init();
+  EntityId camera=entityManager.makeCamera();
+  useCamera(camera, getCurrentScene());
 }
 
 Engine::~Engine(){

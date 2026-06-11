@@ -48,9 +48,6 @@ BatchKey BatchManager::submit(EntityId entity) {
   BatchKey key = {.mesh = renderComp.mesh,
                   .material = renderComp.material,
                   .zIndex=(int)transformComp.position.z};
-  if (!batches.contains(key)) {
-    batches[key] = Batch(key);
-  }
   batches[key].submit(entity);
   batches[key].addTransform(entityManager.makeModelMatrix(entity));
   batches[key].addColor(entityManager.colorToVec4(entity));
