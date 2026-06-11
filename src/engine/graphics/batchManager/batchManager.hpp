@@ -13,5 +13,4 @@ public:
   void remove(EntityId entity);
   std::unordered_map<BatchKey, Batch> &getBatches() { return batches; }
   std::vector<std::pair<BatchKey,Batch>> getBatches2();
-  void cleanBatches() { batches.clear(); }
 };

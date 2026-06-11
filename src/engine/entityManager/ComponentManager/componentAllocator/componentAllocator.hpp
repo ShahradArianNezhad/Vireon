@@ -77,11 +77,11 @@ public:
   }
 
 
-  void setComponent(EntityId id,T comp){
+  void setComponent(EntityId id,T& comp){
     if(EntityHasComponent[id]){
       components[id] = comp;
     }else{
-      if(components.size()<=id)components.reserve(id+100);
+      if(components.size()<=id)components.resize(id+100);
       components[id] = comp;
       EntityHasComponent[id]=true;
     }

@@ -66,10 +66,9 @@ EntityId Engine::makeCircle(vec3 pos, float r) {
   auto meshId = meshManager.makePrimitive(Primitive::Circle);
   auto matId = materialManager.newMat();
   auto transformComp = TransformComponent{
-      .position = {pos.x, pos.y, pos.y},
+      .position = {pos.x, pos.y, pos.z},
       .scale = {r, r, 1.0f},
   };
-
   auto id = entityManager.newEntity(RenderComponent{meshId,matId},transformComp);
   renderer.addEntity(id);
   LOG_DEBUG("circle entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
@@ -102,12 +101,12 @@ void Engine::run(Game* game) {
         buildSpatialMap();
         double dt = clock.getDeltaTime();
         clock.setTimestamp();
-        syncFPS();
         ScheduleManager::update(dt);
         game->update(dt);
         renderer.renderCurrentScene();
         window.updateWindow();
         spatialMap.clear();
+        syncFPS();
     }
 }
 
@@ -181,7 +180,7 @@ bool Engine::isColliding(EntityId e1,EntityId e2){
 
 bool Engine::isNear(EntityId e1,EntityId e2){
   auto trans = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
-  auto nearEntites = spatialMap.getNearEntities(trans.position, trans.scale);
+  auto nearEntites = spatialMap.getNearEntities({trans.position.x,trans.position.y}, trans.scale);
   for (auto e:nearEntites)if(e==e2)return true;
   return false;
 }
@@ -192,11 +191,12 @@ bool Engine::circleIsColliding(EntityId e1,EntityId e2){
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
   auto r1 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
   auto r2 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e2);
-  float dx = (t1.position.x+r1.offset.x) - (t2.position.x+r2.offset.x);
-  float dy = (t1.position.y+r1.offset.y) - (t2.position.y+r2.offset.y);
-  float dist = sqrt(dx*dx + dy*dy);
-  if(dist<= r1.radius+r2.radius)return true;
-  return false;
+  float dx = (t1.position.x + r1.offset.x) - (t2.position.x + r2.offset.x);
+  float dy = (t1.position.y + r1.offset.y) - (t2.position.y + r2.offset.y);
+  float distSq = dx*dx + dy*dy;
+  float radiusSum = r1.radius + r2.radius;
+
+  return distSq <= radiusSum * radiusSum;
 }
 
 bool Engine::rectIsColliding(EntityId e1,EntityId e2){
