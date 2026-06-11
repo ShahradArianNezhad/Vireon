@@ -1,9 +1,16 @@
 #include "inputHandler.hpp"
+#include "engine/eventManager/eventManager.hpp"
 #include "utils/logger/logger.hpp"
 #include <GLFW/glfw3.h>
 
 InputHandler::InputHandler(GLFWwindow *window) : window(window) {
   glfwSetScrollCallback(window, InputHandler::wheelCallback);
+  glfwSetKeyCallback(window,[](GLFWwindow* , int key, int , int action, int ){
+      if (action == GLFW_PRESS) EventManager::emit(KeyboardKeyPressedEvent{static_cast<Key>(key)});
+  });
+  glfwSetMouseButtonCallback(window,[](GLFWwindow* , int button, int action, int ){
+      if (action == GLFW_PRESS) EventManager::emit(MouseButtonPressedEvent{static_cast<Mouse>(button)});
+      });
 }
 
 bool InputHandler::checkKeyPress(Key key) {

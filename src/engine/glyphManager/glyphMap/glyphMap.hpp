@@ -43,8 +43,8 @@ namespace std {
 
 
 class GlyphMap{
-  static constexpr size_t ATLAS_WIDTH = 1024;
-  static constexpr size_t ATLAS_HEIGHT = 1024;
+  static constexpr size_t ATLAS_WIDTH = 2048;
+  static constexpr size_t ATLAS_HEIGHT = 2048;
   FT_Face face;
   FT_Library& ft;
   std::string fontPath;

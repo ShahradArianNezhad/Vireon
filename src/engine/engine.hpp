@@ -23,7 +23,7 @@ private:
   GlyphManager glyphManager;
   SpatialMap spatialMap;
   Clock clock;
-  uint32_t targetFPS=60;
+  uint32_t targetFPS=0;
   void buildSpatialMap();
   bool circleIsColliding(EntityId e1,EntityId e2);
   bool rectIsColliding(EntityId e1,EntityId e2);

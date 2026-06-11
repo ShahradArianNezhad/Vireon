@@ -1,19 +1,33 @@
 #pragma once
+#include "engine/eventManager/eventManager.hpp"
 #include "utils/types.hpp"
 #include <GLFW/glfw3.h>
+
 enum class Key;
 enum class Mouse;
+
+
+struct MouseWheelEvent{
+  double changeY;
+};
+
+struct MouseButtonPressedEvent{
+  Mouse button; 
+};
+
+struct KeyboardKeyPressedEvent{
+  Key key;
+};
+
 class InputHandler {
 public:
   InputHandler(GLFWwindow *window);
   bool checkKeyPress(Key key);
   bool checkMousePress(Mouse button);
   vec2 getCursorPos();
-  double getMouseWheelOffset(){return wheelOffset;}
 
 private:
-  static inline double wheelOffset=0.0;
-  static inline void wheelCallback(GLFWwindow*, double, double yoffset){wheelOffset=yoffset;};
+  static inline void wheelCallback(GLFWwindow*, double, double yoffset){EventManager::emit(MouseWheelEvent{yoffset});};
   GLFWwindow *window;
 };
 

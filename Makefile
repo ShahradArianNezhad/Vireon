@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -std=c++23 -Wall -Wextra -I./include -I./src -I/usr/include/freetype2 -ggdb
+CXXFLAGS := -std=c++23 -Wall -Wextra -I./include -I./src -I/usr/include/freetype2 -ggdb -O3
 LDFLAGS := -lglfw -lGL -lX11 -lpthread -lfreetype -lXrandr -lXi -ldl -ggdb -I./include -I./src
 
 SRC_DIR := src
