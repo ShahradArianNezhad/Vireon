@@ -153,6 +153,11 @@ void Engine::buildSpatialMap(){
 
 
 bool Engine::isColliding(EntityId e1,EntityId e2){
+  auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
+  auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
+  if(!spatialMap.isNear({t1.position.x,t1.position.y}, t1.scale,{t2.position.x,t2.position.y}, t2.scale))return false;
+
+#ifdef ENGINE_DEBUG
   if(!entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1)&&
       !entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)){
     LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e1);
@@ -163,6 +168,7 @@ bool Engine::isColliding(EntityId e1,EntityId e2){
     LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e2);
     return false;
   }
+#endif
 
   if(entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)&&
       entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)) return rectCircleIsColliding(e1,e2);
@@ -178,15 +184,8 @@ bool Engine::isColliding(EntityId e1,EntityId e2){
   return false;
 }
 
-bool Engine::isNear(EntityId e1,EntityId e2){
-  auto trans = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
-  auto nearEntites = spatialMap.getNearEntities({trans.position.x,trans.position.y}, trans.scale);
-  for (auto e:nearEntites)if(e==e2)return true;
-  return false;
-}
 
 bool Engine::circleIsColliding(EntityId e1,EntityId e2){
-  if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
   auto r1 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
@@ -200,7 +199,6 @@ bool Engine::circleIsColliding(EntityId e1,EntityId e2){
 }
 
 bool Engine::rectIsColliding(EntityId e1,EntityId e2){
-  if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
   auto r1 = entityManager.componentManager.getComponent<ComponentType::RECTCOLLIDER>(e1);
@@ -218,7 +216,6 @@ bool Engine::rectIsColliding(EntityId e1,EntityId e2){
 }
 
 bool Engine::rectCircleIsColliding(EntityId e1,EntityId e2){
-  if(!isNear(e1, e2))return false;
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
   float closestX = std::max(t1.position.x - t1.scale.x * 0.5f,std::min(t2.position.x,t1.position.x + t1.scale.x * 0.5f));

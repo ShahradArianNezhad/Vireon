@@ -26,6 +26,7 @@ void Renderer::initGLAD() {
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager,EntityManager& eManager)
     : meshManager(manager), materialManager(matManager),sceneManager(sManager),entityManager(eManager) {
   LOG_INFO("initializing Renderer");
+  EventManager::subscribe<WindowSizeChangeEvent>([this](WindowSizeChangeEvent e){windowResizeCallback();});
   enableBlending();
   setDepthParams();
   screenW=Screen::width;
@@ -219,7 +220,7 @@ void Renderer::renderCurrentScene() {
   renderSceneToBuffer();
   renderLights();
   renderBufferToScreen();
-  if(screenH!=Screen::height || screenW!=Screen::width)windowResizeCallback();
+  //if(screenH!=Screen::height || screenW!=Screen::width)windowResizeCallback();
 }
 
 mat4 Renderer::getViewMatrix(){

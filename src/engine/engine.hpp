@@ -28,11 +28,11 @@ private:
   bool circleIsColliding(EntityId e1,EntityId e2);
   bool rectIsColliding(EntityId e1,EntityId e2);
   bool rectCircleIsColliding(EntityId e1,EntityId e2);
-  bool isNear(EntityId e1,EntityId e2);
 
   void syncFPS();
 
 public:
+  bool isNear(EntityId e1,EntityId e2);
   EngineWindow window{Screen::width, Screen::height,"myGame"};
   EntityManager entityManager;
   InputHandler inputHandler{window.getWindowPtr()};

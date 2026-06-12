@@ -89,6 +89,8 @@ void EngineWindow::setFullscreen(size_t monitor){
   }
  
   glfwSetWindowMonitor(window, monitors[monitor], 0, 0, mode->width, mode->height, mode->refreshRate);
+  Screen::width = mode->width;
+  Screen::height = mode->height;
   LOG_INFO("window set fullscreen on monitor : {}",monitor);
 }
 

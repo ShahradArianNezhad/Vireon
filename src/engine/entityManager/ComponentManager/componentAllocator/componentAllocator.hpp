@@ -66,31 +66,35 @@ class ComponentAllocator{
 
 private:
   std::vector<T> components;
-  std::unordered_map<EntityId,bool> EntityHasComponent;
+  std::vector<bool> EntityHasComponent;
 
 public:
 
   T getComponent(EntityId id){
-    if(EntityHasComponent[id])return components[id];
+    if(hasComponent(id))return components[id];
     LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
     return T{};
   }
 
 
   void setComponent(EntityId id,T& comp){
-    if(EntityHasComponent[id]){
+    if(hasComponent(id)){
       components[id] = comp;
     }else{
       if(components.size()<=id)components.resize(id+100);
+      if(EntityHasComponent.size()<=id)EntityHasComponent.resize(id+100);
       components[id] = comp;
       EntityHasComponent[id]=true;
     }
   }
 
-  bool hasComponent(EntityId id){return EntityHasComponent[id];};
+  bool hasComponent(EntityId id){
+    if(EntityHasComponent.size()<=id)return false;
+    return EntityHasComponent[id];
+  };
 
   void deleteComponent(EntityId id){
-    if(!EntityHasComponent[id]){
+    if(!hasComponent(id)){
       LOG_WARN("trying to delete non existing component:{} on entity:{}",typeid(T).name(),id);
       return;
     }

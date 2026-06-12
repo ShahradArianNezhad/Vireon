@@ -1,10 +1,14 @@
 #pragma once
+#include "engine/eventManager/eventManager.hpp"
 #include "utils/logger/logger.hpp"
 #include <string>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
+struct WindowSizeChangeEvent{
+  int w,h;
+};
 
 namespace Screen {
 inline uint32_t width = 800;
@@ -35,7 +39,7 @@ public:
   void updateWindow();
   void setViewport();
   void setWindowName(std::string name);
-  void setFullscreen(size_t monitor);
+  void setFullscreen(size_t monitor=0);
   void setWindowed();
   void setWindowSize(int w,int h);
   void setWindowIcon(std::string iconPath);
@@ -53,6 +57,7 @@ private:
     //glViewport(0, 0, width, height);
     Screen::width = width;
     Screen::height = height;
+    EventManager::emit(WindowSizeChangeEvent{width,height});
     LOG_INFO("window size changed: {}x{}",width,height);
   }
 };
