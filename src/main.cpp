@@ -4,7 +4,9 @@
 #include <ctime>
 #include <glm/glm.hpp>
 #include "./game/game.hpp"
+#include "engine/entityManager/ComponentManager/componentManager.hpp"
 #include "engine/entityManager/component/components.hpp"
+#include "engine/eventManager/eventManager.hpp"
 #include "platform/window/GLFWwindow.hpp"
 
 class myGame : public Game{
@@ -14,22 +16,21 @@ class myGame : public Game{
   vec2 velocities[count];
 public:
   void init() override {
-    //engine.window.setFullscreen(0);
-    //engine.setTargetFPS(60);
+    engine.window.setFullscreen(0);
     srand(time(0));
     for(int i{0};i<count;++i){
       int x = (i*(radius+15) % 1900) - 1900/2;
       int y = (i*(radius+15) / 1900)*15 - 1000/2;
       auto id = (engine.makeCircle({x,y,0},radius));
       circles[i]= id;
-      engine.entityManager.componentManager.setComponent<ComponentType::CIRCLECOLLIDER>(id,CircleColliderComponent{radius,{0,0}});
+      engine.entityManager.componentManager.setComponent<Component::CIRCLECOLLIDER>(id,Component::CIRCLECOLLIDER{radius,{0,0}});
       velocities[i] = vec2{((rand()%10)-5),((rand()%10)-5)};
     }
   }
   void update(double fps) override {
     LOG_INFO("fps : {}",1/fps);
     for(size_t i=0;i<count;i++){
-      auto trans = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(circles[i]);
+      auto trans = engine.entityManager.componentManager.getComponent<Component::TRANSFORM>(circles[i]);
       if(trans.position.x + 10 >= 1920/2.0) {      
         velocities[i].x *=-1;
       }
@@ -50,7 +51,7 @@ public:
       }
       trans.position.x+=velocities[i].x;
       trans.position.y+=velocities[i].y;
-      engine.entityManager.componentManager.setComponent<ComponentType::TRANSFORM>(circles[i], trans);
+      engine.entityManager.componentManager.setComponent<Component::TRANSFORM>(circles[i], trans);
     }
   };
 };

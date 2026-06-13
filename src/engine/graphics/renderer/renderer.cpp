@@ -69,14 +69,14 @@ void Renderer::initRenderBuffer(){
 
 void Renderer::collectAndBatch(Scene *scene) {
   for (auto entityId : scene->collectEntities()) {
-    if (isInScreen(entityId) && entityManager.componentManager.hasComponent<ComponentType::RENDER>(entityId))
+    if (isInScreen(entityId) && entityManager.componentManager.hasComponent<Component::RENDER>(entityId))
       batchManager.submit(entityId);
   }
 }
 
 mat4 Renderer::getProjectionMatrix() {
   auto cam = sceneManager.get(currentScene)->getActiveCamera();
-  auto camComp = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(cam);
+  auto camComp = entityManager.componentManager.getComponent<Component::CAMERA2D>(cam);
   float halfW = static_cast<float>(screenW)*0.5f/camComp.zoom;
   float halfH = static_cast<float>(screenH)*0.5f/camComp.zoom;
   return glm::ortho(
@@ -170,8 +170,8 @@ void Renderer::renderLights(){
   std::vector<float> radius;
   std::vector<float> intensity;
   for(auto id: sceneManager.get(currentScene)->collectEntities()){
-    if(entityManager.componentManager.hasComponent<ComponentType::LIGHT>(id)){
-      auto lightComp = entityManager.componentManager.getComponent<ComponentType::LIGHT>(id);
+    if(entityManager.componentManager.hasComponent<Component::LIGHT>(id)){
+      auto lightComp = entityManager.componentManager.getComponent<Component::LIGHT>(id);
       color.push_back(lightComp.color);
       radius.push_back(lightComp.radius);
       intensity.push_back(lightComp.intensity);
@@ -226,7 +226,7 @@ void Renderer::renderCurrentScene() {
 mat4 Renderer::getViewMatrix(){
   mat4 view = mat4(1.0f);
   auto camera = sceneManager.get(currentScene)->getActiveCamera();
-  auto camComp = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera);
+  auto camComp = entityManager.componentManager.getComponent<Component::CAMERA2D>(camera);
   view = glm::rotate(
       view,
       glm::radians(-camComp.rotation),
@@ -246,12 +246,12 @@ void Renderer::getGlErrors(){
 
 bool Renderer::isInScreen(EntityId id){
   auto camera = sceneManager.get(currentScene)->getActiveCamera();
-  auto camPos = entityManager.componentManager.getComponent<ComponentType::CAMERA2D>(camera);
+  auto camPos = entityManager.componentManager.getComponent<Component::CAMERA2D>(camera);
   auto camRight =camPos.position.x + ((screenW)/2.0);
   auto camLeft = camPos.position.x - ((screenW)/2.0) ;
   auto camTop = camPos.position.y - ((screenH)/2.0) ;
   auto camBot = camPos.position.y + ((screenH)/2.0);
-  auto entityPos = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(id);
+  auto entityPos = entityManager.componentManager.getComponent<Component::TRANSFORM>(id);
   auto entityRight = entityPos.position.x + (entityPos.scale.x/1.0);
   auto entityLeft = entityPos.position.x - (entityPos.scale.x/1.0);
   auto entityTop = entityPos.position.y - (entityPos.scale.y/1.0);

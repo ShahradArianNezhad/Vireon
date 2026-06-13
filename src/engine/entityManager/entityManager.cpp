@@ -15,10 +15,10 @@ EntityId EntityManager::newEntity() {
 }
 
 
-EntityId EntityManager::newEntity(RenderComponent renderComp,TransformComponent transformComp){
+EntityId EntityManager::newEntity(Component::RENDER renderComp,Component::TRANSFORM transformComp){
   EntityId id = newEntity();
-  componentManager.setComponent<ComponentType::RENDER>(id,renderComp);
-  componentManager.setComponent<ComponentType::TRANSFORM>(id,transformComp);
+  componentManager.setComponent<Component::RENDER>(id,renderComp);
+  componentManager.setComponent<Component::TRANSFORM>(id,transformComp);
   LOG_DEBUG("newEntity called RenderComp:{},TransformComp:{}",renderComp,transformComp);
   return id;
 }
@@ -26,16 +26,16 @@ EntityId EntityManager::newEntity(RenderComponent renderComp,TransformComponent 
 
 
 vec3 EntityManager::getPos(EntityId id){
-  if(componentManager.hasComponent<ComponentType::TRANSFORM>(id)) return componentManager.getComponent<ComponentType::TRANSFORM>(id).position;
+  if(componentManager.hasComponent<Component::TRANSFORM>(id)) return componentManager.getComponent<Component::TRANSFORM>(id).position;
   LOG_WARN("trying to get pos on entity with no transform");
   return {0,0,0};
 }
 
 void EntityManager::setPos(EntityId id,vec3 pos){
-  if(componentManager.hasComponent<ComponentType::TRANSFORM>(id)){
-    auto trans = componentManager.getComponent<ComponentType::TRANSFORM>(id);
+  if(componentManager.hasComponent<Component::TRANSFORM>(id)){
+    auto trans = componentManager.getComponent<Component::TRANSFORM>(id);
     trans.position=pos;
-    componentManager.setComponent<ComponentType::TRANSFORM>(id,trans);
+    componentManager.setComponent<Component::TRANSFORM>(id,trans);
   }
   else  LOG_WARN("trying to set pos on entity with no transform");
 }
@@ -44,8 +44,8 @@ void EntityManager::setPos(EntityId id,vec3 pos){
 
 mat4 EntityManager::makeModelMatrix(EntityId id){
   mat4 transform{1.0f};
-  if (componentManager.hasComponent<ComponentType::TRANSFORM>(id)){
-    auto transformComp = componentManager.getComponent<ComponentType::TRANSFORM>(id);
+  if (componentManager.hasComponent<Component::TRANSFORM>(id)){
+    auto transformComp = componentManager.getComponent<Component::TRANSFORM>(id);
     transform = glm::translate(transform, (transformComp).position);
     transform = glm::scale(transform, (transformComp).scale);
     transform = glm::rotate(transform, (transformComp).rotation,{0.0f,0.0f,1.0f});
@@ -56,23 +56,23 @@ mat4 EntityManager::makeModelMatrix(EntityId id){
 
 EntityId EntityManager::makeCamera(){
   EntityId id = newEntity();
-  auto cameraComp = CameraComponent2D{};
-  componentManager.setComponent<ComponentType::CAMERA2D>(id,cameraComp);
+  auto cameraComp = Component::CAMERA2D{};
+  componentManager.setComponent<Component::CAMERA2D>(id,cameraComp);
   LOG_DEBUG("make camera 2d called:id:{} cameracomp:{}",id,cameraComp);
   return id;
 }
 
 void EntityManager::deleteEntity(EntityId id){
   EventManager::emit(EntityDestroyedEvent{.id=id});
-  componentManager.deleteComponent<ComponentType::TRANSFORM>(id);
-  componentManager.deleteComponent<ComponentType::RENDER>(id);
+  componentManager.deleteComponent<Component::TRANSFORM>(id);
+  componentManager.deleteComponent<Component::RENDER>(id);
   idManager.release(id);
   LOG_DEBUG("entity delete called on: {}",id);
 }
 
 
 vec4 EntityManager::colorToVec4(EntityId id){
-  auto color = componentManager.getComponent<ComponentType::RENDER>(id).color;
+  auto color = componentManager.getComponent<Component::RENDER>(id).color;
   float r =((static_cast<unsigned int>(color)&0xFF000000)>>24)/255.0f; 
   float g =((static_cast<unsigned int>(color)&0x00FF0000)>>16)/255.0f; 
   float b =((static_cast<unsigned int>(color)&0x0000FF00)>>8)/255.0f; 
@@ -86,9 +86,9 @@ void EntityManager::setColor(EntityId id,unsigned int r,unsigned int g,unsigned 
   color|=((g&0x000000FF)<<16);
   color|=((b&0x000000FF)<<8);
   color|=(a&0x000000FF);
-  auto comp = componentManager.getComponent<ComponentType::RENDER>(id);
+  auto comp = componentManager.getComponent<Component::RENDER>(id);
   comp.color=color;
-  componentManager.setComponent<ComponentType::RENDER>(id, comp);
+  componentManager.setComponent<Component::RENDER>(id, comp);
   LOG_DEBUG("set Color 0X{} on entity:{}",color,id);
 }
 

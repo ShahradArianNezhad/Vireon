@@ -6,100 +6,59 @@
 using ComponentId = uint32_t;
 using EntityId = uint32_t;
 
-struct RenderComponent {
-  MeshID mesh;
-  MaterialID material;
-  uint32_t color=0xFFFFFFFF;
-  bool visible=true;
-};
 
-struct TransformComponent {
-  vec3 position={0,0,0};
+namespace Component{
+  struct RENDER {
+    MeshID mesh;
+    MaterialID material;
+    uint32_t color=0xFFFFFFFF;
+    bool visible=true;
+  };
 
-  vec3 scale={0,0,0};
-  float rotation={0};
-};
+  struct TRANSFORM {
+    vec3 position={0,0,0};
 
-struct CircleColliderComponent{
-  float radius;
-  vec2 offset={0,0};
-};
+    vec3 scale={0,0,0};
+    float rotation={0};
+  };
 
-struct RectColliderComponent{
-  vec2 offset={0,0};
-  vec2 scale={0,0};
-  float rotation;
-};
+  struct CIRCLECOLLIDER{
+    float radius;
+    vec2 offset={0,0};
+  };
 
-struct CameraComponent2D{
-  vec2 position={0,0};
-  float rotation=0;
-  float zoom=1.0f;
-};
+  struct RECTCOLLIDER{
+    vec2 offset={0,0};
+    vec2 scale={0,0};
+    float rotation;
+  };
 
-struct UvRectComponent{
-  vec2 uvMin={0,0};
-  vec2 uvMax={1,1};
-};
+  struct CAMERA2D{
+    vec2 position={0,0};
+    float rotation=0;
+    float zoom=1.0f;
+  };
 
-struct LightComponent{
-  float radius;
-  float intensity;
-  vec3 color;
-};
+  struct UVRECT{
+    vec2 uvMin={0,0};
+    vec2 uvMax={1,1};
+  };
 
-enum ComponentType{
-  RENDER,
-  TRANSFORM,
-  CIRCLECOLLIDER,
-  RECTCOLLIDER,
-  CAMERA2D,
-  UVRECT,
-  LIGHT
-};
-
-
-constexpr std::string_view to_string(ComponentType c) {
-  switch (c) {
-    case ComponentType::RENDER:   return "render component";
-    case ComponentType::TRANSFORM: return "Transform Component";
-    case ComponentType::CIRCLECOLLIDER:  return "Circle collider component";
-    case ComponentType::RECTCOLLIDER:  return "Rect collider component";
-    case ComponentType::CAMERA2D: return "2d camera component";
-    case ComponentType::UVRECT: return "UV rect component";
-    case ComponentType::LIGHT: return "Light component";
-  }
-  return "Unknown";
+  struct LIGHT{
+    float radius;
+    float intensity;
+    vec3 color;
+  };
 }
 
 template <>
-struct std::formatter<ComponentType> : std::formatter<std::string_view> {
-  auto format(ComponentType c, format_context& ctx) const {
-    return std::formatter<std::string_view>::format(
-        to_string(c),
-        ctx
-        );
-  }
-};
-
-
-
-template<ComponentType I>
-struct EnumToType {
-  using type = std::tuple_element_t<static_cast<size_t>(I), 
-        std::tuple<RenderComponent,TransformComponent,CircleColliderComponent,RectColliderComponent,CameraComponent2D,UvRectComponent,LightComponent>>;
-};
-
-
-
-template <>
-struct std::formatter<RenderComponent> {
+struct std::formatter<Component::RENDER> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const RenderComponent& rc, std::format_context& ctx) const
+    auto format(const Component::RENDER& rc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -120,13 +79,13 @@ struct std::formatter<RenderComponent> {
 
 
 template <>
-struct std::formatter<TransformComponent> {
+struct std::formatter<Component::TRANSFORM> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const TransformComponent& tc, std::format_context& ctx) const
+    auto format(const Component::TRANSFORM& tc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -144,13 +103,13 @@ struct std::formatter<TransformComponent> {
 
 
 template <>
-struct std::formatter<CircleColliderComponent> {
+struct std::formatter<Component::CIRCLECOLLIDER> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const CircleColliderComponent& cc, std::format_context& ctx) const
+    auto format(const Component::CIRCLECOLLIDER& cc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -166,13 +125,13 @@ struct std::formatter<CircleColliderComponent> {
 
 
 template <>
-struct std::formatter<RectColliderComponent> {
+struct std::formatter<Component::RECTCOLLIDER> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const RectColliderComponent& cc, std::format_context& ctx) const
+    auto format(const Component::RECTCOLLIDER& cc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -190,13 +149,13 @@ struct std::formatter<RectColliderComponent> {
 
 
 template <>
-struct std::formatter<CameraComponent2D> {
+struct std::formatter<Component::CAMERA2D> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const CameraComponent2D& cc, std::format_context& ctx) const
+    auto format(const Component::CAMERA2D& cc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -214,13 +173,13 @@ struct std::formatter<CameraComponent2D> {
 
 
 template <>
-struct std::formatter<UvRectComponent> {
+struct std::formatter<Component::UVRECT> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const UvRectComponent& cc, std::format_context& ctx) const
+    auto format(const Component::UVRECT& cc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),
@@ -235,13 +194,13 @@ struct std::formatter<UvRectComponent> {
 };
 
 template <>
-struct std::formatter<LightComponent> {
+struct std::formatter<Component::LIGHT> {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    auto format(const LightComponent& cc, std::format_context& ctx) const
+    auto format(const Component::LIGHT& cc, std::format_context& ctx) const
     {
         return std::format_to(
             ctx.out(),

@@ -16,42 +16,42 @@ struct ComponentSetEvent{
 class ComponentManager {
 private:
   std::tuple<
-  ComponentAllocator<TransformComponent>,
-  ComponentAllocator<RenderComponent>,
-  ComponentAllocator<CircleColliderComponent>,
-  ComponentAllocator<RectColliderComponent>,
-  ComponentAllocator<CameraComponent2D>,
-  ComponentAllocator<UvRectComponent>,
-  ComponentAllocator<LightComponent>
+  ComponentAllocator<Component::TRANSFORM>,
+  ComponentAllocator<Component::RENDER>,
+  ComponentAllocator<Component::CIRCLECOLLIDER>,
+  ComponentAllocator<Component::RECTCOLLIDER>,
+  ComponentAllocator<Component::CAMERA2D>,
+  ComponentAllocator<Component::UVRECT>,
+  ComponentAllocator<Component::LIGHT>
     > allocators;
 
 public:
-  template<ComponentType T>
-    EnumToType<T>::type getComponent(EntityId id){
-      auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
+  template<typename T>
+    T getComponent(EntityId id){
+      auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       return allocator.getComponent(id);
     }
 
-  template<ComponentType T>
-    void setComponent(EntityId id,typename EnumToType<T>::type comp){
-      auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
+  template<typename T>
+    void setComponent(EntityId id,T comp){
+      auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       allocator.setComponent(id,comp);
-      EventManager::emit(ComponentSetEvent<typename EnumToType<T>::type>{id,comp});
+      EventManager::emit(ComponentSetEvent<T>{id,comp});
       LOG_DEBUG("set component:{} on entity: {}",comp,id);
     }
 
 
-  template<ComponentType T>
+  template<typename T>
     void deleteComponent(EntityId id){
-      auto& allocator = std::get<ComponentAllocator<typename EnumToType<T>::type>>(allocators);
+      auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       allocator.deleteComponent(id);
       LOG_DEBUG("delete component:{} on entity: {}",T,id);
     }
 
 
-  template<ComponentType... Ts>
+  template<typename... Ts>
     bool hasComponent(EntityId id){
-      return (... && std::get<ComponentAllocator<typename EnumToType<Ts>::type>>(allocators)
+      return (... && std::get<ComponentAllocator<Ts>>(allocators)
           .hasComponent(id));
     };
   

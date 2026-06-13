@@ -2,7 +2,6 @@
 #include "engine/entityManager/ComponentManager/componentManager.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "engine/entityManager/component/components.hpp"
-#include "engine/eventManager/eventManager.hpp"
 #include "utils/types.hpp"
 #include <cstdint>
 #include <vector>
@@ -26,7 +25,7 @@ public:
   EntityManager(){};
   ComponentManager componentManager{};
   EntityId newEntity();
-  EntityId newEntity(struct RenderComponent,struct TransformComponent);
+  EntityId newEntity(struct Component::RENDER,struct Component::TRANSFORM);
   void deleteEntity(EntityId id);
 
   EntityId makeCamera();
