@@ -128,16 +128,16 @@ EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size){
   return id;
 }
 
-std::vector<EntityId> Engine::makeText(std::string text,vec3 pos,std::string font,int size){
-  std::vector<EntityId> ids;
+Text Engine::makeText(std::string text,vec3 pos,std::string font,int size){
+  Text t{.pos=pos,.font=font,.size=size};
   size_t advance=0;
   for(auto c:text){
     auto& character = glyphManager.getGlyphChar(c,font,size);
     auto id=makeChar(c,{pos.x+advance,pos.y,pos.z},font,size);
-    ids.push_back(id);
+    t.ids.push_back(id);
     advance+=character.advance;
   }
-  return ids;
+  return t;
 }
 
 
@@ -227,4 +227,18 @@ EntityId Engine::makeLight(vec2 pos,vec3 color, float radius,float intensity) {
   renderer.addEntity(id);
   LOG_DEBUG("light entity created: pos:{},{},radius:{},entityId:{}",pos.x,pos.y,radius,id);
   return id;
+}
+
+
+
+void Engine::changeText(Text& text,const std::string& newText){
+  if(text.ids.empty()){
+    LOG_ERROR("empty text vector passed changeText");
+    return;
+  }
+  while(!text.ids.empty()){
+    entityManager.deleteEntity(text.ids.back());
+    text.ids.pop_back();
+  }
+  text = makeText(newText, text.pos, text.font,  text.size);
 }

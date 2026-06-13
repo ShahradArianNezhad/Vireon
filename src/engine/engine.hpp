@@ -14,6 +14,14 @@
 #include <glm/ext/vector_float3.hpp>
 
 
+struct Text{
+  std::vector<EntityId> ids={};
+  vec3 pos;
+  std::string font;
+  int size;
+};
+
+
 class Game;
 class Engine {
 private:
@@ -48,10 +56,14 @@ public:
   bool isColliding(EntityId e1,EntityId e2);
   bool rectIsColliding(EntityId e1,EntityId e2);
   bool rectCircleIsColliding(EntityId e1,EntityId e2);
+  bool circleIsColliding(EntityId e1,EntityId e2);
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 
   EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64);
-  bool circleIsColliding(EntityId e1,EntityId e2);
-  std::vector<EntityId> makeText(std::string text,vec3 pos,std::string font,int size);
+  Text makeText(std::string text,vec3 pos,std::string font,int size);
+  void changeText(Text& text,const std::string& newText);
 };
+
+
+
