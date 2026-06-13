@@ -2,6 +2,7 @@
 #include "engine/materialManager/material/texture/texture.hpp"
 #include "freetype/freetype.h"
 #include "glad/gl.h"
+#include "utils/allocator/allocator.hpp"
 #include "utils/types.hpp"
 #include <map>
 #include <string>
@@ -49,7 +50,7 @@ class GlyphMap{
   FT_Library& ft;
   std::string fontPath;
   size_t fontSize;
-  std::vector<unsigned char> atlas;
+  std::vector<unsigned char,EngineAllocator<unsigned char>> atlas;
   Texture tex;
 
   public:

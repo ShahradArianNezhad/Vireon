@@ -1,4 +1,5 @@
 #pragma once
+#include "utils/allocator/allocator.hpp"
 #include "utils/logger/logger.hpp"
 #include <cstdint>
 #include <unordered_map>

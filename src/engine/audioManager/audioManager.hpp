@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include "./miniaudio/miniaudio.h"
+#include "utils/allocator/allocator.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "utils/objectPool/objectPool.hpp"
 

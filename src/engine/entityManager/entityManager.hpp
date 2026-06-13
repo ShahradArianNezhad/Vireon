@@ -1,5 +1,6 @@
 #pragma once
 #include "engine/entityManager/ComponentManager/componentManager.hpp"
+#include "utils/allocator/allocator.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "engine/entityManager/component/components.hpp"
 #include "utils/types.hpp"
@@ -19,7 +20,7 @@ using EntityId = uint32_t;
 class EntityManager {
 private:
   IDManager idManager;
-  std::vector<EntityId> entities;
+  std::vector<EntityId,EngineAllocator<EntityId>> entities;
 
 public:
   EntityManager(){};

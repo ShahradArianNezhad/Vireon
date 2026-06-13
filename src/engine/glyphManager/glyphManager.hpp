@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/glyphManager/glyphMap/glyphMap.hpp"
 #include "glad/gl.h"
+#include "utils/allocator/allocator.hpp"
 #include <ft2build.h>
 #include <string>
 #include <unordered_map>

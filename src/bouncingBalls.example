@@ -6,8 +6,8 @@
 #include "./game/game.hpp"
 #include "engine/entityManager/ComponentManager/componentManager.hpp"
 #include "engine/entityManager/component/components.hpp"
+#include "engine/eventManager/eventManager.hpp"
 #include "platform/window/GLFWwindow.hpp"
-#include "utils/logger/logger.hpp"
 
 class myGame : public Game{
   static constexpr int count = 2000;
@@ -28,7 +28,7 @@ public:
     }
   }
   void update(double fps) override {
-    LOG_MEMORY();
+    LOG_INFO("fps : {}",1/fps);
     for(size_t i=0;i<count;i++){
       auto trans = engine.entityManager.componentManager.getComponent<Component::TRANSFORM>(circles[i]);
       if(trans.position.x + 10 >= 1920/2.0) {      

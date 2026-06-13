@@ -2,6 +2,7 @@
 #include "./material/material.hpp"
 #include "engine/glyphManager/glyphMap/glyphMap.hpp"
 #include "engine/meshManager/meshManager.hpp"
+#include "utils/allocator/allocator.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "utils/logger/logger.hpp"
 #include <unordered_map>

@@ -2,7 +2,6 @@
 #include "engine/entityManager/component/components.hpp"
 #include "utils/idManager/idManager.hpp"
 #include "utils/objectPool/objectPool.hpp"
-#include <map>
 
 using subscriptionId = uint32_t;
 

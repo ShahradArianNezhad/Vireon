@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "./scene/scene.hpp"
+#include "utils/allocator/allocator.hpp"
 #include "utils/idManager/idManager.hpp"
 
 

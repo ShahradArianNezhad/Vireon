@@ -10,6 +10,7 @@
 #include <mutex>
 #include <thread>
 #include <utility>
+#include "./utils/types.hpp"
 //#define ENGINE_DEBUG
 
 constexpr int MaxStoredLogs = 200;
@@ -65,6 +66,11 @@ struct std::formatter<LogLevel> : std::formatter<std::string_view> {
 #define LOG_FATAL(...)\
   Logger::log(LogLevel::Fatal,__FILE__,__VA_ARGS__)
 
+#define LOG_MEMORY()\
+  for(size_t i{};i<Logger::allocators.size();i++){\
+    AllocatorBase* alloc = Logger::allocators[i];\
+    LOG_INFO("allocator name : {}, bytes allocated : {}KB",alloc->allocatorName,alloc->allocatedBytes/1024);\
+  }\
 
 
 struct Log{
@@ -95,10 +101,10 @@ class Logger{
     std::cout.flush();
     file.flush();
   }
-
   static void bufferLog(Log log);
 
   public:
+  static inline std::vector<AllocatorBase*> allocators;
 
   ~Logger(){
     writeLogs();
@@ -140,6 +146,10 @@ class Logger{
       stopLogger();
     }
   }
+
+
+
+
 };
 
 

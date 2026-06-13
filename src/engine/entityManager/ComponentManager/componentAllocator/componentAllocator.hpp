@@ -1,5 +1,7 @@
 #pragma once
 #include "engine/entityManager/component/components.hpp"
+#include "utils/allocator/allocator.hpp"
+#include "utils/logger/logger.hpp"
 #include <cstddef>
 
 
@@ -70,9 +72,10 @@ template <typename T>
 class ComponentAllocator{
 
 private:
-  std::vector<ComponentSlot<T>> components;
+  std::vector<ComponentSlot<T>,EngineAllocator<ComponentSlot<T>>> components;
 
 public:
+
 
   T getComponent(EntityId id){
 #ifdef ENGINE_DEBUG

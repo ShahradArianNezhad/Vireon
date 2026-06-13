@@ -98,14 +98,12 @@ void Engine::run(Game* game) {
     game->init();
     clock.reset();
     while (!window.windowShouldClose()) {
-        buildSpatialMap();
         double dt = clock.getDeltaTime();
         clock.setTimestamp();
         ScheduleManager::update(dt);
         game->update(dt);
         renderer.renderCurrentScene();
         window.updateWindow();
-        spatialMap.clear();
         syncFPS();
     }
 }
@@ -143,13 +141,6 @@ std::vector<EntityId> Engine::makeText(std::string text,vec3 pos,std::string fon
 }
 
 
-void Engine::buildSpatialMap(){
-  auto& entities = sceneManager.get(getCurrentScene())->collectEntities();
-  for(auto e:entities){
-    auto trans = entityManager.componentManager.getComponent<Component::TRANSFORM>(e);
-    spatialMap.insert(e, trans.position,  trans.scale);
-  }
-}
 
 
 bool Engine::isColliding(EntityId e1,EntityId e2){

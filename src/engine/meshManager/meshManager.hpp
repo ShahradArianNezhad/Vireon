@@ -1,6 +1,7 @@
 #pragma once
 #include "./mesh/mesh.hpp"
 #include "engine/glyphManager/glyphMap/glyphMap.hpp"
+#include "utils/allocator/allocator.hpp"
 #include "utils/idManager/idManager.hpp"
 #include <cstdint>
 #include "utils/hasher64/hasher64.hpp"

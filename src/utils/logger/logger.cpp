@@ -1,7 +1,6 @@
 #include "./logger.hpp"
 #include <format>
 #include <mutex>
-#include <thread>
 #include <filesystem>
 #include <string>
 
@@ -73,3 +72,6 @@ void Logger::workerFunction(){
     flush();
   }
 }
+
+
+

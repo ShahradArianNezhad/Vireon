@@ -1,3 +1,4 @@
+#include "utils/allocator/allocator.hpp"
 #include "utils/logger/logger.hpp"
 #include "texture.hpp"
 #include "glad/gl.h"
@@ -60,7 +61,7 @@ Texture::Texture(){
 }
 
 
-void Texture::uploadAtlas(std::vector<unsigned char>& atlas,size_t w,size_t h){
+void Texture::uploadAtlas(std::vector<unsigned char,EngineAllocator<unsigned char>>& atlas,size_t w,size_t h){
 
   bind();
   width=w;

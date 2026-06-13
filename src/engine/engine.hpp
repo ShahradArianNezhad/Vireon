@@ -21,7 +21,6 @@ private:
   MaterialManager materialManager;
   SceneManager sceneManager;
   GlyphManager glyphManager;
-  SpatialMap spatialMap;
   Clock clock;
   uint32_t targetFPS=0;
   void buildSpatialMap();

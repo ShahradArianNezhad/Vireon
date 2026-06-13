@@ -1,5 +1,6 @@
 #pragma once
 #include "glad/gl.h"
+#include "utils/allocator/allocator.hpp"
 #include "utils/logger/logger.hpp"
 #include <string>
 #include <vector>
@@ -25,7 +26,7 @@ public:
     other.ID = 0;
   }
   unsigned int getID(){return ID;}
-  void uploadAtlas(std::vector<unsigned char>& atlas,size_t w,size_t h);
+  void uploadAtlas(std::vector<unsigned char,EngineAllocator<unsigned char>>& atlas,size_t w,size_t h);
   void setTex(size_t w,size_t h,void* data);
   void activate(GLenum location);
   void bind();
