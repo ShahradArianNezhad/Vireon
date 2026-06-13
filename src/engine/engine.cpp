@@ -185,7 +185,6 @@ bool Engine::isColliding(EntityId e1,EntityId e2){
 bool Engine::circleIsColliding(EntityId e1,EntityId e2){
   auto t1 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(e2);
-  //if(!spatialMap.isNear({t1.position.x,t1.position.y}, t1.scale,{t2.position.x,t2.position.y}, t2.scale))return false;
   auto r1 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e1);
   auto r2 = entityManager.componentManager.getComponent<ComponentType::CIRCLECOLLIDER>(e2);
   float dx = (t1.position.x + r1.offset.x) - (t2.position.x + r2.offset.x);

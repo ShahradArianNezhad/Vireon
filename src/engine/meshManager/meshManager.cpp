@@ -12,7 +12,7 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
   if(meshCache.contains(sig)){return meshCache[sig];}
   std::vector<Vertex> v;
   std::vector<unsigned int> i;
-  VertexLayout layout;
+  VertexLayout layout{0};
 
   switch (shape) {
     case Primitive::Triangle: 

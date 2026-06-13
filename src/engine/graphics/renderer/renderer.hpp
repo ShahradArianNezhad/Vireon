@@ -40,7 +40,7 @@ class Renderer {
   bool isInScreen(EntityId id);
   void renderSceneToBuffer();
   void renderBufferToScreen();
-  void windowResizeCallback();
+  void windowResizeCallback(WindowSizeChangeEvent e);
   void initRenderBuffer();
   void initLightBuffer();
   void drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std::vector<float>& radius,std::vector<float>& intensity,size_t count);

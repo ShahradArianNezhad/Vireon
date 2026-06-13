@@ -26,7 +26,7 @@ void Renderer::initGLAD() {
 Renderer::Renderer(MeshManager &manager, MaterialManager &matManager,SceneManager& sManager,EntityManager& eManager)
     : meshManager(manager), materialManager(matManager),sceneManager(sManager),entityManager(eManager) {
   LOG_INFO("initializing Renderer");
-  EventManager::subscribe<WindowSizeChangeEvent>([this](WindowSizeChangeEvent e){windowResizeCallback();});
+  EventManager::subscribe<WindowSizeChangeEvent>([this](WindowSizeChangeEvent e){windowResizeCallback(e);});
   enableBlending();
   setDepthParams();
   screenW=Screen::width;
@@ -152,9 +152,9 @@ void Renderer::renderBufferToScreen(){
   glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, 1);
 }
 
-void Renderer::windowResizeCallback(){
-    screenW=Screen::width;
-    screenH=Screen::height;
+void Renderer::windowResizeCallback(WindowSizeChangeEvent e){
+    screenW=e.w;
+    screenH=e.h;
     glViewport(0,0,screenW,screenH);
     sceneTexture.setTex(screenW, screenH, nullptr);
     lightTexture.setTex(screenW, screenH, nullptr);

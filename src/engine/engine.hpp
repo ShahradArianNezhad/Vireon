@@ -25,8 +25,6 @@ private:
   Clock clock;
   uint32_t targetFPS=0;
   void buildSpatialMap();
-  bool rectIsColliding(EntityId e1,EntityId e2);
-  bool rectCircleIsColliding(EntityId e1,EntityId e2);
 
   void syncFPS();
 
@@ -49,6 +47,8 @@ public:
   void setAmbient(float a){renderer.ambient=a;}
   SceneId getCurrentScene(){return renderer.getCurrentScene();};
   bool isColliding(EntityId e1,EntityId e2);
+  bool rectIsColliding(EntityId e1,EntityId e2);
+  bool rectCircleIsColliding(EntityId e1,EntityId e2);
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 

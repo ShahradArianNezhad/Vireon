@@ -75,41 +75,36 @@ private:
 public:
 
   T getComponent(EntityId id){
-    return components.at(id).comp;
-    LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
-    return T{};
+#ifdef ENGINE_DEBUG
+    if(components.size()<id){
+      LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
+      return T{};
+    }
+#endif
+      return components.at(id).comp;
   }
 
 
   void setComponent(EntityId id,T& comp){
-    try{
-    auto& slot = components.at(id);
+    if(components.size()<=id)components.resize(id+100);
+    auto& slot = components[id];
     slot.comp=comp;
     slot.exists=true;
-    }catch(const std::out_of_range& ex){
-      components.resize(id+100);
-      auto& slot = components.at(id);
-      slot.comp=comp;
-      slot.exists=true;
-    }
   }
 
   bool hasComponent(EntityId id){
-    try{
-    auto& slot = components.at(id);
-    return slot.exists;
-    }catch(const std::out_of_range& ex){
-      return false;
-    }
-
+    if(components.size()<=id)return false;
+    return components[id].exists;
   };
 
   void deleteComponent(EntityId id){
+#ifdef ENGINE_DEBUG
     if(!hasComponent(id)){
       LOG_WARN("trying to delete non existing component:{} on entity:{}",typeid(T).name(),id);
       return;
     }
-    auto& slot = components.at(id);
+#endif
+    auto& slot = components[id];
     slot.exists=false;
   }
   
