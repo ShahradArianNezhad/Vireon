@@ -8,7 +8,7 @@
 #include "platform/window/GLFWwindow.hpp"
 
 class myGame : public Game{
-  static constexpr int count = 1000;
+  static constexpr int count = 2000;
   static constexpr int radius = 2;
   EntityId circles[count];
   vec2 velocities[count];
@@ -30,20 +30,20 @@ public:
     LOG_INFO("fps : {}",1/fps);
     for(size_t i=0;i<count;i++){
       auto trans = engine.entityManager.componentManager.getComponent<ComponentType::TRANSFORM>(circles[i]);
-      if(trans.position.x + 10 >= Screen::width/2.0) {      
+      if(trans.position.x + 10 >= 1920/2.0) {      
         velocities[i].x *=-1;
       }
-      else if(trans.position.x - 10 <= -(Screen::width/2.0)) {      
+      else if(trans.position.x - 10 <= -(1920/2.0)) {      
         velocities[i].x *=-1;
       }
-      if(trans.position.y + 10 >= Screen::height/2.0) {      
+      if(trans.position.y + 10 >= 1080/2.0) {      
         velocities[i].y *=-1;
       }
-      else if(trans.position.y - 10 <= -(Screen::height/2.0)) {      
+      else if(trans.position.y - 10 <= -(1080/2.0)) {      
         velocities[i].y *=-1;
       }
       for(size_t j=i+1;j<count;j++){
-        if(engine.isColliding(circles[i],circles[j])){
+        if(engine.circleIsColliding(circles[i],circles[j])){
           velocities[i]={-velocities[i].x,-velocities[i].y};
           velocities[j]={-velocities[j].x,-velocities[j].y};
         }

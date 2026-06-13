@@ -25,7 +25,6 @@ private:
   Clock clock;
   uint32_t targetFPS=0;
   void buildSpatialMap();
-  bool circleIsColliding(EntityId e1,EntityId e2);
   bool rectIsColliding(EntityId e1,EntityId e2);
   bool rectCircleIsColliding(EntityId e1,EntityId e2);
 
@@ -54,5 +53,6 @@ public:
   void run(Game* game);
 
   EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64);
+  bool circleIsColliding(EntityId e1,EntityId e2);
   std::vector<EntityId> makeText(std::string text,vec3 pos,std::string font,int size);
 };

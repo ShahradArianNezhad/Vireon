@@ -10,11 +10,14 @@ struct Cell{
   int x;
   int y;
   bool operator==(const Cell&) const = default;
-
-  size_t operator()(const Cell& c) const{
-    return std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) << 1);
-  }
 };
+namespace std {
+  template<> struct hash<Cell> {
+    size_t operator()(const Cell& c) const {
+      return hash<int>()(c.x) ^ (hash<int>()(c.y) << 1);
+    }
+  };
+}
 
 
 
@@ -34,7 +37,7 @@ class SpatialMap2{
 
 class SpatialMap{
   private:
-    static constexpr float cellSize=3.5;
+    static constexpr float cellSize=5;
     static constexpr size_t gridSize=200;
     std::vector<EntityId> map[gridSize*gridSize];
   public:
