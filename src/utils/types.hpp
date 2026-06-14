@@ -3,7 +3,7 @@
 #include <glm/ext/vector_float2.hpp>
 #include <string>
 
-class AllocatorBase{
+class AllocatorStats{
   public:
     size_t allocatedBytes;
     std::string allocatorName;

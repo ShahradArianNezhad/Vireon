@@ -7,21 +7,23 @@
 
 
 template<typename T>
-class EngineAllocator:public AllocatorBase{
+class EngineAllocator{
   public:
     typedef T value_type;
+    size_t allocatedBytes;
+    std::string allocatorName;
     size_t index;
 
     EngineAllocator(const std::string& name){
       this->allocatorName=name;
       if(Logger::freeSlots.empty()){
         index = Logger::allocators.size();
-        Logger::allocators.push_back(AllocatorBase{0,name});
+        Logger::allocators.push_back(AllocatorStats{0,name});
       }
       else{
         index = Logger::freeSlots.back();
         Logger::freeSlots.pop_back();
-        Logger::allocators[index] = AllocatorBase{0,name};
+        Logger::allocators[index] = AllocatorStats{0,name};
       }
     };
 
