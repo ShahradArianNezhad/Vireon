@@ -48,6 +48,13 @@ public:
       LOG_DEBUG("delete component:{} on entity: {}",T,id);
     }
 
+    void deleteAllComponents(EntityId id){
+      std::apply([&](auto&... allocator) {
+          (allocator.tryDeleteComponent(id), ...);
+          }, allocators);
+      LOG_DEBUG("delete all components on entity: {}",T,id);
+    }
+
 
   template<typename... Ts>
     bool hasComponent(EntityId id){

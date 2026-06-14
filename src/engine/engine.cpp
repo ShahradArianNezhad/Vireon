@@ -31,7 +31,7 @@ Engine::~Engine(){
 
 
 
-EntityId Engine::makeSprite(vec3 pos,std::string spritePath,vec2 uvMin,vec2 uvMax){
+EntityId Engine::makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin,vec2 uvMax){
   auto meshId = meshManager.makePrimitive(Primitive::SquareSprite);
   auto matId = materialManager.newMat(spritePath);
   vec2 spriteDims= materialManager.get(matId).getTextureDimensions();
@@ -45,8 +45,21 @@ EntityId Engine::makeSprite(vec3 pos,std::string spritePath,vec2 uvMin,vec2 uvMa
   renderer.addEntity(id);
   LOG_DEBUG("Sprite entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
-
 }
+
+void Engine::changeSprite(EntityId id,const std::string& spritePath,vec2 uvMin,vec2 uvMax){
+  auto matId = materialManager.newMat(spritePath);
+  vec2 spriteDims= materialManager.get(matId).getTextureDimensions();
+  auto trans = entityManager.componentManager.getComponent<Component::TRANSFORM>(id);
+  auto render = entityManager.componentManager.getComponent<Component::RENDER>(id);
+  render.material=matId;
+  trans.scale={spriteDims.x*(uvMax.x-uvMin.x),spriteDims.y*(uvMax.y-uvMin.y), 1.0f};
+  entityManager.componentManager.setComponent<Component::UVRECT>(id, Component::UVRECT{uvMin,uvMax});
+  entityManager.componentManager.setComponent<Component::TRANSFORM>(id, trans);
+  entityManager.componentManager.setComponent<Component::RENDER>(id, render);
+}
+
+
 
 EntityId Engine::makeRect(vec3 pos,vec2 scale) {
   auto meshId = meshManager.makePrimitive(Primitive::Square);

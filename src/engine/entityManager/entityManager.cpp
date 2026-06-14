@@ -64,8 +64,7 @@ EntityId EntityManager::makeCamera(){
 
 void EntityManager::deleteEntity(EntityId id){
   EventManager::emit(EntityDestroyedEvent{.id=id});
-  componentManager.deleteComponent<Component::TRANSFORM>(id);
-  componentManager.deleteComponent<Component::RENDER>(id);
+  componentManager.deleteAllComponents(id);
   idManager.release(id);
   LOG_DEBUG("entity delete called on: {}",id);
 }

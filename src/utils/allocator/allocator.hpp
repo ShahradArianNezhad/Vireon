@@ -10,39 +10,40 @@ template<typename T>
 class EngineAllocator:public AllocatorBase{
   public:
     typedef T value_type;
+    size_t index;
 
     EngineAllocator(const std::string& name){
       this->allocatorName=name;
-      Logger::allocators.push_back(this);
-    };
-
-    EngineAllocator(){
-      this->allocatorName=typeid(T).name();
-      Logger::allocators.push_back(this);
+      if(Logger::freeSlots.empty()){
+        index = Logger::allocators.size();
+        Logger::allocators.push_back(AllocatorBase{0,name});
+      }
+      else{
+        index = Logger::freeSlots.back();
+        Logger::freeSlots.pop_back();
+        Logger::allocators[index] = AllocatorBase{0,name};
+      }
     };
 
     ~EngineAllocator(){
-      for(size_t i{};i<Logger::allocators.size();i++)
-        if(Logger::allocators[i]==this){
-          Logger::allocators.erase(Logger::allocators.begin() + i);
-          break;
-        }
+      Logger::freeSlots.push_back(index);
     }
 
     template<class U>
       EngineAllocator(const EngineAllocator<U>& other) {
         this->allocatorName=other.allocatorName;
         this->allocatedBytes=other.allocatedBytes;
-        for(size_t i{};i<Logger::allocators.size();i++)
-          if(Logger::allocators[i]==&other)Logger::allocators[i]=this;
+        this->index=other.index;
       }
 
     T* allocate(std::size_t n){
-      allocatedBytes += n*sizeof(T);
+      auto& stat = Logger::allocators[index];
+      stat.allocatedBytes += n*sizeof(T);
       return static_cast<T*>(::operator new(n*sizeof(T)));
     }
     void deallocate(T* p, std::size_t n) noexcept{
-      allocatedBytes -= n*sizeof(T);
+      auto& stat = Logger::allocators[index];
+      stat.allocatedBytes -= n*sizeof(T);
       ::operator delete(p);
     }
 };

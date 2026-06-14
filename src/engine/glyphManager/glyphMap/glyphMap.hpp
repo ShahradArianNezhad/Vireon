@@ -50,7 +50,8 @@ class GlyphMap{
   FT_Library& ft;
   std::string fontPath;
   size_t fontSize;
-  std::vector<unsigned char,EngineAllocator<unsigned char>> atlas;
+  EngineAllocator<unsigned char> alloc{"GlyphMap allocator"};
+  std::vector<unsigned char,EngineAllocator<unsigned char>> atlas{alloc};
   Texture tex;
 
   public:

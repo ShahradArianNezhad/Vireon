@@ -20,7 +20,8 @@ using EntityId = uint32_t;
 class EntityManager {
 private:
   IDManager idManager;
-  std::vector<EntityId,EngineAllocator<EntityId>> entities;
+  EngineAllocator<EntityId> alloc{"Entity allocator"};
+  std::vector<EntityId,EngineAllocator<EntityId>> entities{alloc};
 
 public:
   EntityManager(){};

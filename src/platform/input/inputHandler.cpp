@@ -1,5 +1,6 @@
 #include "inputHandler.hpp"
 #include "engine/eventManager/eventManager.hpp"
+#include "platform/window/GLFWwindow.hpp"
 #include "utils/logger/logger.hpp"
 #include <GLFW/glfw3.h>
 
@@ -8,9 +9,12 @@ InputHandler::InputHandler(GLFWwindow *window) : window(window) {
   glfwSetKeyCallback(window,[](GLFWwindow* , int key, int , int action, int ){
       if (action == GLFW_PRESS) EventManager::emit(KeyboardKeyPressedEvent{static_cast<Key>(key)});
   });
+  glfwSetCursorPosCallback(window, [](GLFWwindow*, double xpos, double ypos){
+        EventManager::emit(MouseMoveEvent{xpos-Screen::width/2.0,ypos-Screen::height/2.0});
+    });
   glfwSetMouseButtonCallback(window,[](GLFWwindow* , int button, int action, int ){
       if (action == GLFW_PRESS) EventManager::emit(MouseButtonPressedEvent{static_cast<Mouse>(button)});
-      });
+    });
 }
 
 bool InputHandler::checkKeyPress(Key key) {
@@ -37,7 +41,7 @@ bool InputHandler::checkMousePress(Mouse button){
 vec2 InputHandler::getCursorPos(){
   double xpos, ypos;
   glfwGetCursorPos(window, &xpos, &ypos);
-  return {xpos,ypos};
+  return {xpos-Screen::width/2.0,ypos-Screen::height/2.0};
 }
 
 

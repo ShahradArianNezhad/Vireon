@@ -10,7 +10,9 @@ public:
   std::optional<Texture> texture;
 
   Material() {};
-  Material(std::string texPath) : texture(texPath) {}
+  Material(std::string texPath) : texture(texPath) {
+    LOG_INFO("Loaded texture : {}",texPath);
+  }
   Material(unsigned int tex):texture(tex){};
   void setTexture(std::string imgPath){texture.emplace(Texture{imgPath});}
   void use() { if(texture)texture->bind(); }

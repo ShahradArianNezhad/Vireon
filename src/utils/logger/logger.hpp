@@ -68,8 +68,8 @@ struct std::formatter<LogLevel> : std::formatter<std::string_view> {
 
 #define LOG_MEMORY()\
   for(size_t i{};i<Logger::allocators.size();i++){\
-    AllocatorBase* alloc = Logger::allocators[i];\
-    LOG_INFO("allocator name : {}, bytes allocated : {}KB",alloc->allocatorName,alloc->allocatedBytes/1024);\
+    AllocatorBase alloc = Logger::allocators[i];\
+    LOG_INFO("allocator name : {}, bytes allocated : {}B",alloc.allocatorName,alloc.allocatedBytes);\
   }\
 
 
@@ -104,7 +104,8 @@ class Logger{
   static void bufferLog(Log log);
 
   public:
-  static inline std::vector<AllocatorBase*> allocators;
+  static inline std::vector<AllocatorBase> allocators;
+  static inline std::vector<size_t> freeSlots;
 
   ~Logger(){
     writeLogs();

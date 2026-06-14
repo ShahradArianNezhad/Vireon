@@ -49,7 +49,8 @@ public:
   SceneId newScene(){return sceneManager.newScene();}
   EntityId makeRect(vec3 pos,vec2 scale);
   EntityId makeCircle(vec3 pos, float r);
-  EntityId makeSprite(vec3 pos,std::string spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
+  EntityId makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
+  void changeSprite(EntityId id,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
   EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity);
   void setAmbient(float a){renderer.ambient=a;}
   SceneId getCurrentScene(){return renderer.getCurrentScene();};

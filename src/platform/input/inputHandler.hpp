@@ -19,6 +19,10 @@ struct KeyboardKeyPressedEvent{
   Key key;
 };
 
+struct MouseMoveEvent{
+  double x,y;
+};
+
 class InputHandler {
 public:
   InputHandler(GLFWwindow *window);
