@@ -92,7 +92,7 @@ mat4 Renderer::getProjectionMatrix() {
 
 void Renderer::renderBatches() {
 
-#ifdef ENGINE_DEBUG
+#ifdef DEBUG_VERBOSE
   size_t renderCalls=0;
 #endif
   enableAlphaBlending();
@@ -114,13 +114,15 @@ void Renderer::renderBatches() {
     gpu.useMesh(mesh);
     mat.use();
     glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, batch.size());
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("rendering batch with meshId:{} and matId:{}",key.mesh,key.material);
-#ifdef ENGINE_DEBUG
+#endif
+#ifdef DEBUG_VERBOSE
     renderCalls+=1;
 #endif
   }
   getGlErrors();
-#ifdef ENGINE_DEBUG
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("render calls this frame:{}",renderCalls);
 #endif
 }

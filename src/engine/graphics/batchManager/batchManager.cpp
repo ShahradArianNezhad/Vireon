@@ -56,7 +56,9 @@ BatchKey BatchManager::submit(EntityId entity) {
     auto uv = entityManager.componentManager.getComponent<Component::UVRECT>(entity);
     batches[key].addUv(vec4{uv.uvMin,uv.uvMax});
   }
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("submitting entity:{} into batch with: mesh:{} material:{},zIndex:{}",entity,key.mesh,key.material,(int)transformComp.position.z);
+#endif
   return key;
 }
 

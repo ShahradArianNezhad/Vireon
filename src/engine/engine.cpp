@@ -137,7 +137,6 @@ EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size){
   auto id = entityManager.newEntity(Component::RENDER{meshId,matId},transformComp);
   entityManager.componentManager.setComponent<Component::UVRECT>(id, uvComp);
   renderer.addEntity(id);
-  LOG_DEBUG("made character : {}, font : {}, size : {}",c,font,size);
   return id;
 }
 
@@ -150,6 +149,7 @@ Text Engine::makeText(std::string text,vec3 pos,std::string font,int size){
     t.ids.push_back(id);
     advance+=character.advance;
   }
+  LOG_DEBUG("made text : {}, font : {}, size : {}",text,font,size);
   return t;
 }
 
@@ -159,13 +159,13 @@ Text Engine::makeText(std::string text,vec3 pos,std::string font,int size){
 bool Engine::isColliding(EntityId e1,EntityId e2){
 
 #ifdef ENGINE_DEBUG
-  if(!entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e1)&&
-      !entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e1)){
+  if(!entityManager.componentManager.hasComponent<Component::CIRCLECOLLIDER>(e1)&&
+      !entityManager.componentManager.hasComponent<Component::RECTCOLLIDER>(e1)){
     LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e1);
     return false;
   }
-  if(!entityManager.componentManager.hasComponent<ComponentType::CIRCLECOLLIDER>(e2)&&
-      !entityManager.componentManager.hasComponent<ComponentType::RECTCOLLIDER>(e2)){
+  if(!entityManager.componentManager.hasComponent<Component::CIRCLECOLLIDER>(e2)&&
+      !entityManager.componentManager.hasComponent<Component::RECTCOLLIDER>(e2)){
     LOG_WARN("isCollding called on entity with no circleCollider of rectCollider component. id={}",e2);
     return false;
   }
@@ -253,5 +253,6 @@ void Engine::changeText(Text& text,const std::string& newText){
     entityManager.deleteEntity(text.ids.back());
     text.ids.pop_back();
   }
+  LOG_DEBUG("changed a text to : {}",newText);
   text = makeText(newText, text.pos, text.font,  text.size);
 }

@@ -29,7 +29,9 @@ public:
     if(materialCache.contains(sig)) return materialCache[sig];
     auto id = idManager.get();
     materials.emplace(id,Material{});
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("Material created: {{id:{},{}}}",materials[id],id);
+#endif
     materialCache[sig]=id;
     return id;
   }
@@ -41,7 +43,9 @@ public:
     if(materialCache.contains(sig)) return materialCache[sig];
     auto id = idManager.get();
     materials.try_emplace(id,texPath);
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("Material created: {{id:{},{}}}",id,materials[id]);
+#endif
     materialCache[sig]=id;
     return id;
   }
@@ -54,7 +58,9 @@ public:
     if(materialCache.contains(sig)) return materialCache[sig];
     auto id = idManager.get();
     materials.try_emplace(id,texId);
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("Material created: {{id:{},{}}}",id,materials[id]);
+#endif
     materialCache[sig]=id;
     return id;
   }

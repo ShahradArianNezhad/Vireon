@@ -37,7 +37,9 @@ public:
       auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       allocator.setComponent(id,comp);
       EventManager::emit(ComponentSetEvent<T>{id,comp});
+#ifdef DEBUG_VERBOSE
       LOG_DEBUG("set component:{} on entity: {}",comp,id);
+#endif
     }
 
 
@@ -45,14 +47,19 @@ public:
     void deleteComponent(EntityId id){
       auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       allocator.deleteComponent(id);
+#ifdef DEBUG_VERBOSE
       LOG_DEBUG("delete component:{} on entity: {}",T,id);
+#endif
     }
 
     void deleteAllComponents(EntityId id){
       std::apply([&](auto&... allocator) {
           (allocator.tryDeleteComponent(id), ...);
           }, allocators);
+
+#ifdef DEBUG_VERBOSE
       LOG_DEBUG("delete all components on entity: {}",T,id);
+#endif
     }
 
 

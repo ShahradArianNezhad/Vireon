@@ -94,11 +94,15 @@ void Texture::activate(GLenum location){
 
 void Texture::bind() {
   glBindTexture(GL_TEXTURE_2D, ID); 
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("bound texture:{}",ID);
+#endif
 }
 void Texture::unbind() {
   glBindTexture(GL_TEXTURE_2D, 0); 
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("unbound texture:{}",ID);
+#endif
 }
 
 void Texture::setTex(size_t w,size_t h,void* data){

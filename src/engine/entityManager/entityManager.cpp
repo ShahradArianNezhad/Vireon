@@ -19,7 +19,9 @@ EntityId EntityManager::newEntity(Component::RENDER renderComp,Component::TRANSF
   EntityId id = newEntity();
   componentManager.setComponent<Component::RENDER>(id,renderComp);
   componentManager.setComponent<Component::TRANSFORM>(id,transformComp);
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("newEntity called RenderComp:{},TransformComp:{}",renderComp,transformComp);
+#endif
   return id;
 }
 

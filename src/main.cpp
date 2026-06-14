@@ -7,11 +7,23 @@
 #include "platform/input/inputHandler.hpp"
 #include "utils/logger/logger.hpp"
 
+
+
+
+struct Tile{
+  EntityId id=UINT32_MAX;
+  vec2 uvMin={0,0};
+  vec2 uvMax={0,0};
+};
+
+
+
+
 class myGame : public Game{
 public:
   static constexpr std::string mode = "editor";
   static constexpr int blocksize=32;
-  std::vector<EntityId> entities{100*100};
+  std::vector<Tile> tileMap{100*100};
   vec2 uvMin={0,0};
   vec2 uvMax={1.0/10,1.0/10};
   EntityId entity = engine.makeSprite({0,0,0},"./assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png",uvMin,uvMax);
@@ -81,21 +93,25 @@ public:
     auto mousePos = engine.inputHandler.getCursorPos();
     int gridX = std::ceil(mousePos.x/blocksize);
     int gridY = std::ceil(mousePos.y/blocksize);
+    if(tileMap[gridX + gridY*100].id!=UINT32_MAX)deleteAtMousePos();
     vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,0};
     auto id =engine.makeSprite(position,"./assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png",uvMin,uvMax);
-    entities[gridX + gridY*100] = id;
+    tileMap[gridX + gridY*100] = Tile{id,uvMin,uvMax};
   }
   void deleteAtMousePos(){
     auto mousePos = engine.inputHandler.getCursorPos();
     int gridX = std::ceil(mousePos.x/blocksize);
     int gridY = std::ceil(mousePos.y/blocksize);
-    engine.entityManager.deleteEntity(entities[gridX + gridY*100]);
+    if(tileMap[gridX + gridY*100].id==UINT32_MAX)return;
+    engine.entityManager.deleteEntity(tileMap[gridX + gridY*100].id);
+    tileMap[gridX + gridY*100].id=UINT32_MAX;
   }
 
   void showPreviewAtMousePos(vec2 pos){
     auto trans = engine.entityManager.componentManager.getComponent<Component::TRANSFORM>(entity);
     int gridX = std::ceil(pos.x/blocksize);
     int gridY = std::ceil(pos.y/blocksize);
+    LOG_INFO("{}",tileMap[gridX + gridY*100].id);
     trans.position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,0};
     engine.entityManager.componentManager.setComponent(entity, trans);
   }

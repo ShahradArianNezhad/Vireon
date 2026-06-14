@@ -74,7 +74,9 @@ MeshID MeshManager::makePrimitive(Primitive shape) {
   Mesh mesh{v, i, layout};
   auto id= submit(mesh);
   meshCache[sig]=id;
+#ifdef DEBUG_VERBOSE
   LOG_DEBUG("makePrimitive called: shape={}",shape);
+#endif
   return id;
 };
 

@@ -11,7 +11,7 @@
 #include <thread>
 #include <utility>
 #include "./utils/types.hpp"
-//#define ENGINE_DEBUG
+#define ENGINE_DEBUG
 
 constexpr int MaxStoredLogs = 200;
 

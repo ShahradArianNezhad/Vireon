@@ -31,7 +31,9 @@ public:
 
   template<typename T>
     static inline void emit(const T& event){
+#ifdef DEBUG_VERBOSE
       LOG_DEBUG("emit event:{}",typeid(T).name());
+#endif
       for(const auto& listener:handlerPool<T>.pool) listener.func(event);
       }
 
