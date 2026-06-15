@@ -2,7 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <format>
+#include <fstream>
 #include <glm/glm.hpp>
+#include <string>
+#include <string_view>
 #include <unordered_map>
 #include "./game/game.hpp"
 #include "engine/entityManager/component/components.hpp"
@@ -44,8 +47,6 @@ public:
   EntityId selectionBox;
   std::vector<EntityId> selectionItems;
 
-  std::ofstream file;
-  json map;
 
 
 
@@ -79,10 +80,20 @@ public:
         if(e.key==Key::Left)nextTile(selection);
         else if(e.key==Key::Right)prevTile(selection);
         else if(e.key==Key::W)writeTileMap();
+        else if(e.key==Key::R)loadTileMap();
         else if(e.key==Key::E)nextSelection();
         else if(e.key==Key::Tab && mode=="tile")openSelectMenu();
         else if(e.key==Key::Tab && mode=="select")closeSelectMenu();
     });
+    selectionBox=engine.makeRect({0,0,20}, {200,200});
+    engine.changeColor(selectionBox, 0x808080FF);
+
+    for(int j=0;j<10;j++){
+      for(int i=0;i<10;i++){
+        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0}));
+      }
+    }
+    closeSelectMenu();
   }
   
 
@@ -101,25 +112,16 @@ public:
 
 
   void openSelectMenu(){
-    selectionBox=engine.makeRect({0,0,20}, {200,200});
-    auto renderBox = engine.entityManager.componentManager.getComponent<Component::RENDER>( selectionBox);
-    renderBox.color = 0x808080FF; 
-    engine.entityManager.componentManager.setComponent(selectionBox, renderBox);
-
-    for(int j=0;j<10;j++){
-      for(int i=0;i<10;i++){
-        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0}));
-      }
-    }
+    for(auto e:selectionItems)engine.setVisibility(e,true);
+    engine.setVisibility(selectionBox, true);
     mode="select";
     
   }
 
 
   void closeSelectMenu(){
-    for(auto e:selectionItems)engine.entityManager.deleteEntity(e);
-    selectionItems.clear();
-    engine.entityManager.deleteEntity(selectionBox);
+    for(auto e:selectionItems)engine.setVisibility(e,false);
+    engine.setVisibility(selectionBox, false);
     mode="tile";
   }
 
@@ -152,18 +154,79 @@ public:
     engine.changeSprite(selection,spriteFile,uvMin,uvMax);
   };
 
-  void writeTileMap(){
-    file.open("map.json");
-    for(auto& [gridX,gridYtoVec]:tileMap){
-      for(auto& [gridY,tileVec]:gridYtoVec){
-        for(auto& tile:tileVec){
-          map["tile"][std::format("{{{},{}}}",gridX,gridY)].push_back(std::format("{{{},{}}}",tile.uvMin.x,tile.uvMin.y));
+  void clearScreen(){
+    for(auto& [gridX,gridYtoTileVec]:tileMap){
+      for(auto& [gridY,tileVec]:tileMap[gridX]){
+        for(auto& tile:tileMap[gridX][gridY]){
+          engine.entityManager.deleteEntity(tile.id);
         }
       }
     }
     for(auto& [gridX,gridYtoEntity]:entityMap){
       for(auto& [gridY,entity]:gridYtoEntity){
-        map["entity"][std::format("{{{},{}}}",gridX,gridY)] = entity.name;
+        engine.entityManager.deleteEntity(entity.id);
+      }
+    }
+    tileMap.clear();
+    entityMap.clear();
+  }
+
+  void loadTileMap(){
+    clearScreen();
+    std::ifstream file;
+    file.open("map.json");
+    json data = json::parse(file);
+    for(auto& [tileX,tileYtoUv]:data["tile"].items()){
+      for(auto& [tileY,uvArray]:tileYtoUv.items()){
+        size_t z=0;
+        for(std::string uvText:uvArray){
+          vec2 uv;
+          std::string x{uvText.begin()+1,uvText.begin()+uvText.find(",")};
+          std::string y{uvText.begin()+uvText.find(",")+1,uvText.end()-1};
+          uv.x = std::stof(x);
+          uv.y = std::stof(y);
+          auto gridX = std::stoi(tileX);
+          auto gridY = std::stoi(tileY);
+          vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,z++};
+          auto id =engine.makeSprite(position,"./assets/Dungeon_Tileset.png",uv,{uv.x+1/10.0,uv.y+1/10.0});
+          tileMap[gridX][gridY].emplace_back(id,uv);
+        }
+      }
+    }
+    for(auto& [tileX,tileYtoName]:data["entity"].items()){
+      for(auto& [tileY,name]:tileYtoName.items()){
+        EntityId id;
+        auto gridX = std::stoi(tileX);
+        auto gridY = std::stoi(tileY);
+        vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,10};
+        if(name=="skeleton")     id =engine.makeSprite(position,"./assets/skeleton/skeleton2_idle.png",{0,0},{1.0/6,1.0});
+        else if(name=="vampire") id =engine.makeSprite(position,"./assets/vampire/vampire_idle.png",{0,0},{1.0/6,1.0});
+        else if(name=="soldier") id =engine.makeSprite(position,"./assets/Soldier/Soldier-Idle.png",{0,0},{1.0/6,1.0});
+        else{
+          LOG_ERROR("INVALID NAME IN ENTITY LIST");
+          return;
+        }
+        entityMap[gridX][gridY]=Entity{id,name};
+
+      }
+    }
+
+  }
+
+  void writeTileMap(){
+    std::ofstream file;
+    json map;
+    file.open("map.json");
+    for(auto& [gridX,gridYtoVec]:tileMap){
+      for(auto& [gridY,tileVec]:gridYtoVec){
+        for(auto& tile:tileVec){
+          map["tile"][std::format("{}",gridX)][std::format("{}",gridY)].push_back(std::format("{{{},{}}}",tile.uvMin.x,tile.uvMin.y));
+        }
+      }
+    }
+    for(auto& [gridX,gridYtoEntity]:entityMap){
+      for(auto& [gridY,entity]:gridYtoEntity){
+        map["entity"][std::format("{}",gridX)][std::format("{}",gridY)] = entity.name;
       }
     }
     file << std::setw(4) << map << std::endl;

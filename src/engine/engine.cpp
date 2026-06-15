@@ -66,6 +66,12 @@ void Engine::changeColor(EntityId id,uint32_t color){
   entityManager.componentManager.setComponent(id, renderComp);
 }
 
+void Engine::setVisibility(EntityId id,bool value){
+  auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(id);
+  renderComp.visible=value;
+  entityManager.componentManager.setComponent(id, renderComp);
+}
+
 
 
 EntityId Engine::makeRect(vec3 pos,vec2 scale) {
