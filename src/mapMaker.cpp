@@ -5,7 +5,6 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include "./game/game.hpp"
 #include "engine/entityManager/component/components.hpp"
