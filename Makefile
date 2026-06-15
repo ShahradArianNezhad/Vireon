@@ -4,7 +4,7 @@ LDFLAGS := -lglfw -lGL -lX11 -lpthread -lfreetype -lXrandr -lXi -ldl -I./include
 
 SRC_DIR := src
 BUILD_DIR := build
-TARGET := bin/executable.exe
+TARGET := bin/executable
 
 SRCS := $(shell find $(SRC_DIR) -name "*.c*")
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)

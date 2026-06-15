@@ -92,6 +92,7 @@ BatchKey BatchManager::submit(EntityId entity){
 
 
 void BatchManager::remove(EntityId entity){
+  if(!entityManager.componentManager.hasComponent<Component::RENDER>(entity))return;
   auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(entity);
   auto transformComp = entityManager.componentManager.getComponent<Component::TRANSFORM>(entity);
   BatchKey key = {.mesh = renderComp.mesh,

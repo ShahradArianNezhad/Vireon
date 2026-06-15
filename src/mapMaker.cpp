@@ -39,6 +39,7 @@ public:
   std::string spriteFile = "./assets/Dungeon_Tileset.png";
   std::unordered_map<long,std::unordered_map<long,std::vector<Tile>>> tileMap;
   std::unordered_map<long,std::unordered_map<long,Entity>> entityMap;
+  std::unordered_map<long,std::unordered_map<long,EntityId>> lightMap;
 
   vec2 uvMin={0,0};
   vec2 uvMax={1.0/10,1.0/10};
@@ -106,7 +107,6 @@ public:
     uvMax.y = (std::ceil(cursorPos.y/40)+5)/10.0;
     engine.changeSprite(selection,"./assets/Dungeon_Tileset.png",uvMin,uvMax);
     closeSelectMenu();
-    LOG_INFO("uv min : {} {}, uv max: {} {}",uvMin.x,uvMin.y,uvMax.x,uvMax.y);
   }
 
 
@@ -207,7 +207,15 @@ public:
           return;
         }
         entityMap[gridX][gridY]=Entity{id,name};
-
+      }
+    }
+    for(auto& [tileX,tileYtoLight]:data["light"].items()){
+      for(auto& [tileY,light]:tileYtoLight.items()){
+        auto gridX = std::stoi(tileX);
+        auto gridY = std::stoi(tileY);
+        vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,10};
+        auto id = engine.makeLight(position,{255,255,255},200,0.004);
+        lightMap[gridX][gridY]=id;
       }
     }
 
@@ -227,6 +235,11 @@ public:
     for(auto& [gridX,gridYtoEntity]:entityMap){
       for(auto& [gridY,entity]:gridYtoEntity){
         map["entity"][std::format("{}",gridX)][std::format("{}",gridY)] = entity.name;
+      }
+    }
+    for(auto& [gridX,gridYtoLight]:lightMap){
+      for(auto& [gridY,light]:gridYtoLight){
+        map["light"][std::format("{}",gridX)][std::format("{}",gridY)] = light;
       }
     }
     file << std::setw(4) << map << std::endl;
@@ -279,7 +292,10 @@ public:
     else z = 10;
     vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,z};
     auto id =engine.makeSprite(position,spriteFile,uvMin,uvMax);
-    if(mode=="tile" && uvMax.y==1)engine.makeLight(position,{255,255,255},200,0.004);
+    if(mode=="tile" && uvMax.y==1 && !lightMap[gridX].contains(gridY)){
+      auto lightId = engine.makeLight(position,{255,255,255},200,0.004);
+      lightMap[gridX][gridY]=lightId;
+    }
     if(mode=="tile")tileMap[gridX][gridY].emplace_back(id,uvMin);
     else entityMap[gridX][gridY]=Entity{id,mode};
   }
@@ -293,6 +309,10 @@ public:
       entityMap[gridX].erase(gridY);
     }else{
       if(tileMap[gridX][gridY].size()==0)return;
+      if(lightMap[gridX].contains(gridY)){
+        engine.entityManager.deleteEntity(lightMap[gridX][gridY]);
+        lightMap[gridX].erase(gridY);
+      }
       engine.entityManager.deleteEntity(tileMap[gridX][gridY].back().id);
       tileMap[gridX][gridY].pop_back();
     }

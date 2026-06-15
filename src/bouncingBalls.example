@@ -6,7 +6,6 @@
 #include "./game/game.hpp"
 #include "engine/entityManager/ComponentManager/componentManager.hpp"
 #include "engine/entityManager/component/components.hpp"
-#include "engine/eventManager/eventManager.hpp"
 #include "platform/window/GLFWwindow.hpp"
 
 class myGame : public Game{
