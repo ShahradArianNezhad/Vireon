@@ -31,8 +31,8 @@ public:
     EventManager::emit(EntityCreatedEvent{entity});
     LOG_DEBUG("entity:{} added to scene:{}",entity,id);
     entities.push_back(entity);
-
   };
+
   void entityDestroyedEventHandler(const EntityDestroyedEvent& event){
     LOG_DEBUG("entity:{} removed from scene:{}", event.id, id);
 

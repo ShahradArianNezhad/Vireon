@@ -246,10 +246,14 @@ EntityId Engine::makeLight(vec2 pos,vec3 color, float radius,float intensity) {
       .scale = {radius, radius, 1.0f},
   };
   auto lightComp = Component::LIGHT{radius,intensity,color};
+  //auto meshId = meshManager.makePrimitive(Primitive::Square);
+  //auto matId = materialManager.newMat();
 
   auto id = entityManager.newEntity();
   entityManager.componentManager.setComponent<Component::TRANSFORM>(id, transformComp);
   entityManager.componentManager.setComponent<Component::LIGHT>(id, lightComp);
+
+  //entityManager.componentManager.setComponent(id, Component::RENDER{meshId,matId,0xFFFFFFFF,true});
   renderer.addEntity(id);
   LOG_DEBUG("light entity created: pos:{},{},radius:{},entityId:{}",pos.x,pos.y,radius,id);
   return id;

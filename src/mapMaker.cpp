@@ -52,6 +52,7 @@ public:
 
 
   void init() override {
+    engine.setAmbient(0.5);
     engine.setTargetFPS(60);
     setModeEditor();
   }
@@ -279,6 +280,7 @@ public:
     else z = 10;
     vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,z};
     auto id =engine.makeSprite(position,spriteFile,uvMin,uvMax);
+    if(mode=="tile" && uvMax.y==1)engine.makeLight(position,{255,255,255},200,0.004);
     if(mode=="tile")tileMap[gridX][gridY].emplace_back(id,uvMin);
     else entityMap[gridX][gridY]=Entity{id,mode};
   }

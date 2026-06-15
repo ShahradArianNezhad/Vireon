@@ -69,7 +69,8 @@ BatchKey BatchManager::submit(EntityId entity,Component::TRANSFORM& transformCom
   return key;
 }
 
-BatchKey BatchManager::submit(EntityId entity) {
+BatchKey BatchManager::submit(EntityId entity){
+  if(!entityManager.componentManager.hasComponent<Component::RENDER>(entity))return BatchKey{};
   auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(entity);
   auto transformComp = entityManager.componentManager.getComponent<Component::TRANSFORM>(entity);
   BatchKey key = {.mesh = renderComp.mesh,
