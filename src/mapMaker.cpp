@@ -1,0 +1,251 @@
+#include "./engine/engine.hpp"
+#include <GLFW/glfw3.h>
+#include <cmath>
+#include <format>
+#include <glm/glm.hpp>
+#include <unordered_map>
+#include "./game/game.hpp"
+#include "engine/entityManager/component/components.hpp"
+#include "engine/eventManager/eventManager.hpp"
+#include "platform/input/inputHandler.hpp"
+#include "json.hpp"
+
+
+
+
+struct Tile{
+  EntityId id=UINT32_MAX;
+  vec2 uvMin={0,0};
+};
+
+
+struct Entity{
+  EntityId id=UINT32_MAX;
+  std::string name;
+};
+
+using json = nlohmann::json;
+
+
+
+class MapEditor : public Game{
+public:
+  static constexpr int blocksize=32;
+  float uvSizeX=10.0;
+  float uvSizeY=10.0;
+  std::string mode = "tile";
+  std::string spriteFile = "./assets/Dungeon_Tileset.png";
+  std::unordered_map<long,std::unordered_map<long,std::vector<Tile>>> tileMap;
+  std::unordered_map<long,std::unordered_map<long,Entity>> entityMap;
+
+  vec2 uvMin={0,0};
+  vec2 uvMax={1.0/10,1.0/10};
+  EntityId selection = engine.makeSprite({0,0,10},spriteFile,uvMin,uvMax);
+  EntityId selectionBox;
+  std::vector<EntityId> selectionItems;
+
+  std::ofstream file;
+  json map;
+
+
+
+
+  void init() override {
+    engine.setTargetFPS(60);
+    setModeEditor();
+  }
+
+  void update(double) override {
+  };
+  
+
+
+
+  void setModeEditor(){
+    auto render = engine.entityManager.componentManager.getComponent<Component::RENDER>(selection);
+    render.color &= 0xFFFFFF55;
+    engine.entityManager.componentManager.setComponent(selection, render);
+    EventManager::subscribe<MouseMoveEvent>([this](MouseMoveEvent e){this->showPreviewAtMousePos({e.x,e.y});});
+    EventManager::subscribe<MouseButtonPressedEvent>([this](MouseButtonPressedEvent e){
+        if(e.button==Mouse::LEFT && mode!="select")placeAtMousePos();
+        else if(e.button==Mouse::LEFT && mode=="select")selectTile();
+        else if (e.button==Mouse::RIGHT)deleteAtMousePos();
+    });
+    EventManager::subscribe<MouseWheelEvent>([this](MouseWheelEvent e){
+        if(e.changeY>0)nextTile(selection);
+        else prevTile(selection);
+    });
+    EventManager::subscribe<KeyboardKeyPressedEvent>([this](KeyboardKeyPressedEvent e){
+        if(e.key==Key::Left)nextTile(selection);
+        else if(e.key==Key::Right)prevTile(selection);
+        else if(e.key==Key::W)writeTileMap();
+        else if(e.key==Key::E)nextSelection();
+        else if(e.key==Key::Tab && mode=="tile")openSelectMenu();
+        else if(e.key==Key::Tab && mode=="select")closeSelectMenu();
+    });
+  }
+  
+
+  void selectTile(){
+    auto cursorPos = engine.inputHandler.getCursorPos();
+    if(cursorPos.x >200 || cursorPos.x <-200 || cursorPos.y >200 || cursorPos.y <-200)return;
+    uvMin.x = (std::ceil(cursorPos.x/40)+4)/10.0;
+    uvMin.y = (std::ceill(cursorPos.y/40)+4)/10.0;
+    uvMax.x = (std::ceil(cursorPos.x/40)+5)/10.0;
+    uvMax.y = (std::ceil(cursorPos.y/40)+5)/10.0;
+    engine.changeSprite(selection,"./assets/Dungeon_Tileset.png",uvMin,uvMax);
+    closeSelectMenu();
+    LOG_INFO("uv min : {} {}, uv max: {} {}",uvMin.x,uvMin.y,uvMax.x,uvMax.y);
+  }
+
+
+
+  void openSelectMenu(){
+    selectionBox=engine.makeRect({0,0,20}, {200,200});
+    auto renderBox = engine.entityManager.componentManager.getComponent<Component::RENDER>( selectionBox);
+    renderBox.color = 0x808080FF; 
+    engine.entityManager.componentManager.setComponent(selectionBox, renderBox);
+
+    for(int j=0;j<10;j++){
+      for(int i=0;i<10;i++){
+        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0}));
+      }
+    }
+    mode="select";
+    
+  }
+
+
+  void closeSelectMenu(){
+    for(auto e:selectionItems)engine.entityManager.deleteEntity(e);
+    selectionItems.clear();
+    engine.entityManager.deleteEntity(selectionBox);
+    mode="tile";
+  }
+
+  
+
+  void nextSelection(){
+    if(mode=="tile"){
+      uvSizeX = 6;
+      uvSizeY = 1;
+      spriteFile="./assets/skeleton/skeleton2_idle.png";
+      mode = "skeleton";
+    }else if(mode=="skeleton"){
+      uvSizeX = 6;
+      uvSizeY = 1;
+      spriteFile = "./assets/Soldier/Soldier-Idle.png";
+      mode = "soldier";
+    }else if(mode=="soldier"){
+      uvSizeX = 6;
+      uvSizeY = 1;
+      spriteFile = "./assets/vampire/vampire_idle.png";
+      mode = "vampire";
+    }else if(mode=="vampire"){
+      uvSizeX = 10;
+      uvSizeY = 10;
+      spriteFile = "./assets/Dungeon_Tileset.png";
+      mode = "tile";
+    }
+    uvMin= {0,0};
+    uvMax= {1.0/uvSizeX,1.0/uvSizeY};
+    engine.changeSprite(selection,spriteFile,uvMin,uvMax);
+  };
+
+  void writeTileMap(){
+    file.open("map.json");
+    for(auto& [gridX,gridYtoVec]:tileMap){
+      for(auto& [gridY,tileVec]:gridYtoVec){
+        for(auto& tile:tileVec){
+          map["tile"][std::format("{{{},{}}}",gridX,gridY)].push_back(std::format("{{{},{}}}",tile.uvMin.x,tile.uvMin.y));
+        }
+      }
+    }
+    for(auto& [gridX,gridYtoEntity]:entityMap){
+      for(auto& [gridY,entity]:gridYtoEntity){
+        map["entity"][std::format("{{{},{}}}",gridX,gridY)] = entity.name;
+      }
+    }
+    file << std::setw(4) << map << std::endl;
+    file.flush();
+    file.close();
+  };
+
+  
+
+  void nextTile(EntityId entity){
+    if(uvMax.x<1){
+      uvMax.x+=1.0/uvSizeX;
+      uvMin.x+=1.0/uvSizeX;
+    }else{
+      uvMax.x=1.0/uvSizeX;
+      uvMin.x=0;
+      uvMin.y+=1.0/uvSizeY;
+      uvMax.y+=1.0/uvSizeY;
+    }
+    auto rect = engine.entityManager.componentManager.getComponent<Component::UVRECT>(entity);
+    rect.uvMin=uvMin;
+    rect.uvMax=uvMax;
+    engine.entityManager.componentManager.setComponent(entity, rect);
+  }
+  void prevTile(EntityId entity){
+    if(uvMin.x>0){
+      uvMax.x-=1.0/uvSizeX;
+      uvMin.x-=1.0/uvSizeX;
+    }else{
+      uvMax.x=1.0;
+      uvMin.x=9.0/uvSizeX;
+      uvMin.y-=1.0/uvSizeY;
+      uvMax.y-=1.0/uvSizeY;
+    }
+    auto rect = engine.entityManager.componentManager.getComponent<Component::UVRECT>(entity);
+    rect.uvMin=uvMin;
+    rect.uvMax=uvMax;
+    engine.entityManager.componentManager.setComponent(entity, rect);
+  }
+  void placeAtMousePos(){
+    if(mode=="select"){
+      return;
+    };
+    auto mousePos = engine.inputHandler.getCursorPos();
+    int gridX = std::ceil(mousePos.x/blocksize);
+    int gridY = std::ceil(mousePos.y/blocksize);
+    if(mode!="tile" && entityMap[gridX].contains(gridY)) return;
+    size_t z;
+    if(mode=="tile") z = tileMap[gridX][gridY].size(); 
+    else z = 10;
+    vec3 position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,z};
+    auto id =engine.makeSprite(position,spriteFile,uvMin,uvMax);
+    if(mode=="tile")tileMap[gridX][gridY].emplace_back(id,uvMin);
+    else entityMap[gridX][gridY]=Entity{id,mode};
+  }
+  void deleteAtMousePos(){
+    if(mode=="select")return;
+    auto mousePos = engine.inputHandler.getCursorPos();
+    int gridX = std::ceil(mousePos.x/blocksize);
+    int gridY = std::ceil(mousePos.y/blocksize);
+    if(entityMap[gridX].contains(gridY)){
+      engine.entityManager.deleteEntity(entityMap[gridX][gridY].id);
+      entityMap[gridX].erase(gridY);
+    }else{
+      if(tileMap[gridX][gridY].size()==0)return;
+      engine.entityManager.deleteEntity(tileMap[gridX][gridY].back().id);
+      tileMap[gridX][gridY].pop_back();
+    }
+  }
+
+  void showPreviewAtMousePos(vec2 pos){
+    auto trans = engine.entityManager.componentManager.getComponent<Component::TRANSFORM>(selection);
+    int gridX = std::ceil(pos.x/blocksize);
+    int gridY = std::ceil(pos.y/blocksize);
+    trans.position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,10};
+    engine.entityManager.componentManager.setComponent(selection, trans);
+  }
+
+};
+
+int main() {
+  MapEditor game;
+  game.run();
+  return 0;
+}

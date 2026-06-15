@@ -8,9 +8,9 @@
 using ComponentId = uint32_t;
 
 template<typename T>
-struct ComponentSetEvent{
+struct ComponentChangingEvent{
   EntityId entity;
-  T comp;
+  T newComp;
 };
 
 class ComponentManager {
@@ -35,8 +35,8 @@ public:
   template<typename T>
     void setComponent(EntityId id,T comp){
       auto& allocator = std::get<ComponentAllocator<T>>(allocators);
+      EventManager::emit(ComponentChangingEvent<T>{id,comp});
       allocator.setComponent(id,comp);
-      EventManager::emit(ComponentSetEvent<T>{id,comp});
 #ifdef DEBUG_VERBOSE
       LOG_DEBUG("set component:{} on entity: {}",comp,id);
 #endif

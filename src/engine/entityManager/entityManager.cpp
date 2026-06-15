@@ -44,7 +44,7 @@ void EntityManager::setPos(EntityId id,vec3 pos){
 
 
 
-mat4 EntityManager::makeModelMatrix(EntityId id){
+mat4 EntityManager::getModelMatrix(EntityId id){
   mat4 transform{1.0f};
   if (componentManager.hasComponent<Component::TRANSFORM>(id)){
     auto transformComp = componentManager.getComponent<Component::TRANSFORM>(id);
@@ -52,6 +52,13 @@ mat4 EntityManager::makeModelMatrix(EntityId id){
     transform = glm::scale(transform, (transformComp).scale);
     transform = glm::rotate(transform, (transformComp).rotation,{0.0f,0.0f,1.0f});
   }
+  return transform;
+}
+mat4 EntityManager::makeModelMatrix(Component::TRANSFORM transformComp){
+  mat4 transform{1.0f};
+  transform = glm::translate(transform, (transformComp).position);
+  transform = glm::scale(transform, (transformComp).scale);
+  transform = glm::rotate(transform, (transformComp).rotation,{0.0f,0.0f,1.0f});
   return transform;
 }
 
@@ -72,7 +79,14 @@ void EntityManager::deleteEntity(EntityId id){
 }
 
 
-vec4 EntityManager::colorToVec4(EntityId id){
+vec4 EntityManager::colorToVec4(uint32_t color){
+  float r =((static_cast<unsigned int>(color)&0xFF000000)>>24)/255.0f; 
+  float g =((static_cast<unsigned int>(color)&0x00FF0000)>>16)/255.0f; 
+  float b =((static_cast<unsigned int>(color)&0x0000FF00)>>8)/255.0f; 
+  float a =((static_cast<unsigned int>(color)&0x000000FF))/255.0f; 
+  return {r,g,b,a};
+}
+vec4 EntityManager::getColorVec4(EntityId id){
   auto color = componentManager.getComponent<Component::RENDER>(id).color;
   float r =((static_cast<unsigned int>(color)&0xFF000000)>>24)/255.0f; 
   float g =((static_cast<unsigned int>(color)&0x00FF0000)>>16)/255.0f; 

@@ -10,6 +10,7 @@ private:
 public:
   BatchManager(EntityManager& eManager);
   BatchKey submit(EntityId entity);
+  BatchKey submit(EntityId entity,Component::TRANSFORM& transformComp,Component::RENDER& renderComp);
   void remove(EntityId entity);
   std::unordered_map<BatchKey, Batch> &getBatches() { return batches; }
   std::vector<std::pair<BatchKey,Batch>> getBatches2();

@@ -49,14 +49,21 @@ EntityId Engine::makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin,ve
 
 void Engine::changeSprite(EntityId id,const std::string& spritePath,vec2 uvMin,vec2 uvMax){
   auto matId = materialManager.newMat(spritePath);
+  auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(id);
+  renderComp.material=matId;
+  entityManager.componentManager.setComponent(id, renderComp);
   vec2 spriteDims= materialManager.get(matId).getTextureDimensions();
-  auto trans = entityManager.componentManager.getComponent<Component::TRANSFORM>(id);
-  auto render = entityManager.componentManager.getComponent<Component::RENDER>(id);
-  render.material=matId;
-  trans.scale={spriteDims.x*(uvMax.x-uvMin.x),spriteDims.y*(uvMax.y-uvMin.y), 1.0f};
+  auto transformComp = entityManager.componentManager.getComponent<Component::TRANSFORM>(id);
+  transformComp.scale = {spriteDims.x*(uvMax.x-uvMin.x),spriteDims.y*(uvMax.y-uvMin.y), 1.0f};
+  entityManager.componentManager.setComponent(id, transformComp);
   entityManager.componentManager.setComponent<Component::UVRECT>(id, Component::UVRECT{uvMin,uvMax});
-  entityManager.componentManager.setComponent<Component::TRANSFORM>(id, trans);
-  entityManager.componentManager.setComponent<Component::RENDER>(id, render);
+  LOG_DEBUG("Sprite changed on entity : {}, to : {}",id,spritePath);
+}
+
+void Engine::changeColor(EntityId id,uint32_t color){
+  auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(id);
+  renderComp.color=color;
+  entityManager.componentManager.setComponent(id, renderComp);
 }
 
 

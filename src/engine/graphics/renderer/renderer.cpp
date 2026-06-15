@@ -177,7 +177,7 @@ void Renderer::renderLights(){
       color.push_back(lightComp.color);
       radius.push_back(lightComp.radius);
       intensity.push_back(lightComp.intensity);
-      model.push_back(entityManager.makeModelMatrix(id));
+      model.push_back(entityManager.getModelMatrix(id));
       count+=1;
     }
   }

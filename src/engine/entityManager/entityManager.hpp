@@ -34,10 +34,12 @@ public:
 
 
 
-  vec4 colorToVec4(EntityId id);
+  vec4 getColorVec4(EntityId id);
+  vec4 colorToVec4(uint32_t color);
   void setColor(EntityId id,unsigned int hex);
   void setColor(EntityId id,unsigned int r,unsigned int g,unsigned int b,unsigned int a);
   void setPos(EntityId id,vec3 pos);
   vec3 getPos(EntityId id);
-  mat4 makeModelMatrix(EntityId id);
+  mat4 getModelMatrix(EntityId id);
+  mat4 makeModelMatrix(Component::TRANSFORM id);
 };
