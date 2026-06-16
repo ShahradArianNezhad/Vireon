@@ -75,28 +75,20 @@ void Renderer::collectAndBatch(Scene *scene) {
 }
 
 mat4 Renderer::getProjectionMatrix() {
-  auto cam = sceneManager.get(currentScene)->getActiveCamera();
-  auto camComp = entityManager.componentManager.getComponent<Component::CAMERA2D>(cam);
-  float halfW = static_cast<float>(screenW)*0.5f/camComp.zoom;
-  float halfH = static_cast<float>(screenH)*0.5f/camComp.zoom;
   return glm::ortho(
-    camComp.position.x - halfW,
-    camComp.position.x + halfW,
-    camComp.position.y + halfH,
-    camComp.position.y - halfH,
-    -100.0f,
-    100.0f
+      0.0f, (float)screenW,
+      (float)screenH,0.0f,
+      -100.0f,100.0f
 );
 }
 
 
-void Renderer::renderBatches(std::vector<std::pair<BatchKey,Batch>> batches) {
+void Renderer::renderBatches(std::vector<std::pair<BatchKey,Batch>> batches,mat4 view) {
 
 #ifdef DEBUG_VERBOSE
   size_t renderCalls=0;
 #endif
   enableAlphaBlending();
-  auto view = getViewMatrix();
   auto proj = getProjectionMatrix();
   for (auto &[key, batch] : batches) {
     auto &mesh = meshManager.get(key.mesh);
@@ -135,7 +127,7 @@ void Renderer::enableAlphaBlending(){
 void Renderer::renderSceneToBuffer(){
   sceneBuffer.bind();
   flush();
-  renderBatches(worldBatchManager.getBatches2());
+  renderBatches(worldBatchManager.getBatches2(),getViewMatrix());
 }
 
 void Renderer::renderBufferToScreen(){
@@ -214,7 +206,9 @@ void Renderer::enableAdditiveBlending(){
 }
 
 void Renderer::renderUI(){
-  renderBatches(UIBatchManager.getBatches2());
+  mat4 view = mat4(1.0f);
+  view = glm::translate(view, vec3(screenW*0.5f,screenH*0.5f,0.0f));
+  renderBatches(UIBatchManager.getBatches2(),view);
 }
 
 
@@ -238,7 +232,8 @@ mat4 Renderer::getViewMatrix(){
       glm::radians(-camComp.rotation),
       glm::vec3(0.0f, 0.0f, 1.0f)
       );
-  view = glm::translate(view, vec3(-camComp.position.x,-camComp.position.y,0.0f));
+  //view = glm::translate(view, vec3(-camComp.position.x,-camComp.position.y,0.0f));
+  view = glm::translate(view, vec3(-camComp.position.x+screenW*0.5f,-camComp.position.y+screenH*0.5f,0.0f));
   return view;
 }
 

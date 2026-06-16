@@ -36,7 +36,7 @@ class Renderer {
   size_t screenW,screenH;
   void getGlErrors();
   void collectAndBatch(Scene *scene);
-  void renderBatches(std::vector<std::pair<BatchKey,Batch>> batches);
+  void renderBatches(std::vector<std::pair<BatchKey,Batch>> batches,mat4 view);
   mat4 getViewMatrix();
   mat4 makeModelMatrix(EntityId id);
   mat4 getProjectionMatrix();

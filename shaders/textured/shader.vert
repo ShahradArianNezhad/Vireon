@@ -14,7 +14,7 @@ out vec2 TexCoord;
 
 void main() {
   gl_Position = projection * view * model * vec4(aPos, 1.0);
-  TexCoord = mix(vec2(uv[0],1-uv[1]),vec2(uv[2],1-uv[3]),aTexCoord);
+  TexCoord = mix(vec2(uv[0],uv[1]),vec2(uv[2],uv[3]),aTexCoord);
   oColor=color;
 
 }

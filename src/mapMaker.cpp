@@ -11,6 +11,7 @@
 #include "engine/eventManager/eventManager.hpp"
 #include "platform/input/inputHandler.hpp"
 #include "json.hpp"
+#include "platform/window/GLFWwindow.hpp"
 
 
 
@@ -44,7 +45,7 @@ public:
   vec2 uvMin={0,0};
   vec2 uvMax={1.0/10,1.0/10};
   EntityId selection = engine.makeSprite({0,0,10},spriteFile,uvMin,uvMax);
-  EntityId selectionBox;
+  EntityId selectionBox = engine.makeRect({0,0,20}, {200,200},Layer::UI);
   std::vector<EntityId> selectionItems;
 
 
@@ -58,6 +59,13 @@ public:
   }
 
   void update(double) override {
+    auto cam = engine.getActiveCamera();
+    auto camComp = engine.entityManager.componentManager.getComponent<Component::CAMERA2D>(cam);
+    if(engine.inputHandler.checkKeyPress(Key::Up)){camComp.position.y-=5;}
+    if(engine.inputHandler.checkKeyPress(Key::Down)){camComp.position.y+=5;}
+    if(engine.inputHandler.checkKeyPress(Key::Left)){camComp.position.x-=5;}
+    if(engine.inputHandler.checkKeyPress(Key::Right)){camComp.position.x+=5;}
+    engine.entityManager.componentManager.setComponent(cam, camComp);
   };
   
 
@@ -67,6 +75,7 @@ public:
     auto render = engine.entityManager.componentManager.getComponent<Component::RENDER>(selection);
     render.color &= 0xFFFFFF55;
     engine.entityManager.componentManager.setComponent(selection, render);
+
     EventManager::subscribe<MouseMoveEvent>([this](MouseMoveEvent e){this->showPreviewAtMousePos({e.x,e.y});});
     EventManager::subscribe<MouseButtonPressedEvent>([this](MouseButtonPressedEvent e){
         if(e.button==Mouse::LEFT && mode!="select")placeAtMousePos();
@@ -86,16 +95,16 @@ public:
         else if(e.key==Key::Tab && mode=="tile")openSelectMenu();
         else if(e.key==Key::Tab && mode=="select")closeSelectMenu();
     });
-    selectionBox=engine.makeRect({0,0,20}, {200,200},Layer::UI);
     engine.changeColor(selectionBox, 0x808080FF);
 
     for(int j=0;j<10;j++){
       for(int i=0;i<10;i++){
-        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0},Layer::UI));
+        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220 ,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0},Layer::UI));
       }
     }
     closeSelectMenu();
   }
+
   
 
   void selectTile(){

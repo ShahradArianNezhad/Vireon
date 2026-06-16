@@ -101,9 +101,20 @@ EntityId Engine::makeCircle(vec3 pos, float r,Layer layer) {
 void Engine::useCamera(EntityId camera,SceneId sceneid){
   auto scene = sceneManager.get(sceneid);
   if(scene!=nullptr) scene->setActiveCamera(camera);
-  else std::cout << "error : cannot set camera on non existing scene" << std::endl;
+  else LOG_ERROR("cannot set camera on non existing scene");
   LOG_DEBUG("use camera id:{}",camera);
   LOG_INFO("set active camera : {}, on scene : {}",camera,sceneid);
+}
+
+
+EntityId Engine::getActiveCamera(){
+  auto scene = sceneManager.get(getCurrentScene());
+  if(scene!=nullptr) return scene->getActiveCamera();
+  else{
+    LOG_ERROR("cannot get active camera on non existing scene");
+    return UINT32_MAX;
+  }
+
 }
 
 
@@ -150,12 +161,12 @@ EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size,Layer layer)
   return id;
 }
 
-Text Engine::makeText(std::string text,vec3 pos,std::string font,int size){
+Text Engine::makeText(std::string text,vec3 pos,std::string font,int size,Layer layer){
   Text t{.pos=pos,.font=font,.size=size};
   size_t advance=0;
   for(auto c:text){
     auto& character = glyphManager.getGlyphChar(c,font,size);
-    auto id=makeChar(c,{pos.x+advance,pos.y,pos.z},font,size);
+    auto id=makeChar(c,{pos.x+advance,pos.y,pos.z},font,size,layer);
     t.ids.push_back(id);
     advance+=character.advance;
   }

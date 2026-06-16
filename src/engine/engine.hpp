@@ -60,11 +60,12 @@ public:
   bool rectIsColliding(EntityId e1,EntityId e2);
   bool rectCircleIsColliding(EntityId e1,EntityId e2);
   bool circleIsColliding(EntityId e1,EntityId e2);
+  EntityId getActiveCamera();
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 
-  EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64,Layer layer=Layer::WORLD);
-  Text makeText(std::string text,vec3 pos,std::string font,int size);
+  EntityId makeChar(char c,vec3 pos,std::string font,int size,Layer layer=Layer::WORLD);
+  Text makeText(std::string text,vec3 pos,std::string font,int size,Layer layer=Layer::WORLD);
   void changeText(Text& text,const std::string& newText);
 };
 
