@@ -104,3 +104,29 @@ MeshID MeshManager::makeQuad(){
     meshCache[sig]=id;
     return id;
 }
+
+
+
+MeshID MeshManager::makeLightQuad(){
+  Hasher64 hasher;
+  hasher.combine("light", 4);
+  auto sig = hasher.digest();
+  if(meshCache.contains(sig)){return meshCache[sig];}
+
+  std::vector<Vertex> v = {
+    Vertex{{-1,1,0}}, // tl
+    Vertex{{-1,-1,0}}, // bl
+    Vertex{{1,-1,0}}, // br
+    Vertex{{1,1,0}}}; // tr
+    VertexLayout layout = VertexLayout::PosLight;
+    std::vector<unsigned int>i = {
+      0, 1, 2, 
+      0, 2, 3  
+    };
+    Mesh mesh{v, i, layout};
+
+    auto id= submit(mesh);
+    meshCache[sig]=id;
+    return id;
+
+}

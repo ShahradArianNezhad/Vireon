@@ -47,13 +47,13 @@ public:
   Engine();
   ~Engine();
   SceneId newScene(){return sceneManager.newScene();}
-  EntityId makeRect(vec3 pos,vec2 scale);
-  EntityId makeCircle(vec3 pos, float r);
-  EntityId makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
+  EntityId makeRect(vec3 pos,vec2 scale,Layer layer=Layer::WORLD);
+  EntityId makeCircle(vec3 pos, float r,Layer layer=Layer::WORLD);
+  EntityId makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1},Layer layer=Layer::WORLD);
   void changeSprite(EntityId id,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1});
   void changeColor(EntityId id,uint32_t color);
   void setVisibility(EntityId id,bool value);
-  EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity);
+  EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity,Layer layer=Layer::WORLD);
   void setAmbient(float a){renderer.ambient=a;}
   SceneId getCurrentScene(){return renderer.getCurrentScene();};
   bool isColliding(EntityId e1,EntityId e2);
@@ -63,7 +63,7 @@ public:
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 
-  EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64);
+  EntityId makeChar(char c,vec3 pos,std::string font="./assets/Arial.ttf",int size=64,Layer layer=Layer::WORLD);
   Text makeText(std::string text,vec3 pos,std::string font,int size);
   void changeText(Text& text,const std::string& newText);
 };

@@ -45,8 +45,8 @@ void Renderer::setDepthParams(){
 }
 
 
-void Renderer::addEntity(EntityId e){
-  sceneManager.get(currentScene)->addEntity(e);
+void Renderer::addEntity(EntityId e,Layer layer){
+  sceneManager.get(currentScene)->addEntity(e,layer);
 }
 
 void Renderer::initLightBuffer(){
@@ -70,7 +70,7 @@ void Renderer::initRenderBuffer(){
 void Renderer::collectAndBatch(Scene *scene) {
   for (auto entityId : scene->collectEntities()) {
     if (isInScreen(entityId) && entityManager.componentManager.hasComponent<Component::RENDER>(entityId))
-      batchManager.submit(entityId);
+      worldBatchManager.submit(entityId);
   }
 }
 
@@ -90,7 +90,7 @@ mat4 Renderer::getProjectionMatrix() {
 }
 
 
-void Renderer::renderBatches() {
+void Renderer::renderBatches(std::vector<std::pair<BatchKey,Batch>> batches) {
 
 #ifdef DEBUG_VERBOSE
   size_t renderCalls=0;
@@ -98,7 +98,7 @@ void Renderer::renderBatches() {
   enableAlphaBlending();
   auto view = getViewMatrix();
   auto proj = getProjectionMatrix();
-  for (auto &[key, batch] : batchManager.getBatches2()) {
+  for (auto &[key, batch] : batches) {
     auto &mesh = meshManager.get(key.mesh);
     auto &mat = materialManager.get(key.material);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
@@ -135,7 +135,7 @@ void Renderer::enableAlphaBlending(){
 void Renderer::renderSceneToBuffer(){
   sceneBuffer.bind();
   flush();
-  renderBatches();
+  renderBatches(worldBatchManager.getBatches2());
 }
 
 void Renderer::renderBufferToScreen(){
@@ -213,6 +213,10 @@ void Renderer::enableAdditiveBlending(){
   glBlendFunc(GL_ONE, GL_ONE);
 }
 
+void Renderer::renderUI(){
+  renderBatches(UIBatchManager.getBatches2());
+}
+
 
 void Renderer::renderCurrentScene() {
   if(sceneManager.get(currentScene)->getActiveCamera()==UINT32_MAX){
@@ -222,7 +226,7 @@ void Renderer::renderCurrentScene() {
   renderSceneToBuffer();
   renderLights();
   renderBufferToScreen();
-  //if(screenH!=Screen::height || screenW!=Screen::width)windowResizeCallback();
+  renderUI();
 }
 
 mat4 Renderer::getViewMatrix(){

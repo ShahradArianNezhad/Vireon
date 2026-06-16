@@ -7,8 +7,8 @@
 
 
 
-BatchManager::BatchManager(EntityManager& eManager):entityManager(eManager) {
-  EventManager::subscribe<EntityCreatedEvent>([this](EntityCreatedEvent e){submit(e.id);});
+BatchManager::BatchManager(Layer batchLayer,EntityManager& eManager):layer(batchLayer),entityManager(eManager) {
+  EventManager::subscribe<EntityCreatedEvent>([this](EntityCreatedEvent e){if(e.layer==layer)submit(e.id);});
   EventManager::subscribe<EntityDestroyedEvent>([this](EntityDestroyedEvent e){remove(e.id);});
   EventManager::subscribe<ComponentChangingEvent<Component::TRANSFORM>>([this](ComponentChangingEvent<Component::TRANSFORM> e){
       if(!entityManager.componentManager.hasComponent<Component::RENDER,Component::TRANSFORM>(e.entity))return;
@@ -73,21 +73,7 @@ BatchKey BatchManager::submit(EntityId entity){
   if(!entityManager.componentManager.hasComponent<Component::RENDER>(entity))return BatchKey{};
   auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(entity);
   auto transformComp = entityManager.componentManager.getComponent<Component::TRANSFORM>(entity);
-  BatchKey key = {.mesh = renderComp.mesh,
-                  .material = renderComp.material,
-                  .zIndex=(int)transformComp.position.z};
-  if(!batches.contains(key))batches.emplace(key,key);
-  batches[key].submit(entity);
-  batches[key].addTransform(entityManager.getModelMatrix(entity));
-  batches[key].addColor(entityManager.getColorVec4(entity));
-  if(entityManager.componentManager.hasComponent<Component::UVRECT>(entity)){
-    auto uv = entityManager.componentManager.getComponent<Component::UVRECT>(entity);
-    batches[key].addUv(vec4{uv.uvMin,uv.uvMax});
-  }
-#ifdef DEBUG_VERBOSE
-  LOG_DEBUG("submitting entity:{} into batch with: mesh:{} material:{},zIndex:{}",entity,key.mesh,key.material,(int)transformComp.position.z);
-#endif
-  return key;
+  return submit(entity,transformComp,renderComp);
 }
 
 

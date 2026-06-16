@@ -14,6 +14,8 @@
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
+
+
 class Renderer {
   private:
   FrameBuffer lightBuffer;
@@ -25,7 +27,8 @@ class Renderer {
   MaterialManager &materialManager;
   SceneManager& sceneManager;
   EntityManager& entityManager;
-  BatchManager batchManager{entityManager};
+  BatchManager worldBatchManager{Layer::WORLD,entityManager};
+  BatchManager UIBatchManager{Layer::UI,entityManager};
   GpuBuffers gpu;
   ShaderManager shaderManager;
   SceneId currentScene=0;
@@ -33,7 +36,7 @@ class Renderer {
   size_t screenW,screenH;
   void getGlErrors();
   void collectAndBatch(Scene *scene);
-  void renderBatches();
+  void renderBatches(std::vector<std::pair<BatchKey,Batch>> batches);
   mat4 getViewMatrix();
   mat4 makeModelMatrix(EntityId id);
   mat4 getProjectionMatrix();
@@ -49,6 +52,7 @@ class Renderer {
   void setDepthParams();
   void enableAdditiveBlending();
   void enableAlphaBlending();
+  void renderUI();
 
 
 public:
@@ -60,10 +64,11 @@ public:
   static void initGLAD();
 
   void useScene(SceneId scene) { currentScene = scene; };
-  void addEntity(EntityId e);
+  void addEntity(EntityId e,Layer layer);
   SceneId getCurrentScene(){return currentScene;}
   void flush();
   float ambient=0.9;
   void renderCurrentScene();
 
 };
+

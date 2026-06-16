@@ -6,7 +6,7 @@
 VertexArray::VertexArray() { glGenVertexArrays(1, &ID); }
 
 void VertexArray::useLayout(VertexLayout layout) {
-  if (layout == VertexLayout::Pos) {
+  if (layout == VertexLayout::Pos || layout == VertexLayout::PosLight) {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 

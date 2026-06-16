@@ -58,6 +58,7 @@ public:
     if(!meshes.contains(id)) LOG_FATAL("get mesh called on non existing id:{}",id);
     return meshes[id]; 
   };
+  MeshID makeLightQuad();
   MeshID makePrimitive(Primitive);
   MeshID makeQuad();
 

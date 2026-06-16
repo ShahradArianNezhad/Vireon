@@ -35,6 +35,7 @@ private:
   std::vector<mat4> transformInstances;
   std::vector<vec4> colorInstances;
   std::vector<vec4> uvInstances;
+  std::vector<vec2> lightInstances;
   BatchKey key;
 
 public:
@@ -48,11 +49,13 @@ public:
   void addColor(vec4 color){colorInstances.push_back(color);};
   void replaceColor(EntityId id,vec4 color);
   void addUv(vec4 uv){uvInstances.push_back(uv);};
+  void addLight(float radius,float intensity){lightInstances.push_back(vec2{radius,intensity});};
   void replaceUv(EntityId id,vec4 uv);
   void remove(EntityId id);
   std::vector<mat4>& getModelInstanceData(){return transformInstances;};
   std::vector<vec4>& getColorInstanceData(){return colorInstances;};
   std::vector<vec4>& getUvInstanceData(){return uvInstances;};
+  std::vector<vec2>& getLightInstanceData(){return lightInstances;};
   auto begin() { return entities.begin(); }
   auto end() { return entities.end(); }
   size_t size(){return entities.size();}

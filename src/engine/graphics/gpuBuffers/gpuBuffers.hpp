@@ -14,6 +14,7 @@ public:
   void useInstanceMat4(VertexBuffer& instanceVBO, unsigned int location);
   void useInstanceVec4(VertexBuffer& instanceVBO, unsigned int location);
   void useInstanceVec3(VertexBuffer& instanceVBO, unsigned int location);
+  void useInstanceVec2(VertexBuffer& instanceVBO, unsigned int location);
   void useInstanceFloat(VertexBuffer& instanceVBO, unsigned int location);
   void reset();
 

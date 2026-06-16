@@ -20,6 +20,10 @@ Shader::Shader(VertexLayout layout) {
     makeAndCompileShaders("./shaders/text");
     makeAndLinkProgram();
     cleanShaders();
+  } else if (layout == VertexLayout::PosLight){
+    makeAndCompileShaders("./shaders/light");
+    makeAndLinkProgram();
+    cleanShaders();
   } else {
     LOG_ERROR("no shader found for specified vertexlayout");
   }

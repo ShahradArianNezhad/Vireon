@@ -86,12 +86,12 @@ public:
         else if(e.key==Key::Tab && mode=="tile")openSelectMenu();
         else if(e.key==Key::Tab && mode=="select")closeSelectMenu();
     });
-    selectionBox=engine.makeRect({0,0,20}, {200,200});
+    selectionBox=engine.makeRect({0,0,20}, {200,200},Layer::UI);
     engine.changeColor(selectionBox, 0x808080FF);
 
     for(int j=0;j<10;j++){
       for(int i=0;i<10;i++){
-        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0}));
+        selectionItems.push_back(engine.makeSprite({((i+1)*40)-220,((j+1)*40)-220,21},"./assets/Dungeon_Tileset.png",{i/10.0,j/10.0},{(i+1)/10.0,(j+1)/10.0},Layer::UI));
       }
     }
     closeSelectMenu();
@@ -167,8 +167,14 @@ public:
         engine.entityManager.deleteEntity(entity.id);
       }
     }
+    for(auto& [gridX,gridYtoLight]:lightMap){
+      for(auto& [gridY,light]:gridYtoLight){
+        engine.entityManager.deleteEntity(light);
+      }
+    }
     tileMap.clear();
     entityMap.clear();
+    lightMap.clear();
   }
 
   void loadTileMap(){
@@ -242,6 +248,7 @@ public:
         map["light"][std::format("{}",gridX)][std::format("{}",gridY)] = light;
       }
     }
+
     file << std::setw(4) << map << std::endl;
     file.flush();
     file.close();

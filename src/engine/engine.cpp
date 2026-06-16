@@ -2,11 +2,8 @@
 #include "engine/entityManager/component/components.hpp"
 #include "engine/glyphManager/glyphManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
-#include <chrono>
-#include <cmath>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
-#include <thread>
 #include "../game/game.hpp"
 #include "platform/window/GLFWwindow.hpp"
 #include "utils/logger/logger.hpp"
@@ -31,7 +28,7 @@ Engine::~Engine(){
 
 
 
-EntityId Engine::makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin,vec2 uvMax){
+EntityId Engine::makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin,vec2 uvMax,Layer layer){
   auto meshId = meshManager.makePrimitive(Primitive::SquareSprite);
   auto matId = materialManager.newMat(spritePath);
   vec2 spriteDims= materialManager.get(matId).getTextureDimensions();
@@ -42,7 +39,7 @@ EntityId Engine::makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin,ve
   };
   auto id = entityManager.newEntity(Component::RENDER{meshId,matId},transformComp);
   entityManager.componentManager.setComponent<Component::UVRECT>(id, Component::UVRECT{uvMin,uvMax});
-  renderer.addEntity(id);
+  renderer.addEntity(id,layer);
   LOG_DEBUG("Sprite entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 }
@@ -74,7 +71,7 @@ void Engine::setVisibility(EntityId id,bool value){
 
 
 
-EntityId Engine::makeRect(vec3 pos,vec2 scale) {
+EntityId Engine::makeRect(vec3 pos,vec2 scale,Layer layer) {
   auto meshId = meshManager.makePrimitive(Primitive::Square);
   auto matId = materialManager.newMat();
   auto transformComp = Component::TRANSFORM{
@@ -83,12 +80,12 @@ EntityId Engine::makeRect(vec3 pos,vec2 scale) {
   };
 
   auto id = entityManager.newEntity(Component::RENDER{meshId,matId},transformComp);
-  renderer.addEntity(id);
+  renderer.addEntity(id,layer);
   LOG_DEBUG("rect entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 }
 
-EntityId Engine::makeCircle(vec3 pos, float r) {
+EntityId Engine::makeCircle(vec3 pos, float r,Layer layer) {
   auto meshId = meshManager.makePrimitive(Primitive::Circle);
   auto matId = materialManager.newMat();
   auto transformComp = Component::TRANSFORM{
@@ -96,7 +93,7 @@ EntityId Engine::makeCircle(vec3 pos, float r) {
       .scale = {r, r, 1.0f},
   };
   auto id = entityManager.newEntity(Component::RENDER{meshId,matId},transformComp);
-  renderer.addEntity(id);
+  renderer.addEntity(id,layer);
   LOG_DEBUG("circle entity created: mesh:{},mat:{},entityId:{}",meshId,matId,id);
   return id;
 }
@@ -135,7 +132,7 @@ void Engine::run(Game* game) {
 }
 
 
-EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size){
+EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size,Layer layer){
   auto meshId = meshManager.makeQuad();
   auto texId = glyphManager.getGlyphTex(font, size);
   auto matId = materialManager.newMat(texId);
@@ -149,7 +146,7 @@ EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size){
 
   auto id = entityManager.newEntity(Component::RENDER{meshId,matId},transformComp);
   entityManager.componentManager.setComponent<Component::UVRECT>(id, uvComp);
-  renderer.addEntity(id);
+  renderer.addEntity(id,layer);
   return id;
 }
 
@@ -240,21 +237,18 @@ bool Engine::rectCircleIsColliding(EntityId e1,EntityId e2){
 }
 
 
-EntityId Engine::makeLight(vec2 pos,vec3 color, float radius,float intensity) {
+EntityId Engine::makeLight(vec2 pos,vec3 color, float radius,float intensity,Layer layer) {
   auto transformComp = Component::TRANSFORM{
       .position = {pos.x, pos.y, 0.0f},
       .scale = {radius, radius, 1.0f},
   };
   auto lightComp = Component::LIGHT{radius,intensity,color};
-  //auto meshId = meshManager.makePrimitive(Primitive::Square);
-  //auto matId = materialManager.newMat();
 
   auto id = entityManager.newEntity();
   entityManager.componentManager.setComponent<Component::TRANSFORM>(id, transformComp);
   entityManager.componentManager.setComponent<Component::LIGHT>(id, lightComp);
 
-  //entityManager.componentManager.setComponent(id, Component::RENDER{meshId,matId,0xFFFFFFFF,true});
-  renderer.addEntity(id);
+  renderer.addEntity(id,layer);
   LOG_DEBUG("light entity created: pos:{},{},radius:{},entityId:{}",pos.x,pos.y,radius,id);
   return id;
 }

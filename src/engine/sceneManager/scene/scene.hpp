@@ -27,8 +27,8 @@ public:
   }
   std::vector<EntityId> &collectEntities() {return entities;}
 
-  void addEntity(EntityId entity) {
-    EventManager::emit(EntityCreatedEvent{entity});
+  void addEntity(EntityId entity,Layer layer) {
+    EventManager::emit(EntityCreatedEvent{entity,layer});
     LOG_DEBUG("entity:{} added to scene:{}",entity,id);
     entities.push_back(entity);
   };

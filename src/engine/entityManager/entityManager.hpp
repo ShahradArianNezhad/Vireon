@@ -13,6 +13,7 @@ struct EntityDestroyedEvent{
 
 struct EntityCreatedEvent{
   EntityId id;
+  Layer layer;
 };
 
 using EntityId = uint32_t;

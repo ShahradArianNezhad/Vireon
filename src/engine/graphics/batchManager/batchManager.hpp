@@ -5,10 +5,11 @@
 class BatchManager {
 private:
   std::unordered_map<BatchKey, Batch> batches;
+  Layer layer;
   EntityManager& entityManager;
 
 public:
-  BatchManager(EntityManager& eManager);
+  BatchManager(Layer batchLayer,EntityManager& eManager);
   BatchKey submit(EntityId entity);
   BatchKey submit(EntityId entity,Component::TRANSFORM& transformComp,Component::RENDER& renderComp);
   void remove(EntityId entity);
