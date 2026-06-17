@@ -9,8 +9,8 @@ class AllocatorStats{
     std::string allocatorName;
 };
 
-enum class Layer{
-  WORLD,
+enum Layer{
+  WORLD=0,
   UI
 };
 

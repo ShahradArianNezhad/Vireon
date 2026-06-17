@@ -18,6 +18,9 @@
 
 class Renderer {
   private:
+#ifdef DEBUG_VERBOSE
+  size_t renderCalls=0;
+#endif
   FrameBuffer lightBuffer;
   Texture lightTexture;
   FrameBuffer sceneBuffer;
@@ -32,18 +35,22 @@ class Renderer {
   GpuBuffers gpu;
   ShaderManager shaderManager;
   SceneId currentScene=0;
+  mat4 viewMatrix{1.0f};
+  mat4 projectionMatrix{1.0f};
 
   size_t screenW,screenH;
   void getGlErrors();
   void collectAndBatch(Scene *scene);
-  void renderBatches(std::vector<std::pair<BatchKey,Batch>> batches,mat4 view);
-  mat4 getViewMatrix();
+  void renderBatches(std::vector<std::pair<BatchKey,Batch>> batches);
+  mat4 makeWorldViewMatrix();
   mat4 makeModelMatrix(EntityId id);
   mat4 getProjectionMatrix();
   bool isInScreen(EntityId id);
   void renderSceneToBuffer();
   void renderBufferToScreen();
+  void useBatch(BatchKey& key);
   void windowResizeCallback(WindowSizeChangeEvent e);
+  void instanceAndDrawBatch(BatchKey& key,Batch& batch);
   void initRenderBuffer();
   void initLightBuffer();
   void drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std::vector<float>& radius,std::vector<float>& intensity,size_t count);

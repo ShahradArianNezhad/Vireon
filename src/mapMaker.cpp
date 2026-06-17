@@ -87,9 +87,7 @@ public:
         else prevTile(selection);
     });
     EventManager::subscribe<KeyboardKeyPressedEvent>([this](KeyboardKeyPressedEvent e){
-        if(e.key==Key::Left)nextTile(selection);
-        else if(e.key==Key::Right)prevTile(selection);
-        else if(e.key==Key::W)writeTileMap();
+        if(e.key==Key::W)writeTileMap();
         else if(e.key==Key::R)loadTileMap();
         else if(e.key==Key::E)nextSelection();
         else if(e.key==Key::Tab && mode=="tile")openSelectMenu();
@@ -299,9 +297,10 @@ public:
     if(mode=="select"){
       return;
     };
+    auto cam = engine.entityManager.componentManager.getComponent<Component::CAMERA2D>(engine.getActiveCamera());
     auto mousePos = engine.inputHandler.getCursorPos();
-    int gridX = std::ceil(mousePos.x/blocksize);
-    int gridY = std::ceil(mousePos.y/blocksize);
+    int gridX = std::ceil((mousePos.x+cam.position.x)/blocksize);
+    int gridY = std::ceil((mousePos.y+cam.position.y)/blocksize);
     if(mode!="tile" && entityMap[gridX].contains(gridY)) return;
     size_t z;
     if(mode=="tile") z = tileMap[gridX][gridY].size(); 
@@ -317,9 +316,10 @@ public:
   }
   void deleteAtMousePos(){
     if(mode=="select")return;
+    auto cam = engine.entityManager.componentManager.getComponent<Component::CAMERA2D>(engine.getActiveCamera());
     auto mousePos = engine.inputHandler.getCursorPos();
-    int gridX = std::ceil(mousePos.x/blocksize);
-    int gridY = std::ceil(mousePos.y/blocksize);
+    int gridX = std::ceil((mousePos.x+cam.position.x)/blocksize);
+    int gridY = std::ceil((mousePos.y+cam.position.y)/blocksize);
     if(entityMap[gridX].contains(gridY)){
       engine.entityManager.deleteEntity(entityMap[gridX][gridY].id);
       entityMap[gridX].erase(gridY);
@@ -336,9 +336,10 @@ public:
 
   void showPreviewAtMousePos(vec2 pos){
     auto trans = engine.entityManager.componentManager.getComponent<Component::TRANSFORM>(selection);
+    auto cam = engine.entityManager.componentManager.getComponent<Component::CAMERA2D>(engine.getActiveCamera());
     int gridX = std::ceil(pos.x/blocksize);
     int gridY = std::ceil(pos.y/blocksize);
-    trans.position = {gridX*blocksize - blocksize/2,gridY*blocksize - blocksize/2,10};
+    trans.position = {gridX*blocksize - blocksize/2.0 + cam.position.x,gridY*blocksize - blocksize/2.0 + cam.position.y,10};
     engine.entityManager.componentManager.setComponent(selection, trans);
   }
 

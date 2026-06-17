@@ -82,41 +82,41 @@ mat4 Renderer::getProjectionMatrix() {
 );
 }
 
-
-void Renderer::renderBatches(std::vector<std::pair<BatchKey,Batch>> batches,mat4 view) {
-
-#ifdef DEBUG_VERBOSE
-  size_t renderCalls=0;
-#endif
-  enableAlphaBlending();
-  auto proj = getProjectionMatrix();
-  for (auto &[key, batch] : batches) {
+void Renderer::useBatch(BatchKey& key){
     auto &mesh = meshManager.get(key.mesh);
     auto &mat = materialManager.get(key.material);
     auto &shader = shaderManager.getShaderHandle(mesh.layout);
     shader.use();
+    shader.setunifotmMat4("projection",projectionMatrix);
+    shader.setunifotmMat4("view", viewMatrix);
+    gpu.useMesh(mesh);
+    mat.use();
+}
+
+void Renderer::instanceAndDrawBatch(BatchKey& key,Batch& batch){
+    auto &mesh = meshManager.get(key.mesh);
     VertexBuffer modelInstanceVBO = gpu.makeInstanceVBO(batch.getModelInstanceData());
     gpu.useInstanceMat4(modelInstanceVBO,3);
     VertexBuffer colorInstanceVBO = gpu.makeInstanceVBO(batch.getColorInstanceData());
     gpu.useInstanceVec4(colorInstanceVBO,2);
     VertexBuffer uvInstanceVBO = gpu.makeInstanceVBO(batch.getUvInstanceData());
     if(batch.getUvInstanceData().size()>0)gpu.useInstanceVec4(uvInstanceVBO,7);
-    shader.setunifotmMat4("projection",proj);
-    shader.setunifotmMat4("view", view);
-    gpu.useMesh(mesh);
-    mat.use();
     glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, batch.size());
+}
+
+
+void Renderer::renderBatches(std::vector<std::pair<BatchKey,Batch>> batches) {
+
+  enableAlphaBlending();
+  for (auto &[key, batch] : batches) {
+    useBatch(key);
+    instanceAndDrawBatch(key, batch);
 #ifdef DEBUG_VERBOSE
     LOG_DEBUG("rendering batch with meshId:{} and matId:{}",key.mesh,key.material);
-#endif
-#ifdef DEBUG_VERBOSE
     renderCalls+=1;
 #endif
   }
   getGlErrors();
-#ifdef DEBUG_VERBOSE
-  LOG_DEBUG("render calls this frame:{}",renderCalls);
-#endif
 }
 
 void Renderer::enableAlphaBlending(){
@@ -127,7 +127,7 @@ void Renderer::enableAlphaBlending(){
 void Renderer::renderSceneToBuffer(){
   sceneBuffer.bind();
   flush();
-  renderBatches(worldBatchManager.getBatches2(),getViewMatrix());
+  renderBatches(worldBatchManager.getBatches2());
 }
 
 void Renderer::renderBufferToScreen(){
@@ -144,6 +144,9 @@ void Renderer::renderBufferToScreen(){
 
   gpu.useMesh(mesh);
   glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, 1);
+#ifdef DEBUG_VERBOSE
+    renderCalls+=1;
+#endif
 }
 
 void Renderer::windowResizeCallback(WindowSizeChangeEvent e){
@@ -178,14 +181,12 @@ void Renderer::renderLights(){
 
 
 void Renderer::drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std::vector<float>& radius,std::vector<float>& intensity,size_t count){
-  auto view = getViewMatrix();
-  auto proj = getProjectionMatrix();
   lightBuffer.bind();
   flush();
   shaderManager.useLight();
   auto& shader = shaderManager.getLight();
-  shader.setunifotmMat4("projection",proj);
-  shader.setunifotmMat4("view", view);
+  shader.setunifotmMat4("projection",projectionMatrix);
+  shader.setunifotmMat4("view", viewMatrix);
   auto mesh = meshManager.get(meshManager.makeQuad());
   gpu.useMesh(mesh);
   lightTexture.bind();
@@ -199,6 +200,9 @@ void Renderer::drawLights(std::vector<mat4>& model,std::vector<vec3>& color,std:
   gpu.useInstanceMat4(modelInstanceVBO,5);
   enableAdditiveBlending();
   glDrawElementsInstanced(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, count);
+#ifdef DEBUG_VERBOSE
+    renderCalls+=1;
+#endif
 }
 
 void Renderer::enableAdditiveBlending(){
@@ -206,9 +210,9 @@ void Renderer::enableAdditiveBlending(){
 }
 
 void Renderer::renderUI(){
-  mat4 view = mat4(1.0f);
-  view = glm::translate(view, vec3(screenW*0.5f,screenH*0.5f,0.0f));
-  renderBatches(UIBatchManager.getBatches2(),view);
+  viewMatrix = mat4(1.0f);
+  viewMatrix = glm::translate(viewMatrix, vec3(screenW*0.5f,screenH*0.5f,0.0f));
+  renderBatches(UIBatchManager.getBatches2());
 }
 
 
@@ -217,13 +221,19 @@ void Renderer::renderCurrentScene() {
     LOG_WARN("not using a camera");
     return;
   }
+  projectionMatrix = getProjectionMatrix();
+  viewMatrix = makeWorldViewMatrix();
   renderSceneToBuffer();
   renderLights();
   renderBufferToScreen();
   renderUI();
+#ifdef DEBUG_VERBOSE
+  LOG_DEBUG("render calls this frame:{}",renderCalls);
+  renderCalls=0;
+#endif
 }
 
-mat4 Renderer::getViewMatrix(){
+mat4 Renderer::makeWorldViewMatrix(){
   mat4 view = mat4(1.0f);
   auto camera = sceneManager.get(currentScene)->getActiveCamera();
   auto camComp = entityManager.componentManager.getComponent<Component::CAMERA2D>(camera);
@@ -232,7 +242,6 @@ mat4 Renderer::getViewMatrix(){
       glm::radians(-camComp.rotation),
       glm::vec3(0.0f, 0.0f, 1.0f)
       );
-  //view = glm::translate(view, vec3(-camComp.position.x,-camComp.position.y,0.0f));
   view = glm::translate(view, vec3(-camComp.position.x+screenW*0.5f,-camComp.position.y+screenH*0.5f,0.0f));
   return view;
 }

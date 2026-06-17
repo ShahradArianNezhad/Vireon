@@ -19,6 +19,7 @@ struct Text{
   vec3 pos;
   std::string font;
   int size;
+  Layer layer;
 };
 
 
@@ -64,8 +65,8 @@ public:
   void setTargetFPS(uint32_t t){targetFPS=t;};
   void run(Game* game);
 
-  EntityId makeChar(char c,vec3 pos,std::string font,int size,Layer layer=Layer::WORLD);
-  Text makeText(std::string text,vec3 pos,std::string font,int size,Layer layer=Layer::WORLD);
+  EntityId makeChar(char c,vec3 pos,int size=50,Layer layer=Layer::WORLD,const std::string& font="fonts/Arial.ttf");
+  Text makeText(const std::string& text,vec3 pos,int size=50,Layer layer=Layer::WORLD,const std::string& font="fonts/Atial.ttf");
   void changeText(Text& text,const std::string& newText);
 };
 

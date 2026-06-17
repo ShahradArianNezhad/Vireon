@@ -85,7 +85,6 @@ void BatchManager::remove(EntityId entity){
                   .material = renderComp.material,
                   .zIndex=(int)transformComp.position.z};
   if (!batches.contains(key)){
-    LOG_WARN("trying to remove an entity from batch that doesnt exist in batches entityID : {}",entity);
     return;
   }
   batches[key].remove(entity);

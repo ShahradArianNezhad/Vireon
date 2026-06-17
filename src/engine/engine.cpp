@@ -143,7 +143,7 @@ void Engine::run(Game* game) {
 }
 
 
-EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size,Layer layer){
+EntityId Engine::makeChar(char c,vec3 pos,int size,Layer layer,const std::string& font){
   auto meshId = meshManager.makeQuad();
   auto texId = glyphManager.getGlyphTex(font, size);
   auto matId = materialManager.newMat(texId);
@@ -161,12 +161,12 @@ EntityId Engine::makeChar(char c,vec3 pos,std::string font,int size,Layer layer)
   return id;
 }
 
-Text Engine::makeText(std::string text,vec3 pos,std::string font,int size,Layer layer){
-  Text t{.pos=pos,.font=font,.size=size};
+Text Engine::makeText(const std::string& text,vec3 pos,int size,Layer layer,const std::string& font){
+  Text t{.pos=pos,.font=font,.size=size,.layer=layer};
   size_t advance=0;
   for(auto c:text){
     auto& character = glyphManager.getGlyphChar(c,font,size);
-    auto id=makeChar(c,{pos.x+advance,pos.y,pos.z},font,size,layer);
+    auto id=makeChar(c,{pos.x+advance,pos.y,pos.z},size,layer,font);
     t.ids.push_back(id);
     advance+=character.advance;
   }
@@ -276,5 +276,5 @@ void Engine::changeText(Text& text,const std::string& newText){
     text.ids.pop_back();
   }
   LOG_DEBUG("changed a text to : {}",newText);
-  text = makeText(newText, text.pos, text.font,  text.size);
+  text = makeText(newText, text.pos, text.size,text.layer, text.font);
 }
