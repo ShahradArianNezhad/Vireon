@@ -34,7 +34,7 @@ public:
   EngineWindow &operator=(const EngineWindow &) = delete;
   EngineWindow(EngineWindow &&) = delete;
   ~EngineWindow();
-  GLFWwindow* getWindowPtr(){return window;}
+  GLFWwindow* getWindowPtr();
   bool windowShouldClose();
   void updateWindow();
   void setViewport();

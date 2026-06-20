@@ -6,7 +6,6 @@
 #include "engine/materialManager/materialManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
-#include "engine/scheduleManager/scheduleManager.hpp"
 #include "platform/input/inputHandler.hpp"
 #include "utils/clock/clock.hpp"
 #include "utils/spatialMap/spatialMap.hpp"
@@ -41,13 +40,12 @@ public:
   EngineWindow window{Screen::width, Screen::height,"myGame"};
   EntityManager entityManager;
   InputHandler inputHandler{window.getWindowPtr()};
-  Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
   void useCamera(EntityId camera,SceneId sceneid);
 
 
   Engine();
   ~Engine();
-  SceneId newScene(){return sceneManager.newScene();}
+  SceneId newScene();
   EntityId makeRect(vec3 pos,vec2 scale,Layer layer=Layer::WORLD);
   EntityId makeCircle(vec3 pos, float r,Layer layer=Layer::WORLD);
   EntityId makeSprite(vec3 pos,const std::string& spritePath,vec2 uvMin={0,0},vec2 uvMax={1,1},Layer layer=Layer::WORLD);
@@ -55,19 +53,21 @@ public:
   void changeColor(EntityId id,uint32_t color);
   void setVisibility(EntityId id,bool value);
   EntityId makeLight(vec2 pos,vec3 color, float radius,float intensity,Layer layer=Layer::WORLD);
-  void setAmbient(float a){renderer.ambient=a;}
-  SceneId getCurrentScene(){return renderer.getCurrentScene();};
+  void setAmbient(float a);
+  SceneId getCurrentScene();
   bool isColliding(EntityId e1,EntityId e2);
   bool rectIsColliding(EntityId e1,EntityId e2);
   bool rectCircleIsColliding(EntityId e1,EntityId e2);
   bool circleIsColliding(EntityId e1,EntityId e2);
   EntityId getActiveCamera();
-  void setTargetFPS(uint32_t t){targetFPS=t;};
+  void setTargetFPS(uint32_t t);
   void run(Game* game);
 
   EntityId makeChar(char c,vec3 pos,int size=50,Layer layer=Layer::WORLD,const std::string& font="fonts/Arial.ttf");
   Text makeText(const std::string& text,vec3 pos,int size=50,Layer layer=Layer::WORLD,const std::string& font="fonts/Atial.ttf");
   void changeText(Text& text,const std::string& newText);
+private:
+  Renderer renderer{meshManager, materialManager,sceneManager,entityManager};
 };
 
 

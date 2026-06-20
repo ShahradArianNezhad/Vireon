@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/materialManager/material/texture/texture.hpp"
 #include "glad/gl.h"
 

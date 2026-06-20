@@ -4,6 +4,16 @@
 #include "stb_image.h"
 
 void EngineWindow::initGLFW() {
+  glfwSetErrorCallback(
+    [](int code, const char* desc)
+    {
+        std::cerr << "GLFW Error "
+                  << code
+                  << ": "
+                  << desc
+                  << '\n';
+    }
+    );
   if (!glfwInit()) {
     LOG_FATAL("Failed to initialize GLFW");
   }
@@ -116,3 +126,6 @@ void EngineWindow::cleanup() {
   glfwDestroyWindow(window);
   glfwTerminate();
 }
+
+
+GLFWwindow* EngineWindow::getWindowPtr(){return window;};

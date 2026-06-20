@@ -1,9 +1,6 @@
 #include "utils/logger/logger.hpp"
+#include <filesystem>
 #include <utils/file/fileIO.hpp>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 
 std::string FileIO::readText(const std::string &filePath) {
   LOG_INFO("reading file:{}",filePath);
@@ -17,4 +14,17 @@ std::string FileIO::readText(const std::string &filePath) {
   std::ostringstream buffer;
   buffer << file.rdbuf();
   return buffer.str();
+}
+
+
+
+void FileIO::findBaseDir(){
+  return;
+  for(const auto& entry: std::filesystem::directory_iterator(".")){
+    if(entry.is_directory() && entry.path().filename() == "vireon"){
+      baseDir = entry.path();
+      break;
+    }
+  }
+  LOG_FATAL("Base directory for vireon not found, make sure the executable is in the same directory as the vireon folder");
 }

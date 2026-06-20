@@ -3,14 +3,17 @@
 #include "engine/glyphManager/glyphManager.hpp"
 #include "engine/meshManager/meshManager.hpp"
 #include <glm/ext/vector_float2.hpp>
+#include "engine/scheduleManager/scheduleManager.hpp"
 #include <glm/ext/vector_float3.hpp>
 #include "../game/game.hpp"
 #include "platform/window/GLFWwindow.hpp"
+#include "utils/file/fileIO.hpp"
 #include "utils/logger/logger.hpp"
 #include "audioManager/audioManager.hpp"
 
 
 Engine::Engine(){
+  FileIO::findBaseDir();
   std::string logFile="logs.txt";
   Logger::startLogger(logFile);
   Logger::setLogLevel(LogLevel::Debug);
@@ -278,3 +281,12 @@ void Engine::changeText(Text& text,const std::string& newText){
   LOG_DEBUG("changed a text to : {}",newText);
   text = makeText(newText, text.pos, text.size,text.layer, text.font);
 }
+
+
+
+SceneId Engine::newScene(){return sceneManager.newScene();}
+
+void Engine::setTargetFPS(uint32_t t){targetFPS=t;};
+
+void Engine::setAmbient(float a){renderer.ambient=a;}
+SceneId Engine::getCurrentScene(){return renderer.getCurrentScene();};
