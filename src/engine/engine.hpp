@@ -25,6 +25,7 @@ struct Text{
 class Game;
 class Engine {
 private:
+  Logger logger;
   MeshManager meshManager;
   MaterialManager materialManager;
   SceneManager sceneManager;

@@ -2,11 +2,12 @@
 #include "freetype/freetype.h"
 #include "utils/logger/logger.hpp"
 #include <algorithm>
+#include <filesystem>
 
 GlyphMap::GlyphMap(FT_Library& ft,GlyphType& gt):ft(ft),fontPath(gt.fontPath),fontSize(gt.fontSize){
   int penX{},penY{},rowHeight{};
   atlas.resize(ATLAS_WIDTH * ATLAS_HEIGHT);
-  const char* c_str = fontPath.c_str();
+  const char* c_str = std::filesystem::path(fontPath).c_str();
   if (FT_New_Face(ft, c_str, 0, &face)){
     LOG_ERROR("failed to load font:{}",fontPath);
     return ;

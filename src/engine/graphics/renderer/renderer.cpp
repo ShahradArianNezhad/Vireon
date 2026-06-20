@@ -6,6 +6,7 @@
 #include "glad/gl.h"
 #include "platform/window/GLFWwindow.hpp"
 #include <cstdint>
+#include <cstdlib>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
@@ -250,6 +251,7 @@ void Renderer::getGlErrors(){
   GLenum err;
   while ((err = glGetError()) != GL_NO_ERROR) {
     LOG_ERROR("openGL error: {}",err);
+    abort();
   }
 }
 

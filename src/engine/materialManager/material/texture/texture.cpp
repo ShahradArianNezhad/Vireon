@@ -2,11 +2,12 @@
 #include "utils/logger/logger.hpp"
 #include "texture.hpp"
 #include "glad/gl.h"
+#include <filesystem>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 Texture::Texture(std::string TexturePath) {
-    texturePath = TexturePath;
+    texturePath = std::filesystem::path(TexturePath).string();
     glGenTextures(1, &ID);
     bind();
 

@@ -9,19 +9,19 @@
 
 Shader::Shader(VertexLayout layout) {
   if (layout == VertexLayout::Pos) {
-    makeAndCompileShaders("./shaders/simple");
+    makeAndCompileShaders("shaders/simple");
     makeAndLinkProgram();
     cleanShaders();
   } else if (layout == VertexLayout::PosUV){
-    makeAndCompileShaders("./shaders/textured");
+    makeAndCompileShaders("shaders/textured");
     makeAndLinkProgram();
     cleanShaders();
   } else if (layout == VertexLayout::PosUVText){
-    makeAndCompileShaders("./shaders/text");
+    makeAndCompileShaders("shaders/text");
     makeAndLinkProgram();
     cleanShaders();
   } else if (layout == VertexLayout::PosLight){
-    makeAndCompileShaders("./shaders/light");
+    makeAndCompileShaders("shaders/light");
     makeAndLinkProgram();
     cleanShaders();
   } else {

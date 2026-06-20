@@ -63,7 +63,7 @@ struct std::formatter<LogLevel> : std::formatter<std::string_view> {
   Logger::log(LogLevel::Error,__FILE__,__VA_ARGS__)
 
 #define LOG_FATAL(...)\
-  Logger::log(LogLevel::Fatal,__FILE__,__VA_ARGS__)
+  Logger::log(LogLevel::Fatal,__FILE__,__VA_ARGS__);\
 
 #define LOG_MEMORY()\
   for(size_t i{};i<Logger::allocators.size();i++){\
