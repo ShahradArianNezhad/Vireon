@@ -14,8 +14,7 @@
 
 Engine::Engine(){
   FileIO::findBaseDir();
-  std::string logFile="logs.txt";
-  Logger::startLogger(logFile);
+  Logger::startLogger();
   Logger::setLogLevel(LogLevel::Debug);
   LOG_INFO("Engine initializing");
   SceneId defaultScene = newScene();
