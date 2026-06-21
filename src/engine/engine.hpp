@@ -1,6 +1,7 @@
 #pragma once
 #include "../platform/window/GLFWwindow.hpp"
 #include "./graphics/renderer/renderer.hpp"
+#include "engine/entityManager/ComponentManager/componentManager.hpp"
 #include "engine/entityManager/entityManager.hpp"
 #include "engine/glyphManager/glyphManager.hpp"
 #include "engine/materialManager/materialManager.hpp"
@@ -40,6 +41,7 @@ public:
   bool isNear(EntityId e1,EntityId e2);
   EngineWindow window{Screen::width, Screen::height,"myGame"};
   EntityManager entityManager;
+  ComponentManager& componentManager = entityManager.componentManager;
   InputHandler inputHandler{window.getWindowPtr()};
   void useCamera(EntityId camera,SceneId sceneid);
 
