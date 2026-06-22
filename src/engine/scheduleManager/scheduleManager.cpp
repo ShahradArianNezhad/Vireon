@@ -32,9 +32,11 @@ void ScheduleManager::cancel_task(TaskId id){
       LOG_DEBUG("REMOVING : {}",id);
 #endif
       taskPool.remove(id);
+      idManager.release(id);
     }
     pendingRemoves.clear();
   }
+
   void ScheduleManager::flushAdds(){
     for(auto Task:pendingAdds){taskPool.add(Task);}
     pendingAdds.clear();
