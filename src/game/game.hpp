@@ -4,7 +4,7 @@
 class Game{
 
 public:
-  Engine engine{};
+  Engine engine;
   virtual void init()=0;
   virtual void update(double dt)=0;
 

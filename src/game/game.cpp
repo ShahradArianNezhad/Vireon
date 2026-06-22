@@ -1,5 +1,5 @@
 #include "./game.hpp"
 
 void Game::run(){
-    engine.run(this);
+  engine.run(this);
 }

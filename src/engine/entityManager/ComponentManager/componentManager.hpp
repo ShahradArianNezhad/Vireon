@@ -27,7 +27,7 @@ private:
 
 public:
   template<typename T>
-    T getComponent(EntityId id){
+    [[nodiscard]] T getComponent(EntityId id){
       auto& allocator = std::get<ComponentAllocator<T>>(allocators);
       return allocator.getComponent(id);
     }
