@@ -20,7 +20,9 @@ InputHandler::InputHandler(GLFWwindow *window) : window(window) {
 bool InputHandler::checkKeyPress(Key key) {
   int glfwKey = static_cast<int>(key);
   if(glfwGetKey(window, glfwKey) == GLFW_PRESS){
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("key pressed: {}",keyToString(key));
+#endif
     return true;
   };
   return false;
@@ -30,7 +32,9 @@ bool InputHandler::checkKeyPress(Key key) {
 bool InputHandler::checkMousePress(Mouse button){
   int state = glfwGetMouseButton(window, (int)button);
   if (state == GLFW_PRESS){
+#ifdef DEBUG_VERBOSE
     LOG_DEBUG("mouse key pressed : {}",(int)button);
+#endif
     return true;
   }
   return false;

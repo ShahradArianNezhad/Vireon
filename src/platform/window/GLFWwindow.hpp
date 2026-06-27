@@ -44,6 +44,7 @@ public:
   void setWindowSize(int w,int h);
   void setWindowIcon(std::string iconPath);
   void setDisplayCursor(Cursor mode);
+  void setVsync(bool val);
 
 
 private:

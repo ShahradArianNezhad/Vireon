@@ -7,8 +7,10 @@
 
 
 
-BatchManager::BatchManager(Layer batchLayer,EntityManager& eManager):layer(batchLayer),entityManager(eManager) {
-  EventManager::subscribe<EntityCreatedEvent>([this](EntityCreatedEvent e){if(e.layer==layer)submit(e.id);});
+BatchManager::BatchManager(Layer batchLayer,EntityManager& eManager):layer(batchLayer),entityManager(eManager){
+  EventManager::subscribe<EntityCreatedEvent>([this](EntityCreatedEvent e){
+      if(e.layer==layer)submit(e.id);
+  });
   EventManager::subscribe<EntityDestroyedEvent>([this](EntityDestroyedEvent e){remove(e.id);});
   EventManager::subscribe<ComponentChangingEvent<Component::TRANSFORM>>([this](ComponentChangingEvent<Component::TRANSFORM> e){
       if(!entityManager.componentManager.hasComponent<Component::RENDER,Component::TRANSFORM>(e.entity))return;
@@ -90,8 +92,6 @@ void BatchManager::remove(EntityId entity){
   batches[key].remove(entity);
   if(batches[key].size()==0)batches.erase(key);
 }
-
-
 
 
 std::vector<std::pair<BatchKey,Batch>> BatchManager::getBatches2(){

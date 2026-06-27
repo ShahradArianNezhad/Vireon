@@ -1,6 +1,7 @@
 #pragma once
 #include "./batch/batch.hpp"
 #include "engine/entityManager/entityManager.hpp"
+#include "engine/sceneManager/sceneManager.hpp"
 
 class BatchManager {
 private:

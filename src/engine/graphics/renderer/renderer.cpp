@@ -1,10 +1,12 @@
 #include "renderer.hpp"
 #include "engine/entityManager/component/components.hpp"
+#include "engine/entityManager/entityManager.hpp"
 #include "engine/eventManager/eventManager.hpp"
 #include "engine/graphics/gpuBuffers/vertexBuffer/vertexBuffer.hpp"
 #include "engine/sceneManager/sceneManager.hpp"
 #include "glad/gl.h"
 #include "platform/window/GLFWwindow.hpp"
+#include "utils/types.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <glm/ext/matrix_clip_space.hpp>
@@ -76,11 +78,16 @@ void Renderer::collectAndBatch(Scene *scene) {
 }
 
 mat4 Renderer::getProjectionMatrix() {
+  auto camera = sceneManager.get(currentScene)->getActiveCamera();
+  auto camComp = entityManager.componentManager.getComponent<Component::CAMERA2D>(camera);
+  float halfW = screenW * 0.5f / camComp.zoom;
+  float halfH = screenH * 0.5f / camComp.zoom;
+
   return glm::ortho(
-      0.0f, (float)screenW,
-      (float)screenH,0.0f,
-      -100.0f,100.0f
-);
+      -halfW, halfW,
+      halfH, -halfH,
+      -100.0f, 100.0f
+      );
 }
 
 void Renderer::useBatch(BatchKey& key){
@@ -212,7 +219,7 @@ void Renderer::enableAdditiveBlending(){
 
 void Renderer::renderUI(){
   viewMatrix = mat4(1.0f);
-  viewMatrix = glm::translate(viewMatrix, vec3(screenW*0.5f,screenH*0.5f,0.0f));
+  //viewMatrix = glm::translate(viewMatrix, vec3(screenW*0.5f,screenH*0.5f,0.0f));
   renderBatches(UIBatchManager.getBatches2());
 }
 
@@ -241,9 +248,15 @@ mat4 Renderer::makeWorldViewMatrix(){
   view = glm::rotate(
       view,
       glm::radians(-camComp.rotation),
-      glm::vec3(0.0f, 0.0f, 1.0f)
+      glm::vec3(0,0,1)
       );
-  view = glm::translate(view, vec3(-camComp.position.x+screenW*0.5f,-camComp.position.y+screenH*0.5f,0.0f));
+
+  view = glm::translate(
+      view,
+      glm::vec3(-camComp.position.x,
+        -camComp.position.y,
+        0.0f)
+      );
   return view;
 }
 

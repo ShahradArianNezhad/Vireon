@@ -77,3 +77,4 @@ void Batch::replaceUv(EntityId id,vec4 uv){
   }
   uvInstances[index]=uv;
 };
+

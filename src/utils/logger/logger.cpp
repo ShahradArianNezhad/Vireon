@@ -55,10 +55,15 @@ void Logger::bufferLog(Log log){
   writeIndex = (writeIndex+1)%MaxStoredLogs;
   bufferLock.unlock();
 
+#ifndef ENGINE_DEBUG
   if(bufferedLogs>=MaxStoredLogs/2){
     writeLogs();
     flush();
   }
+#else
+  writeLogs();
+  flush();
+#endif
 }
 
 

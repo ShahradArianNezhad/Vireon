@@ -27,13 +27,15 @@ void EngineWindow::createWindow() {
   window = glfwCreateWindow(Screen::width, Screen::height, window_name.c_str(), nullptr, nullptr);
   checkWindowInit();
   glfwMakeContextCurrent(window);
-  glfwSwapInterval(0);
   Renderer::initGLAD();
   glViewport(0, 0,Screen::width, Screen::height);
   glfwSetFramebufferSizeCallback(window, sizeChange_callback);
   LOG_INFO("window created width : {} height : {}",Screen::width,Screen::height);
 }
 
+void EngineWindow::setVsync(bool val){
+  glfwSwapInterval(val);
+}
 
 void EngineWindow::setDisplayCursor(Cursor mode){
   switch(mode){
