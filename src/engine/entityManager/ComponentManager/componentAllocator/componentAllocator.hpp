@@ -23,6 +23,12 @@ public:
 
 
   T getComponent(EntityId id){
+#ifdef ENGINE_DEBUG
+    if(!hasComponent(id)){
+      LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);
+      return T{};
+    }
+#endif
 #ifndef ENGINE_OPTIMIZE
     if(components.size()<id){
       LOG_WARN("getComponent:{} called on entity:{} which doesnt have that component",typeid(T).name(),id);

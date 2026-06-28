@@ -59,7 +59,7 @@ BatchKey BatchManager::submit(EntityId entity,Component::TRANSFORM& transformCom
     .zIndex=(int)transformComp.position.z};
   if(!batches.contains(key))batches.emplace(key,key);
   batches[key].submit(entity);
-  batches[key].addTransform(entityManager.getModelMatrix(entity));
+  batches[key].addTransform(entityManager.makeModelMatrix(transformComp));
   batches[key].addColor(entityManager.getColorVec4(entity));
   if(entityManager.componentManager.hasComponent<Component::UVRECT>(entity)){
     auto uv = entityManager.componentManager.getComponent<Component::UVRECT>(entity);
