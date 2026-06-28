@@ -19,7 +19,7 @@ std::string FileIO::readText(const std::string &filePath) {
 
 void FileIO::findBaseDir(){
   for(const auto& entry: std::filesystem::recursive_directory_iterator(".")){
-    if(entry.is_directory() && entry.path().filename() == "vireon"){
+    if(entry.is_directory() && entry.path().filename() == "Vireon"){
       for(const auto& subEntry: std::filesystem::directory_iterator(entry)){
         if(subEntry.path().filename()=="shaders"){
           baseDir = entry.path();
@@ -29,7 +29,7 @@ void FileIO::findBaseDir(){
     }
   }
   for(const auto& entry: std::filesystem::recursive_directory_iterator("../")){
-    if(entry.is_directory() && entry.path().filename() == "vireon"){
+    if(entry.is_directory() && entry.path().filename() == "Vireon"){
       for(const auto& subEntry: std::filesystem::directory_iterator(entry)){
         if(subEntry.path().filename()=="shaders"){
           baseDir = entry.path();

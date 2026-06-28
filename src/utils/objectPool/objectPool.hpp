@@ -21,7 +21,7 @@ class ObjectPool{
 
     void remove(uint32_t id){
       if(!idToIndex.contains(id)){
-        LOG_WARN("remove called on non existing ID");
+        LOG_WARN("remove called on non existing ID : {}",id);
         return;
       }
       auto index = idToIndex.at(id);
