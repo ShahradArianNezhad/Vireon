@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/entityManager/component/components.hpp"
 #include "utils/idManager/idManager.hpp"
+#include <functional>
 #include "utils/objectPool/objectPool.hpp"
 
 using subscriptionId = uint32_t;

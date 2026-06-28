@@ -227,14 +227,14 @@ bool Engine::rectIsColliding(EntityId e1,EntityId e2){
   auto t2 = entityManager.componentManager.getComponent<Component::TRANSFORM>(e2);
   auto r1 = entityManager.componentManager.getComponent<Component::RECTCOLLIDER>(e1);
   auto r2 = entityManager.componentManager.getComponent<Component::RECTCOLLIDER>(e2);
-  float left1   = t1.position.x + r1.offset.x - r1.scale.x/2;
-  float right1  = t1.position.x + r1.offset.x + r1.scale.x/2;
-  float top1    = t1.position.y + r1.offset.y - r1.scale.y/2;  
-  float bottom1 = t1.position.y + r1.offset.y + r1.scale.y/2;
-  float left2   = t2.position.x + r2.offset.x - r2.scale.x/2;
-  float right2  = t2.position.x + r2.offset.x + r2.scale.x/2;
-  float top2    = t2.position.y + r2.offset.y - r2.scale.y/2;
-  float bottom2 = t2.position.y + r2.offset.y + r2.scale.y/2;
+  float left1   = t1.position.x + r1.offset.x - r1.scale.x;
+  float right1  = t1.position.x + r1.offset.x + r1.scale.x;
+  float top1    = t1.position.y + r1.offset.y - r1.scale.y;  
+  float bottom1 = t1.position.y + r1.offset.y + r1.scale.y;
+  float left2   = t2.position.x + r2.offset.x - r2.scale.x;
+  float right2  = t2.position.x + r2.offset.x + r2.scale.x;
+  float top2    = t2.position.y + r2.offset.y - r2.scale.y;
+  float bottom2 = t2.position.y + r2.offset.y + r2.scale.y;
 
   return left1 < right2 && right1 > left2 && top1 < bottom2 && bottom1 > top2;
 }

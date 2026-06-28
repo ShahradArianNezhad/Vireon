@@ -13,7 +13,7 @@ file(GLOB_RECURSE PROJECT_HEADERS CONFIGURE_DEPENDS
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 #add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
