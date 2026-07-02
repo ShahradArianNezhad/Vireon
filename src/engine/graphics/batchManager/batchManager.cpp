@@ -20,7 +20,7 @@ BatchManager::BatchManager(Layer batchLayer,EntityManager& eManager):layer(batch
       .material = renderComp.material,
       .zIndex=(int)transformComp.position.z};
       if (!batches.contains(key))return;
-      if(e.newComp.position.z != transformComp.position.z){
+      if(e.newComp.position.z != transformComp.position.z && renderComp.visible){
         batches[key].remove(e.entity);
         submit(e.entity,e.newComp,renderComp);
       }else batches[key].replaceModel(e.entity, entityManager.makeModelMatrix(e.newComp));
