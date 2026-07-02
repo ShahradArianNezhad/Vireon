@@ -6,7 +6,7 @@
 
 class ScheduleManager{
   static inline IDManager idManager;
-  static inline ObjectPool<Task> taskPool;
+  static inline ObjectPool<Task> taskPool{"ScheduleManager"};
   static inline std::vector<uint32_t> pendingRemoves;
   static inline std::vector<Task> pendingAdds;
   static void flushRemoves();

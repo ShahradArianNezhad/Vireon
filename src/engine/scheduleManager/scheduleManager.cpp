@@ -44,6 +44,8 @@ void ScheduleManager::cancel_task(TaskId id){
 
 
 void ScheduleManager::update(float dt){
+  flushAdds();
+  flushRemoves();
   for(auto& task:taskPool.pool){
     task.remainingTime-=dt;
     if(task.remainingTime<=0.0f){
@@ -52,7 +54,5 @@ void ScheduleManager::update(float dt){
       else pendingRemoves.push_back(task.id);
     }
   }
-  flushRemoves();
-  flushAdds();
 }
 

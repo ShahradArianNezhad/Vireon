@@ -9,9 +9,12 @@
 template<typename T>
 class ObjectPool{
   private:
+    std::string name;
     std::unordered_map<uint32_t, size_t> idToIndex;
   public:
     std::vector<T> pool;
+
+    ObjectPool(const std::string& n):name(n){};
 
     void add(T obj){
       auto index = pool.size();
@@ -21,7 +24,7 @@ class ObjectPool{
 
     void remove(uint32_t id){
       if(!idToIndex.contains(id)){
-        LOG_WARN("remove called on non existing ID : {}",id);
+        LOG_WARN("remove called on non existing ID : {} , pool : {}",id,name);
         return;
       }
       auto index = idToIndex.at(id);
@@ -37,7 +40,7 @@ class ObjectPool{
 
     T& get(uint32_t id){
       if(!idToIndex.contains(id)){
-        LOG_ERROR("get called on non existing ID");
+        LOG_ERROR("get called on non existing ID : {}, pool : {}",id,name);
       }
       return pool[idToIndex[id]];
     }

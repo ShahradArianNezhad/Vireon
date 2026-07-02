@@ -41,7 +41,7 @@ public:
 
 private:
   template<typename T>
-    static inline ObjectPool<Handler<T>> handlerPool;
+    static inline ObjectPool<Handler<T>> handlerPool{"eventManager"};
 
   template<typename T>
     static inline IDManager ids;

@@ -25,7 +25,7 @@ class AudioManager{
   private:
     static inline IDManager idmanager;
     static inline void endCallback(void*,ma_sound*);
-    static inline ObjectPool<Sound> playing;
+    static inline ObjectPool<Sound> playing{"AudioManager"};
     static inline std::map<std::string, ma_sound> soundCache;
     static inline ma_engine engine;
 };
