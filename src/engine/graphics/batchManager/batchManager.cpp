@@ -15,12 +15,13 @@ BatchManager::BatchManager(Layer batchLayer,EntityManager& eManager):layer(batch
   EventManager::subscribe<ComponentChangingEvent<Component::TRANSFORM>>([this](ComponentChangingEvent<Component::TRANSFORM> e){
       if(!entityManager.componentManager.hasComponent<Component::RENDER,Component::TRANSFORM>(e.entity))return;
       auto renderComp = entityManager.componentManager.getComponent<Component::RENDER>(e.entity);
+      if(!renderComp.visible)return;
       auto transformComp = entityManager.componentManager.getComponent<Component::TRANSFORM>(e.entity);
       BatchKey key = {.mesh = renderComp.mesh,
       .material = renderComp.material,
       .zIndex=(int)transformComp.position.z};
       if (!batches.contains(key))return;
-      if(e.newComp.position.z != transformComp.position.z && renderComp.visible){
+      if(e.newComp.position.z != transformComp.position.z){
         batches[key].remove(e.entity);
         submit(e.entity,e.newComp,renderComp);
       }else batches[key].replaceModel(e.entity, entityManager.makeModelMatrix(e.newComp));
