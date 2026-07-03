@@ -40,6 +40,16 @@ bool InputHandler::checkMousePress(Mouse button){
   return false;
 }
 
+bool InputHandler::checkMouseRelease(Mouse button){
+  int state = glfwGetMouseButton(window, (int)button);
+  if (state == GLFW_RELEASE){
+#ifdef DEBUG_VERBOSE
+    LOG_DEBUG("mouse key pressed : {}",(int)button);
+#endif
+    return true;
+  }
+  return false;
+}
 
 
 vec2 InputHandler::getCursorPos(){

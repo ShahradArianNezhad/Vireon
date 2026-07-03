@@ -28,6 +28,7 @@ public:
   InputHandler(GLFWwindow *window);
   bool checkKeyPress(Key key);
   bool checkMousePress(Mouse button);
+  bool checkMouseRelease(Mouse button);
   vec2 getCursorPos();
 
 private:
