@@ -15,7 +15,6 @@
 Engine::Engine(){
   FileIO::findBaseDir();
   Logger::startLogger();
-  Logger::setLogLevel(LogLevel::Debug);
   LOG_INFO("Engine initializing");
   SceneId defaultScene = newScene();
   renderer.useScene(defaultScene);
