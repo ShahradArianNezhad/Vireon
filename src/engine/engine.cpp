@@ -241,11 +241,13 @@ bool Engine::rectIsColliding(EntityId e1,EntityId e2){
 bool Engine::rectCircleIsColliding(EntityId e1,EntityId e2){
   auto t1 = entityManager.componentManager.getComponent<Component::TRANSFORM>(e1);
   auto t2 = entityManager.componentManager.getComponent<Component::TRANSFORM>(e2);
-  float closestX = std::max(t1.position.x - t1.scale.x * 0.5f,std::min(t2.position.x,t1.position.x + t1.scale.x * 0.5f));
-  float closestY = std::max(t1.position.y - t1.scale.y * 0.5f,std::min(t2.position.y,t1.position.y + t1.scale.y * 0.5f));
-  float dx = t2.position.x-closestX;
-  float dy = t2.position.y-closestY;
-  return dx * dx + dy * dy <= t2.scale.x*t2.scale.x;
+  auto r = entityManager.componentManager.getComponent<Component::RECTCOLLIDER>(e1);
+  auto c = entityManager.componentManager.getComponent<Component::CIRCLECOLLIDER>(e2);
+  float closestX = std::max((t1.position.x+r.offset.x) - r.scale.x * 0.5f,std::min((t2.position.x+c.offset.x),(t1.position.x+r.offset.x) + r.scale.x * 0.5f));
+  float closestY = std::max((t1.position.y+r.offset.y) - r.scale.y * 0.5f,std::min((t2.position.y+c.offset.y),(t1.position.y+r.offset.y) + r.scale.y * 0.5f));
+  float dx = (t2.position.x+c.offset.x)-closestX;
+  float dy = (t2.position.y+c.offset.y)-closestY;
+  return dx * dx + dy * dy <= c.radius*c.radius;
 }
 
 
