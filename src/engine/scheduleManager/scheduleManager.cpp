@@ -50,7 +50,13 @@ void ScheduleManager::update(float dt){
     task.remainingTime-=dt;
     if(task.remainingTime<=0.0f){
       task.callback();
-      if(task.repeating) task.remainingTime=task.interval+task.remainingTime;
+      if(task.repeating){
+       task.remainingTime+=task.interval;
+       while(task.remainingTime<=0.0f){
+         task.callback();
+         task.remainingTime+=task.interval;
+       }
+      }
       else pendingRemoves.push_back(task.id);
     }
   }
